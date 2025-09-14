@@ -1,0 +1,35 @@
+{
+  "hero": {
+    "title": "Software Engineer & Developer",
+    "subtitle": "Creating immersive digital experiences with cutting-edge technology",
+    "cta1": "View My Work",
+    "cta2": "Contact Me"
+  },
+  "about": {
+    "title": "About Me",
+    "subtitle": "Passionate Developer Creating Digital Solutions",
+    "description": "I'm a software engineering student with a passion for creating innovative web applications and immersive 3D experiences. I specialize in modern JavaScript frameworks and love exploring the intersection of design and technology.",
+    "info": {
+      "age": {
+        "label": "Age",
+        "value": "23"
+      },
+      "location": {
+        "label": "Location",
+        "value": "Paris, France"
+      },
+      "education": {
+        "label": "Education",
+        "value": "Software Engineering"
+      },
+      "availability": {
+        "label": "Availability",
+        "value": "Open to opportunities"
+      }
+    },
+    "downloadCv": "Download CV"
+  },
+  "skills": {
+    "title": "My Skills"
+  }
+}

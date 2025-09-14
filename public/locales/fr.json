@@ -1,0 +1,35 @@
+{
+  "hero": {
+    "title": "Ingénieur Logiciel & Développeur",
+    "subtitle": "Création d'expériences numériques immersives avec des technologies de pointe",
+    "cta1": "Voir Mon Travail",
+    "cta2": "Me Contacter"
+  },
+  "about": {
+    "title": "À Propos de Moi",
+    "subtitle": "Développeur Passionné Créant des Solutions Digitales",
+    "description": "Je suis un étudiant en ingénierie logicielle passionné par la création d'applications web innovantes et d'expériences 3D immersives. Je me spécialise dans les frameworks JavaScript modernes et j'aime explorer l'intersection entre le design et la technologie.",
+    "info": {
+      "age": {
+        "label": "Âge",
+        "value": "23"
+      },
+      "location": {
+        "label": "Localisation",
+        "value": "Paris, France"
+      },
+      "education": {
+        "label": "Formation",
+        "value": "Ingénierie Logicielle"
+      },
+      "availability": {
+        "label": "Disponibilité",
+        "value": "Ouvert aux opportunités"
+      }
+    },
+    "downloadCv": "Télécharger CV"
+  },
+  "skills": {
+    "title": "Mes Compétences"
+  }
+}
