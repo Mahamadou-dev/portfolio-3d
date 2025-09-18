@@ -9,8 +9,8 @@ import { Menu, X, Globe, Sun, Moon, ChevronRight } from "lucide-react";
 const NAV_ITEMS = [
   { name: 'Accueil', href: '#home' },
   { name: 'À propos', href: '#about' },
-  { name: 'Éducation', href: '#education' },
   { name: 'Compétences', href: '#skills' },
+  { name: 'Éducation', href: '#education' },
   { name: 'Portfolio', href: '#portfolio' },
 ];
 
@@ -183,7 +183,7 @@ export default function Header() {
       onClick={scrollToServices}
       onHoverStart={() => setIsServicesHovered(true)}
       onHoverEnd={() => setIsServicesHovered(false)}
-      className="hidden md:flex items-center px-4 py-2 rounded-full border-2 border-blue-500 dark:border-blue-400 text-blue-600 dark:text-blue-300 text-sm font-medium overflow-hidden relative"
+      className="hidden md:flex items-center px-4 py-2 rounded-full border-2 border-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))] dark:border-blue-400 text-blue-600 dark:text-blue-300 text-sm font-medium overflow-hidden relative"
       whileHover={{ 
         scale: 1.05,
       }}
@@ -199,7 +199,7 @@ export default function Header() {
       </motion.span>
       
       <motion.div
-        className="absolute inset-0 bg-blue-500 z-0"
+        className="absolute inset-0 bg-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))] z-0"
         initial={{ x: '-100%' }}
         animate={{ x: isServicesHovered ? '0%' : '-100%' }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -225,8 +225,9 @@ export default function Header() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+      
     >
-      <div className="container mx-auto px-5">
+      <div className="container mx-auto px-5" >
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <motion.a
@@ -238,7 +239,7 @@ export default function Header() {
             aria-label="Retour à l'accueil"
           >
             <motion.div 
-              className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-sm"
+              className="w-10 h-10 bg-gradient-to-br from-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))] to-indigo-600 rounded-full flex items-center justify-center shadow-sm"
               whileHover={{ rotate: 5 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
@@ -273,7 +274,7 @@ export default function Header() {
                 
                 {/* Animation de surlignement gauche-droite */}
                 <motion.div 
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500"
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))]"
                   initial={{ scaleX: 0, originX: 0 }}
                   whileHover={{ scaleX: 1, originX: 0 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
@@ -281,7 +282,7 @@ export default function Header() {
                 
                 {activeSection === item.href.substring(1) && (
                   <motion.div
-                    className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500"
+                    className="absolute bottom-0 left-0 w-full h-0.5 bg-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))]"
                     layoutId="activeSection"
                     transition={{ type: "spring", stiffness: 500, damping: 30, duration: 0.5 }}
                   />
@@ -334,7 +335,7 @@ export default function Header() {
                     {item.name}
                     {activeSection === item.href.substring(1) && (
                       <motion.div 
-                        className="h-0.5 bg-blue-500 mt-1 rounded-full"
+                        className="h-0.5 bg-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))] mt-1 rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: "100%" }}
                         transition={{ duration: 0.4 }}
@@ -345,7 +346,7 @@ export default function Header() {
                 
                 <motion.button
                   onClick={scrollToServices}
-                  className="w-full py-3 px-4 text-base font-medium rounded-lg border-2 border-blue-500 text-blue-600 dark:text-blue-300 dark:border-blue-400 flex items-center justify-center mt-2 relative overflow-hidden"
+                  className="w-full py-3 px-4 text-base font-medium rounded-lg border-2 border-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))] text-blue-600 dark:text-blue-300 dark:border-blue-400 flex items-center justify-center mt-2 relative overflow-hidden"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: NAV_ITEMS.length * 0.1 }}
@@ -360,9 +361,9 @@ export default function Header() {
                   >
                     Nos services
                   </motion.span>
-                  
+                   
                   <motion.div
-                    className="absolute inset-0 bg-blue-500 z-0"
+                    className="absolute inset-0 bg-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))] z-0"
                     initial={{ x: '-100%' }}
                     animate={{ x: isServicesHovered ? '0%' : '-100%' }}
                     transition={{ duration: 0.4, ease: "easeInOut" }}

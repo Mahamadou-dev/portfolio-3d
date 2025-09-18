@@ -1,90 +1,145 @@
-@import "tailwindcss";
+@import "tailwindcss"; 
 @import "tw-animate-css";
 
+/* ------------------------------
+   🌙 Variantes & Thèmes
+--------------------------------*/
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated color tokens for Géo-Concept Tech futuristic theme */
-  --background: oklch(0.98 0.005 240); /* Light blue-tinted background */
-  --foreground: oklch(0.15 0.02 240); /* Dark blue-gray text */
-  --card: oklch(1 0 0); /* Pure white cards */
-  --card-foreground: oklch(0.25 0.02 240); /* Dark text on cards */
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.02 240);
-  --primary: oklch(0.55 0.15 200); /* Cyan primary color */
-  --primary-foreground: oklch(1 0 0); /* White text on primary */
-  --secondary: oklch(0.6 0.18 270); /* Violet secondary */
-  --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.95 0.01 240);
-  --muted-foreground: oklch(0.45 0.02 240);
-  --accent: oklch(0.6 0.18 270); /* Violet accent */
-  --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.9 0.01 240);
-  --input: oklch(1 0 0);
-  --ring: oklch(0.6 0.18 270);
-  --chart-1: oklch(0.55 0.15 200);
-  --chart-2: oklch(0.6 0.18 270);
-  --chart-3: oklch(0.45 0.12 180);
-  --chart-4: oklch(0.7 0.1 300);
-  --chart-5: oklch(0.5 0.2 320);
+  /* 🎨 Couleurs principales (Light mode – Gemini style) */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+
+  --card: var(--background);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+    /* ✨ Gradients Gemini */
+  --gemini-blue: oklch(0.55 0.23 250);
+  --gemini-violet: oklch(0.68 0.28 300);
+  --gemini-cyan: oklch(0.80 0.22 190);
+  --gemini-gradient: linear-gradient(
+    135deg,
+    var(--gemini-blue),
+    var(--gemini-violet),
+    var(--gemini-cyan)
+  );
+  /* Bleu profond Gemini */
+  --primary: linear-gradient(
+    135deg,
+    var(--gemini-blue),
+    var(--gemini-violet),
+    var(--gemini-cyan)
+  );
+  --primary-foreground: oklch(0.98 0 0);
+
+  /* Cyan clair */
+  --secondary: oklch(0.82 0.2 190);
+  --secondary-foreground: var(--primary);
+
+  --muted: var(--secondary);
+  --muted-foreground: oklch(0.56 0.05 200);
+
+  --accent: var(--secondary);
+  --accent-foreground: var(--primary);
+
+  /* Rouge d’avertissement */
+  --destructive: oklch(0.62 0.25 27.325);
+  --destructive-foreground: var(--destructive);
+
+  /* Bordures et inputs */
+  --border: oklch(0.85 0.02 250);
+  --input: var(--border);
+  --ring: oklch(0.70 0.1 260);
+
+  /* 📊 Chart colors */
+  --chart-1: oklch(0.65 0.22 260);
+  --chart-2: oklch(0.58 0.20 200);
+  --chart-3: oklch(0.72 0.24 300);
+  --chart-4: oklch(0.82 0.18 84.429);
+  --chart-5: oklch(0.76 0.19 70.08);
+
   --radius: 0.625rem;
-  --sidebar: oklch(0.98 0.005 240);
-  --sidebar-foreground: oklch(0.15 0.02 240);
-  --sidebar-primary: oklch(0.55 0.15 200);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.95 0.01 240);
-  --sidebar-accent-foreground: oklch(0.15 0.02 240);
-  --sidebar-border: oklch(0.9 0.01 240);
-  --sidebar-ring: oklch(0.6 0.18 270);
+
+  /* 🧭 Sidebar */
+  --sidebar: oklch(0.98 0 0);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--secondary);
+  --sidebar-accent-foreground: var(--primary);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+
+
 }
 
 .dark {
-  /* Updated dark mode colors for futuristic theme */
-  --background: oklch(0.08 0.02 240); /* Very dark blue background */
-  --foreground: oklch(0.95 0.01 240); /* Light blue-tinted text */
-  --card: oklch(0.12 0.02 240); /* Dark blue cards */
-  --card-foreground: oklch(0.95 0.01 240);
-  --popover: oklch(0.12 0.02 240);
-  --popover-foreground: oklch(0.95 0.01 240);
-  --primary: oklch(0.65 0.18 200); /* Brighter cyan for dark mode */
-  --primary-foreground: oklch(0.08 0.02 240);
-  --secondary: oklch(0.25 0.05 240);
-  --secondary-foreground: oklch(0.95 0.01 240);
-  --muted: oklch(0.18 0.02 240);
-  --muted-foreground: oklch(0.65 0.01 240);
-  --accent: oklch(0.7 0.2 270); /* Brighter violet accent */
-  --accent-foreground: oklch(0.08 0.02 240);
-  --destructive: oklch(0.6 0.25 25);
-  --destructive-foreground: oklch(0.95 0.01 240);
-  --border: oklch(0.18 0.02 240);
-  --input: oklch(0.18 0.02 240);
-  --ring: oklch(0.7 0.2 270);
-  --chart-1: oklch(0.65 0.18 200);
-  --chart-2: oklch(0.7 0.2 270);
-  --chart-3: oklch(0.6 0.15 180);
-  --chart-4: oklch(0.75 0.12 300);
-  --chart-5: oklch(0.65 0.22 320);
-  --sidebar: oklch(0.12 0.02 240);
-  --sidebar-foreground: oklch(0.95 0.01 240);
-  --sidebar-primary: oklch(0.65 0.18 200);
-  --sidebar-primary-foreground: oklch(0.08 0.02 240);
-  --sidebar-accent: oklch(0.18 0.02 240);
-  --sidebar-accent-foreground: oklch(0.95 0.01 240);
-  --sidebar-border: oklch(0.18 0.02 240);
-  --sidebar-ring: oklch(0.7 0.2 270);
+  --background: oklch(0.15 0 0);
+  --foreground: oklch(0.98 0 0);
+
+  --card: var(--background);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+  --geminicolors: linear-gradient(135deg, #4285f4, #9c27b0, #00bcd4);
+  --primary: linear-gradient(135deg, #4285f4, #9c27b0, #00bcd4);
+  --primary-foreground: oklch(0.20 0 0);
+
+  --secondary: oklch(0.35 0.15 190);
+  --secondary-foreground: var(--foreground);
+
+  --muted: var(--secondary);
+  --muted-foreground: oklch(0.68 0.05 200);
+
+  --accent: var(--secondary);
+  --accent-foreground: var(--foreground);
+
+  --destructive: oklch(0.42 0.18 25.723);
+  --destructive-foreground: oklch(0.65 0.23 25.331);
+
+  --border: var(--secondary);
+  --input: var(--border);
+  --ring: oklch(0.48 0.1 260);
+
+  /* 📊 Charts (Dark) */
+  --chart-1: oklch(0.55 0.24 260);
+  --chart-2: oklch(0.70 0.18 190);
+  --chart-3: oklch(0.74 0.22 300);
+  --chart-4: oklch(0.62 0.26 303.9);
+  --chart-5: oklch(0.65 0.24 16.439);
+
+  /* 🧭 Sidebar */
+  --sidebar: oklch(0.20 0 0);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--chart-1);
+  --sidebar-primary-foreground: var(--foreground);
+  --sidebar-accent: var(--secondary);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--secondary);
+  --sidebar-ring: var(--ring);
+
+  /* ✨ Gradients Gemini */
+  --gemini-blue: oklch(0.65 0.25 260);
+  --gemini-violet: oklch(0.72 0.28 300);
+  --gemini-cyan: oklch(0.78 0.22 190);
 }
 
+/* ------------------------------
+   🎨 Tailwind Theme Bindings
+--------------------------------*/
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -95,18 +150,22 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -117,6 +176,9 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* ------------------------------
+   🧩 Base Styles
+--------------------------------*/
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -126,105 +188,121 @@
   }
 }
 
-/* Custom animations for 3D effects */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+/* ------------------------------
+   🎬 Animations
+--------------------------------*/
+/* Float, Glow, Rotate */
+@keyframes float {0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes glow {0%,100%{box-shadow:0 0 20px oklch(0.7 0.28 300 / 0.3)}50%{box-shadow:0 0 30px oklch(0.7 0.28 300 / 0.6)}}
+@keyframes rotate {from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+.animate-float {animation: float 3s ease-in-out infinite;}
+.animate-glow {animation: glow 2s ease-in-out infinite;}
+.animate-rotate {animation: rotate 20s linear infinite;}
+
+/* Variantes fluides */
+@keyframes float-slow {0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(5deg)}}
+@keyframes float-medium {0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-15px) rotate(3deg)}}
+@keyframes gradient {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+.animate-float-slow {animation: float-slow 8s ease-in-out infinite;}
+.animate-float-medium {animation: float-medium 6s ease-in-out infinite;}
+.animate-pulse-slow {animation: pulse 4s cubic-bezier(0.4,0,0.6,1) infinite;}
+.animate-spin-slow {animation: spin 8s linear infinite;}
+.animate-gradient {background-size:200% 200%;animation:gradient 5s ease infinite;}
+
+/* ------------------------------
+   🖼️ Utilities & Effects
+--------------------------------*/
+.bg-gradient-geo,
+.bg-gradient-gemini { background: var(--gemini-gradient); }
+
+.gradient-text,
+.text-gradient { 
+  background: var(--gemini-gradient); 
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
 }
 
-@keyframes glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(99, 102, 241, 0.6);
-  }
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.animate-glow {
-  animation: glow 2s ease-in-out infinite;
-}
-
-.animate-rotate {
-  animation: rotate 20s linear infinite;
-}
-
-/* Gradient backgrounds for futuristic effect */
-.bg-gradient-geo {
-  background: linear-gradient(135deg, oklch(0.55 0.15 200) 0%, oklch(0.6 0.18 270) 50%, oklch(0.45 0.12 180) 100%);
-}
-
-.bg-gradient-geo-dark {
-  background: linear-gradient(135deg, oklch(0.08 0.02 240) 0%, oklch(0.12 0.02 240) 50%, oklch(0.06 0.03 260) 100%);
-}
-
-/* Custom glass effect */
-.glass-effect {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.dark .glass-effect {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Custom button styles */
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: var(--gemini-gradient);
   color: var(--primary-foreground);
   padding: 12px 24px;
   border-radius: 9999px;
   font-weight: 600;
   transition: all 0.3s ease;
 }
-
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Glassmorphism */
+.glass, .glass-effect {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background-color: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.125);
+  transform: translateZ(0);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+.dark .glass, .dark .glass-effect {
+  background-color: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--muted);
-}
-
+/* Scrollbar */
+::-webkit-scrollbar {width:8px;}
+::-webkit-scrollbar-track {background:var(--muted);}
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, var(--primary), var(--secondary));
+  background: var(--gemini-gradient);
   border-radius: 9999px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, color-mix(in oklab, var(--primary) 80%, transparent), color-mix(in oklab, var(--secondary) 80%, transparent));
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--primary) 80%, transparent),
+    color-mix(in oklab, var(--secondary) 80%, transparent)
+  );
+}
+
+/* Divers */
+.card-3d {transform-style: preserve-3d;transition:transform 0.3s ease;}
+.card-3d:hover {transform: rotateX(5deg) rotateY(5deg) translateZ(10px);}
+
+.parallax {transform:translateZ(0);will-change:transform;}
+.hover-glow:hover {box-shadow:0 0 20px oklch(0.7 0.28 300 / 0.4);transition:box-shadow 0.3s ease;}
+.focus-gemini:focus {outline:2px solid oklch(0.7 0.28 300);outline-offset:2px;}
+
+.backdrop-blur-sm {backdrop-filter: blur(4px);}
+.backdrop-blur-md {backdrop-filter: blur(8px);}
+.backdrop-blur-lg {backdrop-filter: blur(16px);}
+
+/* ------------------------------
+   📱 Responsive & Accessibility
+--------------------------------*/
+@keyframes fade-in-up {from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.animate-fade-in-up {animation: fade-in-up 0.8s ease-out forwards;}
+
+@keyframes shimmer {0%{background-position:-200% 0}100%{background-position:200% 0}}
+.text-shimmer {
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);
+  background-size:200% 100%;
+  animation:shimmer 3s infinite;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+@media (max-width: 640px) {
+  .responsive-text {font-size: clamp(1.5rem, 5vw, 2.5rem);}
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after {
+    animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+    scroll-behavior:auto !important;
+  }
 }

@@ -1,400 +1,424 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { motion } from 'framer-motion';
-import { Float, OrbitControls, Sparkles } from '@react-three/drei';
+import { Float, OrbitControls, Sparkles, Text } from '@react-three/drei';
 import * as THREE from 'three';
-import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing';
-import { ChromaticAberrationEffect, BlendFunction } from 'postprocessing';
+import { useTheme } from '../../contexts/ThemeContext';
 
-// Composant 3D pour les éléments flottants avancés
-function AdvancedFloatingElements() {
-  const groupRef = useRef<THREE.Group>(null);
-  const meshRef1 = useRef<THREE.Mesh>(null);
-  const meshRef2 = useRef<THREE.Mesh>(null);
-  const meshRef3 = useRef<THREE.Mesh>(null);
+// Données pour l'effet Typewriter
+const TYPEWRITER_PHRASES = [
+  "Je crée des choses en rapport avec le web",
+  "Développeur Web Full Stack",
+  "Expert C# .NET",
+  "Spécialiste React & Node.js",
+  "Créateur d'applications mobiles",
+  "Fondateur de GremahTech"
+];
 
-  useFrame((state) => {
-    const time = state.clock.elapsedTime;
-
-    if (groupRef.current) {
-      groupRef.current.rotation.y = Math.sin(time * 0.2) * 0.1;
-      groupRef.current.position.y = Math.sin(time * 0.5) * 0.1;
-    }
-
-    if (meshRef1.current) {
-      meshRef1.current.rotation.x = time * 0.3;
-      meshRef1.current.rotation.y = time * 0.4;
-    }
-
-    if (meshRef2.current) {
-      meshRef2.current.rotation.x = time * 0.2;
-      meshRef2.current.rotation.z = time * 0.3;
-    }
-
-    if (meshRef3.current) {
-      meshRef3.current.rotation.y = time * 0.5;
-    }
-  });
-
-  return (
-    <group ref={groupRef}>
-      {/* Cube */}
-      <Float speed={4} rotationIntensity={1} floatIntensity={1.5}>
-        <mesh ref={meshRef1} position={[-4, 2, -3]} rotation={[0.5, 0.5, 0]}>
-          <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial
-            color="#3b82f6"
-            transparent
-            opacity={0.8}
-            metalness={0.6}
-            roughness={0.2}
-          />
-        </mesh>
-      </Float>
-
-      {/* Sphère */}
-      <Float speed={3} rotationIntensity={0.8} floatIntensity={1.2}>
-        <mesh ref={meshRef2} position={[4, -1, -2]}>
-          <icosahedronGeometry args={[0.8, 1]} />
-          <meshStandardMaterial
-            color="#8b5cf6"
-            transparent
-            opacity={0.7}
-            wireframe
-          />
-        </mesh>
-      </Float>
-
-      {/* Torus */}
-      <Float speed={2.5} rotationIntensity={1.2} floatIntensity={0.8}>
-        <mesh ref={meshRef3} position={[0, -3, -4]} rotation={[0.8, 0.4, 0.2]}>
-          <torusGeometry args={[0.8, 0.2, 16, 100]} />
-          <meshStandardMaterial
-            color="#ec4899"
-            transparent
-            opacity={0.6}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-      </Float>
-    </group>
-  );
-}
-
-// Composant pour les particules avancées
-function AdvancedParticles() {
-  const particlesRef = useRef<THREE.Points>(null);
-  const count = 2000;
-  const positions = new Float32Array(count * 3);
-  const colors = new Float32Array(count * 3);
-
-  for (let i = 0; i < count * 3; i += 3) {
-    positions[i] = (Math.random() - 0.5) * 20;
-    positions[i + 1] = (Math.random() - 0.5) * 20;
-    positions[i + 2] = (Math.random() - 0.5) * 20;
-
-    colors[i] = Math.random() * 0.5 + 0.5;
-    colors[i + 1] = Math.random() * 0.5 + 0.5;
-    colors[i + 2] = Math.random() * 0.5 + 0.5;
-  }
-
-  useFrame((state) => {
-    if (particlesRef.current) {
-      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.05;
-      particlesRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.1) * 0.1;
-    }
-  });
-
-  return (
-    <points ref={particlesRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={positions}
-          itemSize={3} args={[]}        />
-        <bufferAttribute
-          attach="attributes-color"
-          count={count}
-          array={colors}
-          itemSize={3} args={[]}        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.02}
-        vertexColors
-        transparent
-        opacity={0.8}
-        sizeAttenuation
-      />
-    </points>
-  );
-}
-
-// Composant pour le fond 3D
-function ThreeDBackground() {
-  return (
-    <Canvas camera={{ position: [0, 0, 8], fov: 75 }} className="absolute inset-0">
-      <color attach="background" args={['#000000']} />
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1.0} color="#3b82f6" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8b5cf6" />
-      <directionalLight position={[0, 5, 5]} intensity={0.8} color="#ffffff" />
-
-      <AdvancedParticles />
-      <AdvancedFloatingElements />
-      <Sparkles count={300} scale={12} size={3} speed={0.5} color="#ffffff" />
-
-      <OrbitControls
-        enableZoom={false}
-        enablePan={false}
-        autoRotate
-        autoRotateSpeed={0.8}
-        maxPolarAngle={Math.PI / 2}
-        minPolarAngle={Math.PI / 3}
-      />
-
-      <EffectComposer>
-        <Bloom
-          intensity={0.5}
-          luminanceThreshold={0.2}
-          luminanceSmoothing={0.9}
-          height={300}
-        />
-        <ChromaticAberration
-          blendFunction={BlendFunction.NORMAL}
-          offset={[0.001, 0.001]}
-        />
-      </EffectComposer>
-    </Canvas>
-  );
-}
-
-export default function HeroSection() {
-  const [currentTextIndex, setCurrentTextIndex] = useState(0);
-  const [currentText, setCurrentText] = useState('');
+// Composant pour l'effet Typewriter
+const TypewriterEffect = () => {
+  const [text, setText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
-  const [typingSpeed, setTypingSpeed] = useState(100);
-
-  const texts = [
-    "Étudiant en Génie Logiciel",
-    "Développeur Full Stack",
-    "Fondateur de GremahTech",
-    "Passionné d'Innovation"
-  ];
+  const [loopNum, setLoopNum] = useState(0);
+  const [typingSpeed, setTypingSpeed] = useState(150);
 
   useEffect(() => {
-    const currentFullText = texts[currentTextIndex];
-
     const handleTyping = () => {
-      if (!isDeleting) {
-        setCurrentText(currentFullText.substring(0, currentText.length + 1));
-        setTypingSpeed(100);
+      const i = loopNum % TYPEWRITER_PHRASES.length;
+      const currentPhrase = TYPEWRITER_PHRASES[i];
 
-        if (currentText === currentFullText) {
-          setTimeout(() => setIsDeleting(true), 1500);
-        }
+      if (isDeleting) {
+        setText(currentPhrase.substring(0, text.length - 1));
+        setTypingSpeed(50); // Vitesse d'effacement rapide
       } else {
-        setCurrentText(currentFullText.substring(0, currentText.length - 1));
-        setTypingSpeed(50);
+        setText(currentPhrase.substring(0, text.length + 1));
+        setTypingSpeed(150); // Vitesse d'écriture normale
+      }
 
-        if (currentText === '') {
-          setIsDeleting(false);
-          setCurrentTextIndex((prev) => (prev + 1) % texts.length);
-        }
+      // Logique de changement d'état (écriture/effacement)
+      if (!isDeleting && text === currentPhrase) {
+        setTimeout(() => setIsDeleting(true), 1500); // Pause avant d'effacer
+      } else if (isDeleting && text === '') {
+        setIsDeleting(false);
+        setLoopNum(loopNum + 1);
       }
     };
 
     const timer = setTimeout(handleTyping, typingSpeed);
     return () => clearTimeout(timer);
-  }, [currentText, isDeleting, currentTextIndex, texts, typingSpeed]);
+  }, [text, isDeleting, loopNum, typingSpeed]);
 
   return (
-    <section
-      id="home"
-      className="h-screen relative flex items-center justify-center overflow-hidden bg-black"
+    <h2
+      className="text-3xl md:text-5xl font-bold mb-5 text-gray-800 dark:text-gray-200"
+      style={{ 
+        background: 'linear-gradient(135deg, #4285f4, #9c27b0)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        minHeight: '3.5rem' // pour éviter le décalage du contenu
+      }}
     >
-      {/* Background */}
-      <ThreeDBackground />
+      {text}
+      <span className="inline-block animate-pulse-cursor color-[linear-gradient(135deg, #4285f4, #9c27b0, #00bcd4)]">|</span>
+    </h2>
+  );
+};
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/80 z-1"></div>
+// Composant pour l'écran de code agrandi
+function LargeCodeScreen() {
+  const groupRef = useRef();
+  const [currentLine, setCurrentLine] = useState(0);
+  const [currentCode, setCurrentCode] = useState('');
+  const [isTyping, setIsTyping] = useState(true);
 
-      {/* Contenu */}
-      <div className="z-10 text-white max-w-6xl mx-auto px-6 flex flex-col lg:flex-row items-center justify-between w-full">
-        {/* Texte */}
+  useEffect(() => {
+    let timer;
+    const typeCode = () => {
+      if (isTyping && currentLine < CSHARP_CODE.length) {
+        const currentLineText = CSHARP_CODE[currentLine];
+        if (currentCode.length < currentLineText.length) {
+          timer = setTimeout(() => {
+            setCurrentCode(currentLineText.substring(0, currentCode.length + 1));
+          }, Math.random() * 80 + 30);
+        } else {
+          timer = setTimeout(() => {
+            setCurrentLine(prev => prev + 1);
+            setCurrentCode('');
+          }, 400);
+        }
+      } else if (currentLine >= CSHARP_CODE.length) {
+        setIsTyping(false);
+        setTimeout(() => {
+          setCurrentLine(0);
+          setCurrentCode('');
+          setIsTyping(true);
+        }, 3000);
+      }
+    };
+    timer = setTimeout(typeCode, 100);
+    return () => clearTimeout(timer);
+  }, [currentCode, currentLine, isTyping]);
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.05;
+    }
+  });
+  const codeElements = useMemo(() => 
+    CSHARP_CODE.slice(0, currentLine + 1).map((line, i) => {
+      let color = "#4285f4";
+      if (line.includes("public") || line.includes("private") || line.includes("void")) {
+        color = "#4285f4";
+      } else if (line.includes("class") || line.includes("float") || line.includes("bool")) {
+        color = "#34a853";
+      } else if (line.includes("if") || line.includes("else") || line.includes("return")) {
+        color = "#ea4335";
+      } else if (line.includes("new")) {
+        color = "#fbbc05";
+      } else if (/[0-9]/.test(line)) {
+        color = "#9c27b0";
+      } else if (line.startsWith("//")) {
+        color = "#6a9955";
+      } else if (line.startsWith("using")) {
+        color = "#4285f4";
+      }
+      return (
+        <Text
+          key={i}
+          color={color}
+          fontSize={0.12}
+          maxWidth={6}
+          lineHeight={1.2}
+          letterSpacing={0.02}
+          textAlign="left"
+          anchorX="left"
+          anchorY="top"
+          position={[0, -i * 0.2, 0]}
+        >
+          {i === currentLine ? currentCode + (isTyping ? "█" : "") : line}
+        </Text>
+      );
+    }), [currentCode, currentLine, isTyping]
+  );
+  return (
+    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.6}>
+      <group ref={groupRef} position={[0, 0, -3]} rotation={[0, -0.2, 0]}>
+        <mesh position={[0, 0.5, -0.05]}>
+          <boxGeometry args={[6.5, 4.5, 0.15]} />
+          <meshStandardMaterial color="#0a0e17" metalness={0.9} roughness={0.1} />
+        </mesh>
+        <mesh position={[0, 0.5, 0.025]}>
+          <planeGeometry args={[6.2, 4.2]} />
+          <meshStandardMaterial color="#111827" emissive="#1e293b" emissiveIntensity={0.2} toneMapped={false} />
+        </mesh>
+        <group position={[-2.8, 2.5, 0.06]}>{codeElements}</group>
+        <mesh position={[0, -1.8, 0.2]} rotation={[0.2, 0, 0]}>
+          <boxGeometry args={[4, 0.1, 1.5]} />
+          <meshStandardMaterial color="#1a202c" metalness={0.7} roughness={0.3} />
+        </mesh>
+        {Array.from({ length: 40 }, (_, i) => (
+          <mesh
+            key={i}
+            position={[ -1.8 + (i % 10) * 0.36, -1.75, 0.3 + Math.floor(i / 10) * 0.2 ]}
+            rotation={[0.2, 0, 0]}
+          >
+            <boxGeometry args={[0.3, 0.02, 0.15]} />
+            <meshStandardMaterial color="#0f141f" metalness={0.6} roughness={0.4} />
+          </mesh>
+        ))}
+      </group>
+    </Float>
+  );
+}
+const CSHARP_CODE = [
+  "using UnityEngine;",
+  "using System.Collections;",
+  "",
+  "public class PlayerController : MonoBehaviour",
+  "{",
+  "    public float moveSpeed = 5f;",
+  "    public float jumpForce = 10f;",
+  "    private Rigidbody rb;",
+  "    private bool isGrounded;",
+  "",
+  "    void Start()",
+  "    {",
+  "        rb = GetComponent<Rigidbody>();",
+  "    }",
+  "",
+  "    void Update()",
+  "    {",
+  "        float moveX = Input.GetAxis(\"Horizontal\");",
+  "        float moveZ = Input.GetAxis(\"Vertical\");",
+  "        Vector3 movement = new Vector3(moveX, 0, moveZ);",
+  "        rb.AddForce(movement * moveSpeed);",
+  "",
+  "        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)",
+  "        {",
+  "            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);",
+  "            isGrounded = false;",
+  "        }",
+  "    }",
+  "",
+  "    void OnCollisionEnter(Collision collision)",
+  "    {",
+  "        if (collision.gameObject.CompareTag(\"Ground\"))",
+  "        {",
+  "            isGrounded = true;",
+  "        }",
+  "    }",
+  "}"
+];
+
+// Composant pour les particules Gemini
+function GeminiParticles() {
+  const particlesRef = useRef();
+  const count = 2000;
+  
+  const positions = useMemo(() => {
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const geminiColors = [
+      [0.258, 0.523, 0.956],
+      [0.203, 0.658, 0.325],
+      [0.917, 0.262, 0.207],
+      [0.988, 0.552, 0.235]
+    ];
+    for (let i = 0; i < count * 3; i += 3) {
+      const radius = 8 + Math.random() * 12;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI;
+      positions[i] = radius * Math.sin(phi) * Math.cos(theta);
+      positions[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      positions[i + 2] = radius * Math.cos(phi);
+      const colorIndex = Math.floor(Math.random() * geminiColors.length);
+      colors[i] = geminiColors[colorIndex][0];
+      colors[i + 1] = geminiColors[colorIndex][1];
+      colors[i + 2] = geminiColors[colorIndex][2];
+    }
+    return { positions, colors };
+  }, [count]);
+  useFrame((state) => {
+    if (particlesRef.current) {
+      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.02;
+      particlesRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.05) * 0.1;
+    }
+  });
+  return (
+    <points ref={particlesRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={count} array={positions.positions} itemSize={3} />
+        <bufferAttribute attach="attributes-color" count={count} array={positions.colors} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial size={0.03} vertexColors transparent opacity={0.8} sizeAttenuation blending={THREE.AdditiveBlending} />
+    </points>
+  );
+}
+
+// Composant principal
+export default function HeroSection() {
+  const mousePosition = useRef({ x: 0, y: 0 });
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
+
+  // On définit les couleurs en fonction de l'état
+  const bgColor = isDarkMode ? '#0a0e17' : '#ffffff';
+
+  return (
+    <section id='home' className="h-[100vh] mt-16 relative flex items-center justify-center overflow-hidden transition-colors duration-500 bg-white dark:bg-[#0a0e17]">
+      <Canvas camera={{ position: [0, 0, 10], fov: 75 }} className="absolute inset-0 z-0">
+        <color attach="background" args={[bgColor]} />
+        <ambientLight intensity={0.4} />
+        <pointLight position={[10, 10, 10]} intensity={1.2} color="#4285f4" />
+        <pointLight position={[-10, -10, -10]} intensity={0.6} color="#34a853" />
+        <pointLight position={[0, -10, 0]} intensity={0.5} color="#ea4335" />
+        <directionalLight position={[0, 5, 5]} intensity={1.0} color="#ffffff" />
+        <GeminiParticles />
+        <LargeCodeScreen />
+        <Sparkles 
+          count={200} 
+          scale={15} 
+          size={3} 
+          speed={0.5} 
+          color="#4285f4" 
+          opacity={1}
+        />
+        <OrbitControls
+          enableZoom={false}
+          enablePan={false}
+          autoRotate
+          autoRotateSpeed={0.5}
+          maxPolarAngle={Math.PI / 2}
+          minPolarAngle={Math.PI / 3}
+        />
+      </Canvas>
+      
+      <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0a0e17]/80 via-transparent to-[#0a0e17]/80 dark:bg-gradient-to-t dark:from-[#0a0e17]/80 dark:via-transparent dark:to-[#0a0e17]/80"></div>
+
+      <div className="z-20 max-w-4xl mx-auto px-6 flex flex-col items-center justify-center w-full h-full">
         <motion.div
-          className="lg:w-2/3 text-center lg:text-left mb-12 lg:mb-0"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
+          className="w-full text-center mb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
         >
-          {/* Tooltip */}
           <motion.div
-            className="inline-block mb-8 relative group"
-            initial={{ opacity: 0, y: 20 }}
+            className="relative mb-4"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
+            transition={{ duration: 1, delay: 0.4 }}
           >
-            <span className="text-teal-400 text-xl font-light italic border-b border-dotted border-teal-400 cursor-help">
-              Barka dey
+            <span 
+              className="text-lg cursor-pointer hover:underline text-green-600 dark:text-green-400"
+              title="Barka dey veut dire 'Salut' dans ma langue natale."
+            >
+              Barka dey, moi c'est
             </span>
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-900 text-white text-sm px-3 py-2 rounded-lg whitespace-nowrap backdrop-blur-md">
-              Veut dire 'Salut' dans ma langue natale
-            </div>
           </motion.div>
-
-          {/* Nom */}
           <motion.h1
-            className="text-5xl md:text-7xl font-bold mb-6 text-teal-400"
+            className="text-4xl md:text-5xl font-bold mb-3.5"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
+            style={{ 
+              background: 'linear-gradient(135deg, #4285f4, #9c27b0, #00bcd4)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}
           >
             Mahamadou Gremah
           </motion.h1>
-
-          {/* Titre */}
-          <motion.h2
-            className="text-2xl md:text-4xl font-semibold mb-8 text-gray-300"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.8 }}
-          >
-            Je crée des choses en rapport avec le web
-          </motion.h2>
-
-          {/* Texte animé */}
-          <motion.div
-            className="h-10 mb-8"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1.0 }}
-          >
-            <span className="text-xl md:text-2xl text-teal-300 font-mono">
-              {currentText}
-              <span className="blinking-cursor">|</span>
-            </span>
-          </motion.div>
-
-          {/* Description */}
-          <motion.div
-            className="text-lg md:text-xl text-gray-300 leading-relaxed mb-10"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1.2 }}
-          >
-            <p>
-              Je suis un jeune étudiant nigérien passionné d'informatique.
-              <br />
-              Actuellement, je suis{' '}
-              <span className="text-teal-400 font-semibold">
-                en 2ème année de licence en génie logiciel et Systèmes d'information
-              </span>
-              <br />
-              à la{' '}
-              <span className="text-teal-400 font-semibold">
-                Faculté des Sciences de Monastir
-              </span>{' '}
-              en Tunisie.
-              <br />
-              Je suis également à la tête d'une petite start-up nommée{' '}
-              <span className="text-teal-400 font-semibold">GremahTech</span>,
-              <br />
-              qui fournit des services informatiques tels que le développement de
-              sites Web, d'applications mobiles et certains services informatiques.
-            </p>
-          </motion.div>
-
-          {/* Boutons */}
-          <motion.div
-            className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1.4 }}
-          >
-            <motion.button
-              className="px-6 py-3 bg-teal-600 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span className="relative z-10">Voir nos récents travaux</span>
-              <div className="absolute inset-0 bg-teal-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </motion.button>
-
-            <motion.button
-              className="px-6 py-3 border-2 border-teal-400 text-teal-400 font-medium rounded-lg hover:bg-teal-400 hover:text-black transition-all duration-300"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Contactez-nous
-            </motion.button>
-          </motion.div>
         </motion.div>
 
-        {/* Illustration 3D */}
         <motion.div
-          className="lg:w-1/3 flex justify-center items-center"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
+          className="w-full text-center mb-5"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.8 }}
         >
-          <div className="w-64 h-64 md:w-80 md:h-80 relative">
-            <Canvas
-              camera={{ position: [0, 0, 5] }}
-              className="rounded-full bg-black/20 backdrop-blur-md border border-teal-400/30"
-            >
-              <ambientLight intensity={0.5} />
-              <pointLight position={[10, 10, 10]} />
-              <Float speed={3} rotationIntensity={1} floatIntensity={1}>
-                <mesh rotation={[0.5, 0.5, 0]}>
-                  <torusKnotGeometry args={[1, 0.3, 128, 16]} />
-                  <meshStandardMaterial
-                    color="#0d9488"
-                    metalness={0.7}
-                    roughness={0.2}
-                  />
-                </mesh>
-              </Float>
-              <Sparkles count={50} scale={4} size={2} speed={0.3} color="#0d9488" />
-            </Canvas>
-          </div>
+          <TypewriterEffect />
+        </motion.div>
+
+        <motion.div
+          className="w-full text-center relative p-8 mb-8 backdrop-blur-md rounded-2xl border border-gray-300/30 dark:border-gray-700/30"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.0 }}
+          style={{
+            background: 'linear-gradient(135deg, rgba(66, 133, 244, 0.1), rgba(156, 39, 176, 0.1), rgba(0, 188, 212, 0.1))',
+          }}
+        >
+          <motion.div
+            className="text-lg leading-relaxed text-gray-800 dark:text-gray-200"
+          >
+            <p>
+              Je suis un jeune étudiant nigérien passionné d'informatique.<br />
+              Actuellement, je suis <strong>en 2ème année de licence en génie logiciels et Systèmes d'information</strong><br/>
+              à la <strong>Faculté des Sciences de Monastir</strong> en Tunisie.<br />
+              Je suis également à la tête d'une petite start-up nommée <strong className='bg'>GremahTech</strong>,<br />
+              qui fournit des services informatiques tels que le développement de sites Web, d'applications mobiles et certains services informatiques.
+            </p>
+          </motion.div>
+          <div className="absolute top-4 right-4 w-20 h-20 rounded-full opacity-20 bg-gradient-to-br from-blue-500 to-green-500"></div>
+          <div className="absolute bottom-4 left-4 w-16 h-16 rounded-full opacity-15 bg-gradient-to-br from-red-500 to-yellow-500"></div>
+        </motion.div>
+
+        <motion.div
+          className="flex gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.2 }}
+        >
+          <motion.button
+            className="px-6 py-3 font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group bg-gradient-to-r from-blue-500 via-purple-600 to-cyan-500 text-white"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <span className="relative z-10">Voir nos récents travaux</span>
+          </motion.button>
+          <motion.button
+            className="px-6 py-3 border-2 font-medium rounded-lg transition-all duration-300 border-blue-500 text-blue-500 dark:border-blue-400 dark:text-blue-400 bg-transparent hover:bg-blue-500 hover:text-white dark:hover:bg-blue-400"
+            whileHover={{ 
+              scale: 1.05,
+              backgroundColor: '#3b82f6',
+              color: 'white'
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Contactez-nous
+          </motion.button>
         </motion.div>
       </div>
 
-      {/* Indicateur de défilement */}
-      <motion.div
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-      >
-        <motion.div
-          animate={{ y: [0, 12, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="flex flex-col items-center text-teal-400"
-        >
-          <span className="text-sm mb-2 font-light">Découvrir</span>
-          <div className="w-6 h-10 border-2 border-teal-400 rounded-full flex justify-center">
-            <motion.div
-              animate={{ y: [0, 10, 0], opacity: [0, 1, 0] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-              className="w-1 h-3 bg-teal-400 rounded-full mt-2"
-            />
-          </div>
-        </motion.div>
-      </motion.div>
-
       <style jsx>{`
-        .blinking-cursor {
-          animation: blink 1s infinite;
-          margin-left: 2px;
+        @keyframes pulse-cursor {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
         }
-
-        @keyframes blink {
-          0%, 50% { opacity: 1; }
-          51%, 100% { opacity: 0; }
+        .animate-pulse-cursor {
+          animation: pulse-cursor 1s infinite step-end;
+        }
+        @keyframes borderGlow {
+          0%, 100% {
+            background-position: 0% 50%;
+            opacity: 0.3;
+          }
+          50% {
+            background-position: 100% 50%;
+            opacity: 0.6;
+          }
+        }
+        .animate-pulse {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: .5;
+          }
         }
       `}</style>
     </section>
