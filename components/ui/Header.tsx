@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../contexts/ThemeContext';
-import ThemeToggle from './ThemeToggle';
 import { Menu, X, Globe, Sun, Moon, ChevronRight } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -12,6 +11,7 @@ const NAV_ITEMS = [
   { name: 'Compétences', href: '#skills' },
   { name: 'Éducation', href: '#education' },
   { name: 'Portfolio', href: '#portfolio' },
+  { name: 'Services', href: '#services' },
 ];
 
 export default function Header() {
@@ -24,32 +24,30 @@ export default function Header() {
   // Détection du défilement
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+      setIsScrolled(window.scrollY > 50)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   // Détection de la section active avec IntersectionObserver
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
             setActiveSection(entry.target.id);
           }
         });
       },
-      { threshold: 0.6 }
+      { threshold: 0.5 }
     );
 
+    // Observer toutes les sections de navigation
     NAV_ITEMS.forEach(item => {
       const element = document.getElementById(item.href.substring(1));
       if (element) observer.observe(element);
     });
-
-    const servicesElement = document.getElementById('services');
-    if (servicesElement) observer.observe(servicesElement);
 
     return () => observer.disconnect();
   }, []);
@@ -183,7 +181,7 @@ export default function Header() {
       onClick={scrollToServices}
       onHoverStart={() => setIsServicesHovered(true)}
       onHoverEnd={() => setIsServicesHovered(false)}
-      className="hidden md:flex items-center px-4 py-2 rounded-full border-2 border-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))] dark:border-blue-400 text-blue-600 dark:text-blue-300 text-sm font-medium overflow-hidden relative"
+      className="hidden md:flex items-center px-4 py-2 rounded-full text-sm font-medium overflow-hidden relative glass-button"
       whileHover={{ 
         scale: 1.05,
       }}
@@ -199,7 +197,7 @@ export default function Header() {
       </motion.span>
       
       <motion.div
-        className="absolute inset-0 bg-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))] z-0"
+        className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 z-0"
         initial={{ x: '-100%' }}
         animate={{ x: isServicesHovered ? '0%' : '-100%' }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -217,19 +215,16 @@ export default function Header() {
 
   return (
     <motion.header
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        isScrolled 
-          ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-lg border-b border-gray-200/20 dark:border-gray-800/20 shadow-sm' 
-          : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled ? "glass shadow-lg" : "bg-transparent"
+      } `}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-      
     >
-      <div className="container mx-auto px-5" >
+      <div className="container mx-auto px-5 ">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+          {/* Logo avec effet glass amélioré */}
           <motion.a
             href="#home"
             className="flex items-center"
@@ -239,25 +234,20 @@ export default function Header() {
             aria-label="Retour à l'accueil"
           >
             <motion.div 
-              className="w-10 h-10 bg-gradient-to-br from-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))] to-indigo-600 rounded-full flex items-center justify-center shadow-sm"
+              className="flex-shrink-0"
               whileHover={{ rotate: 5 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <span className="text-white font-medium text-sm">GT</span>
+              {/* Logo avec effet glass amélioré */}
+              <div className=" p-2 rounded-xl">
+                <img src="/logo2.png" alt="GremahTech Logo" className="h-32 w-40 object-contain" />
+              </div>
             </motion.div>
-            <motion.span 
-              className="ml-3 text-lg font-semibold text-gray-800 dark:text-gray-100"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              GremahTech
-            </motion.span>
           </motion.a>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            {NAV_ITEMS.map((item) => (
+          <nav className="hidden md:flex items-center space-x-6 ">
+            {NAV_ITEMS.filter(item => item.href !== '#services').map((item) => (
               <motion.a
                 key={item.name}
                 href={item.href}
@@ -274,7 +264,7 @@ export default function Header() {
                 
                 {/* Animation de surlignement gauche-droite */}
                 <motion.div 
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))]"
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"
                   initial={{ scaleX: 0, originX: 0 }}
                   whileHover={{ scaleX: 1, originX: 0 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
@@ -282,7 +272,7 @@ export default function Header() {
                 
                 {activeSection === item.href.substring(1) && (
                   <motion.div
-                    className="absolute bottom-0 left-0 w-full h-0.5 bg-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))]"
+                    className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"
                     layoutId="activeSection"
                     transition={{ type: "spring", stiffness: 500, damping: 30, duration: 0.5 }}
                   />
@@ -307,26 +297,26 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation avec effet glass */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              className="md:hidden absolute top-full left-0 right-0 bg-white/98 dark:bg-gray-950/98 backdrop-blur-xl border-t border-gray-200/20 dark:border-gray-800/20 shadow-lg"
+              className="md:hidden absolute top-full left-0 right-0 frosted-glass border-t border-gray-200/30 dark:border-gray-800/30 shadow-xl"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
             >
               <nav className="py-4 px-5 space-y-3">
-                {NAV_ITEMS.map((item, index) => (
+                {NAV_ITEMS.filter(item => item.href !== '#services').map((item, index) => (
                   <motion.a
                     key={item.name}
                     href={item.href}
                     onClick={(e) => handleNavClick(item.href, e)}
                     className={`block py-3 px-4 text-base font-medium rounded-lg transition-colors duration-400 ${
                       activeSection === item.href.substring(1)
-                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        ? 'bg-blue-50/50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100/50 dark:hover:bg-gray-800/30'
                     }`}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -335,7 +325,7 @@ export default function Header() {
                     {item.name}
                     {activeSection === item.href.substring(1) && (
                       <motion.div 
-                        className="h-0.5 bg-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))] mt-1 rounded-full"
+                        className="h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 mt-1 rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: "100%" }}
                         transition={{ duration: 0.4 }}
@@ -346,10 +336,10 @@ export default function Header() {
                 
                 <motion.button
                   onClick={scrollToServices}
-                  className="w-full py-3 px-4 text-base font-medium rounded-lg border-2 border-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))] text-blue-600 dark:text-blue-300 dark:border-blue-400 flex items-center justify-center mt-2 relative overflow-hidden"
+                  className="w-full py-3 px-4 text-base font-medium rounded-lg text-blue-600 dark:text-blue-300 flex items-center justify-center mt-2 relative overflow-hidden frosted-glass-button"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: NAV_ITEMS.length * 0.1 }}
+                  transition={{ duration: 0.3, delay: (NAV_ITEMS.length - 1) * 0.1 }}
                   whileTap={{ scale: 0.98 }}
                   onHoverStart={() => setIsServicesHovered(true)}
                   onHoverEnd={() => setIsServicesHovered(false)}
@@ -363,7 +353,7 @@ export default function Header() {
                   </motion.span>
                    
                   <motion.div
-                    className="absolute inset-0 bg-[linear-gradient(135deg,oklch(0.55_0.23_250),oklch(0.68_0.28_300),oklch(0.80_0.22_190))] z-0"
+                    className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 z-0"
                     initial={{ x: '-100%' }}
                     animate={{ x: isServicesHovered ? '0%' : '-100%' }}
                     transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -376,6 +366,74 @@ export default function Header() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Styles CSS pour l'effet de verre givré amélioré */}
+      <style jsx>{`
+        .frosted-glass {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(20px) saturate(180%);
+          -webkit-backdrop-filter: blur(20px) saturate(180%);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .frosted-glass {
+          background: rgba(0, 0, 0, 0.7);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .frosted-glass-logo {
+          background: rgba(255, 255, 255, 0.15);
+          backdrop-filter: blur(10px) saturate(150%);
+          -webkit-backdrop-filter: blur(10px) saturate(150%);
+          border: 1px solid rgba(255, 255, 255, 0.25);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .frosted-glass-logo {
+          background: rgba(0, 0, 0, 0.15);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .frosted-glass-button {
+          background: rgba(255, 255, 255, 0.15);
+          backdrop-filter: blur(10px) saturate(150%);
+          -webkit-backdrop-filter: blur(10px) saturate(150%);
+          border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        
+        .dark .frosted-glass-button {
+          background: rgba(0, 0, 0, 0.15);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* Amélioration de la visibilité en mode clair */
+        @media (prefers-color-scheme: light) {
+          .frosted-glass {
+            background: rgba(255, 255, 255, 0.85);
+          }
+          
+          .frosted-glass-logo {
+            background: rgba(255, 255, 255, 0.2);
+          }
+          
+          .frosted-glass-button {
+            background: rgba(255, 255, 255, 0.2);
+          }
+        }
+
+        /* Support pour Safari */
+        @supports not (backdrop-filter: blur(20px)) {
+          .frosted-glass {
+            background: rgba(255, 255, 255, 0.95);
+          }
+          
+          .dark .frosted-glass {
+            background: rgba(0, 0, 0, 0.95);
+          }
+        }
+      `}</style>
     </motion.header>
   );
 }

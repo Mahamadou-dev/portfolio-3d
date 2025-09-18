@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination, Mousewheel, Autoplay } from 'swiper/modules';
@@ -8,170 +8,177 @@ import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 import { useTheme } from '../../contexts/ThemeContext';
+import { FaCode, FaPalette, FaServer, FaMobile, FaChevronLeft, FaChevronRight, FaPlay, FaPause } from 'react-icons/fa';
+import { SiNextdotjs, SiThreedotjs, SiNodedotjs, SiMongodb, SiFigma, SiAdobexd, SiReact, SiExpress, SiPostman, SiTailwindcss } from 'react-icons/si';
 
-// Icônes
-import { BsGithub } from 'react-icons/bs';
-import { HiExternalLink } from 'react-icons/hi';
-import { AiFillStar } from 'react-icons/ai';
-import { FaCodeBranch, FaPlay, FaPause, FaChevronLeft, FaChevronRight, FaExpand } from 'react-icons/fa';
-import { SiReact, SiNextdotjs, SiNodedotjs, SiThreedotjs, SiMongodb, SiTailwindcss, SiPython, SiTensorflow, SiWebgl, SiAframe } from 'react-icons/si';
-
-// Données des projets
-const projects = [
+// Données des services
+const servicesData = [
+  {
+    id: 0,
+    title: "Développement Fullstack",
+    subtitle: "Solutions web complètes et sur mesure",
+    description: "Création d'applications web complètes avec frontend et backend intégrés. Solutions performantes, sécurisées et évolutives.",
+    plans: [
+      {
+        title: "Starter",
+        price: "299€",
+        duration: "2 semaines",
+        features: ["Design responsive", "Backend Node.js", "Base de données", "1 révision incluse"],
+        popular: false
+      },
+      {
+        title: "Professional",
+        price: "699€",
+        duration: "4 semaines",
+        features: ["Design premium", "API RESTful", "Base de données avancée", "3 révisions", "Support 1 mois"],
+        popular: true
+      },
+      {
+        title: "Enterprise",
+        price: "1299€",
+        duration: "8 semaines",
+        features: ["Design sur mesure", "Architecture microservices", "Base de données cloud", "Révisions illimitées", "Support 3 mois", "Formation"],
+        popular: false
+      }
+    ],
+    technologies: [
+      { icon: <SiNextdotjs />, name: "Next.js", color: "#000000" },
+      { icon: <SiNodedotjs />, name: "Node.js", color: "#339933" },
+      { icon: <SiMongodb />, name: "MongoDB", color: "#47A248" },
+      { icon: <SiThreedotjs />, name: "Three.js", color: "#000000" }
+    ],
+    icon: <FaCode className="text-2xl" />,
+    color: "from-blue-500 to-cyan-500",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop"
+  },
   {
     id: 1,
-    title: "Plateforme E-Commerce Immersive",
-    description: "Expérience d'achat immersive en 3D avec visualisation des produits en temps réel. Interface intuitive et performances optimisées.",
-    technologies: [
-      { title: "React", icon: <SiReact />, color: "#61DAFB" },
-      { title: "Three.js", icon: <SiThreedotjs />, color: "#000000" },
-      { title: "Node.js", icon: <SiNodedotjs />, color: "#339933" },
-      { title: "MongoDB", icon: <SiMongodb />, color: "#47A248" },
-      { title: "Stripe", icon: <SiReact />, color: "#635BFF" }
+    title: "Développement Frontend",
+    subtitle: "Interfaces modernes et interactives",
+    description: "Conception d'interfaces utilisateur exceptionnelles avec des animations fluides et une expérience utilisateur optimale.",
+    plans: [
+      {
+        title: "Basic",
+        price: "199€",
+        duration: "1 semaine",
+        features: ["Design responsive", "Animations basiques", "Optimisation SEO", "1 révision"],
+        popular: false
+      },
+      {
+        title: "Advanced",
+        price: "499€",
+        duration: "3 semaines",
+        features: ["Design interactif", "Animations avancées", "SEO complet", "3 révisions", "Support 2 semaines"],
+        popular: true
+      },
+      {
+        title: "Premium",
+        price: "899€",
+        duration: "5 semaines",
+        features: ["Design sur mesure", "Animations complexes", "SEO technique", "Révisions illimitées", "Support 1 mois"],
+        popular: false
+      }
     ],
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop",
-    github: "https://github.com",
-    liveUrl: "https://example.com",
-    numberOfBranches: 12,
-    numberOfLikes: 25,
-    icon: <SiReact className="text-2xl" />,
-    color: "from-blue-500 to-cyan-500"
+    technologies: [
+      { icon: <SiReact />, name: "React", color: "#61DAFB" },
+      { icon: <SiThreedotjs />, name: "Three.js", color: "#000000" },
+      { icon: <SiTailwindcss />, name: "Tailwind", color: "#06B6D4" },
+      { icon: <SiNextdotjs />, name: "Next.js", color: "#000000" }
+    ],
+    icon: <FaMobile className="text-2xl" />,
+    color: "from-purple-500 to-pink-500",
+    image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&h=400&fit=crop"
   },
   {
     id: 2,
-    title: "Dashboard Intelligent IA",
-    description: "Tableau de bord analytique avec insights en temps réel et prédictions basées sur l'apprentissage automatique.",
-    technologies: [
-      { title: "Next.js", icon: <SiNextdotjs />, color: "#000000" },
-      { title: "Python", icon: <SiPython />, color: "#3776AB" },
-      { title: "TensorFlow", icon: <SiTensorflow />, color: "#FF6F00" },
-      { title: "Chart.js", icon: <SiReact />, color: "#F57842" },
-      { title: "Firebase", icon: <SiReact />, color: "#FFCA28" }
+    title: "API RESTful",
+    subtitle: "Services backend robustes et sécurisés",
+    description: "Développement d'APIs performantes et sécurisées pour alimenter vos applications web et mobiles.",
+    plans: [
+      {
+        title: "Essential",
+        price: "249€",
+        duration: "2 semaines",
+        features: ["API RESTful", "Authentification JWT", "Base de données", "Documentation de base"],
+        popular: false
+      },
+      {
+        title: "Professional",
+        price: "599€",
+        duration: "4 semaines",
+        features: ["API avancée", "Auth avancée", "Base de données optimisée", "Documentation complète", "Support 1 mois"],
+        popular: true
+      },
+      {
+        title: "Enterprise",
+        price: "1099€",
+        duration: "6 semaines",
+        features: ["API microservices", "Sécurité renforcée", "Base de données cloud", "Documentation détaillée", "Support 3 mois", "Monitoring"],
+        popular: false
+      }
     ],
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
-    github: "https://github.com",
-    liveUrl: "https://example.com",
-    numberOfBranches: 8,
-    numberOfLikes: 42,
-    icon: <SiNextdotjs className="text-2xl" />,
-    color: "from-purple-500 to-pink-500"
+    technologies: [
+      { icon: <SiNodedotjs />, name: "Node.js", color: "#339933" },
+      { icon: <SiExpress />, name: "Express", color: "#000000" },
+      { icon: <SiMongodb />, name: "MongoDB", color: "#47A248" },
+      { icon: <SiPostman />, name: "Postman", color: "#FF6C37" }
+    ],
+    icon: <FaServer className="text-2xl" />,
+    color: "from-green-500 to-teal-500",
+    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=400&fit=crop"
   },
   {
     id: 3,
-    title: "Portfolio VR Interactif",
-    description: "Expérience portfolio en réalité virtuelle accessible directement depuis le navigateur sans installation requise.",
-    technologies: [
-      { title: "WebXR", icon: <SiWebgl />, color: "#1F1F1F" },
-      { title: "A-Frame", icon: <SiAframe />, color: "#EF2D5E" },
-      { title: "React", icon: <SiReact />, color: "#61DAFB" },
-      { title: "Three.js", icon: <SiThreedotjs />, color: "#000000" },
-      { title: "GSAP", icon: <SiReact />, color: "#88CE02" }
+    title: "Design UI/UX",
+    subtitle: "Expériences utilisateur exceptionnelles",
+    description: "Conception d'interfaces intuitives et esthétiques qui améliorent l'expérience utilisateur et la conversion.",
+    plans: [
+      {
+        title: "Starter",
+        price: "179€",
+        duration: "1 semaine",
+        features: ["Maquettes basiques", "Guide de style", "3 pages design", "1 révision"],
+        popular: false
+      },
+      {
+        title: "Professional",
+        price: "449€",
+        duration: "3 semaines",
+        features: ["Maquettes détaillées", "Design system", "8 pages design", "3 révisions", "Support 2 semaines"],
+        popular: true
+      },
+      {
+        title: "Enterprise",
+        price: "799€",
+        duration: "5 semaines",
+        features: ["Design complet", "Système de design", "Pages illimitées", "Révisions illimitées", "Support 1 mois", "Assets export"],
+        popular: false
+      }
     ],
-    image: "https://images.unsplash.com/photo-1592478411213-6153e4ebc696?w=600&h=400&fit=crop",
-    github: "https://github.com",
-    liveUrl: "https://example.com",
-    numberOfBranches: 15,
-    numberOfLikes: 37,
-    icon: <SiWebgl className="text-2xl" />,
-    color: "from-green-500 to-teal-500"
-  },
-  {
-    id: 4,
-    title: "Application Mobile Fitness",
-    description: "Application de fitness avec tracking en temps réel, plans d'entraînement personnalisés et communauté interactive.",
     technologies: [
-      { title: "React Native", icon: <SiReact />, color: "#61DAFB" },
-      { title: "Node.js", icon: <SiNodedotjs />, color: "#339933" },
-      { title: "MongoDB", icon: <SiMongodb />, color: "#47A248" },
-      { title: "TailwindCSS", icon: <SiTailwindcss />, color: "#06B6D4" }
+      { icon: <SiFigma />, name: "Figma", color: "#F24E1E" },
+      { icon: <SiAdobexd />, name: "Adobe XD", color: "#FF61F6" },
+      { icon: <FaPalette />, name: "UI Design", color: "#FF6B6B" },
+      { icon: <FaMobile />, name: "Responsive", color: "#4ECDC4" }
     ],
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop",
-    github: "https://github.com",
-    liveUrl: "https://example.com",
-    numberOfBranches: 20,
-    numberOfLikes: 58,
-    icon: <SiReact className="text-2xl" />,
-    color: "from-orange-500 to-red-500"
-  },
-  {
-    id: 5,
-    title: "Plateforme de Streaming",
-    description: "Plateforme de streaming vidéo avec lecture adaptative, sous-titres automatiques et recommandations IA.",
-    technologies: [
-      { title: "Next.js", icon: <SiNextdotjs />, color: "#000000" },
-      { title: "Python", icon: <SiPython />, color: "#3776AB" },
-      { title: "TensorFlow", icon: <SiTensorflow />, color: "#FF6F00" },
-      { title: "Node.js", icon: <SiNodedotjs />, color: "#339933" }
-    ],
-    image: "https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=600&h=400&fit=crop",
-    github: "https://github.com",
-    liveUrl: "https://example.com",
-    numberOfBranches: 18,
-    numberOfLikes: 73,
-    icon: <SiNextdotjs className="text-2xl" />,
-    color: "from-indigo-500 to-purple-500"
+    icon: <FaPalette className="text-2xl" />,
+    color: "from-orange-500 to-red-500",
+    image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=400&fit=crop"
   }
 ];
 
-// Composant de carte de projet pour le carousel
-const ProjectCard = ({ project, isActive, index }) => {
+// Composant de carte de service pour le carousel
+const ServiceCard = ({ service, isActive, index }) => {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
   const cardRef = useRef(null);
 
-  // Effet de parallaxe pour l'image de fond
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (cardRef.current && isActive) {
-        const rect = cardRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = (y - centerY) / 40;
-        const rotateY = (centerX - x) / 40;
-        
-        cardRef.current.style.transform = `
-          perspective(1000px) 
-          rotateX(${rotateX}deg) 
-          rotateY(${rotateY}deg) 
-          scale3d(1.02, 1.02, 1.02)
-        `;
-      }
-    };
-
-    const handleMouseLeave = () => {
-      if (cardRef.current) {
-        cardRef.current.style.transform = `
-          perspective(1000px) 
-          rotateX(0deg) 
-          rotateY(0deg) 
-          scale3d(1, 1, 1)
-        `;
-      }
-    };
-
-    if (cardRef.current && isActive) {
-      cardRef.current.addEventListener('mousemove', handleMouseMove);
-      cardRef.current.addEventListener('mouseleave', handleMouseLeave);
-    }
-
-    return () => {
-      if (cardRef.current) {
-        cardRef.current.removeEventListener('mousemove', handleMouseMove);
-        cardRef.current.removeEventListener('mouseleave', handleMouseLeave);
-      }
-    };
-  }, [isActive]);
-
   return (
     <motion.div 
       ref={cardRef}
-      className="project-card h-[500px] relative overflow-hidden rounded-3xl cursor-pointer group"
+      className="service-card h-[600px] relative overflow-hidden rounded-3xl cursor-pointer group"
       style={{
-        backgroundImage: `url(${project.image})`,
+        backgroundImage: `url(${service.image})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         transformStyle: 'preserve-3d'
@@ -190,8 +197,8 @@ const ProjectCard = ({ project, isActive, index }) => {
       {/* Overlay gradient dynamique */}
       <div className={`absolute inset-0 bg-gradient-to-t ${
         isActive 
-          ? 'from-black/90 via-black/50 to-transparent' 
-          : 'from-black/80 via-black/30 to-transparent'
+          ? 'from-black/90 via-black/60 to-transparent' 
+          : 'from-black/80 via-black/40 to-transparent'
       } transition-all duration-500`} />
       
       {/* Effet de brillance */}
@@ -224,7 +231,7 @@ const ProjectCard = ({ project, isActive, index }) => {
               } 
             } : {}}
           >
-            {project.icon}
+            {service.icon}
           </motion.div>
           
           {/* Badge actif */}
@@ -235,29 +242,28 @@ const ProjectCard = ({ project, isActive, index }) => {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             >
-              Actif
+              Populaire
             </motion.span>
           )}
         </div>
 
-        {/* Titre avec effet de dégradé */}
+        {/* Titre et description */}
         <motion.h2 
-          className="text-2xl font-bold mb-3 leading-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
+          className="text-2xl font-bold mb-2 leading-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
           initial={{ opacity: 0, y: 10 }}
           animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
-          {project.title}
+          {service.title}
         </motion.h2>
 
-        {/* Description */}
         <motion.p 
-          className="text-gray-200 mb-4 text-sm leading-relaxed line-clamp-2"
+          className="text-gray-200 mb-4 text-sm leading-relaxed"
           initial={{ opacity: 0, y: 10 }}
           animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          {project.description}
+          {service.subtitle}
         </motion.p>
 
         {/* Technologies */}
@@ -268,7 +274,7 @@ const ProjectCard = ({ project, isActive, index }) => {
           transition={{ duration: 0.4, delay: 0.3 }}
         >
           <div className="flex flex-wrap gap-2">
-            {project.technologies.slice(0, 4).map((tech, techIndex) => (
+            {service.technologies.map((tech, techIndex) => (
               <motion.span
                 key={techIndex}
                 className="flex items-center px-3 py-1 rounded-full text-xs font-medium backdrop-blur-md border border-white/10"
@@ -291,64 +297,62 @@ const ProjectCard = ({ project, isActive, index }) => {
                 whileHover={{ scale: 1.05 }}
               >
                 <span className="mr-1.5 text-sm">{tech.icon}</span>
-                {tech.title}
+                {tech.name}
               </motion.span>
             ))}
           </div>
         </motion.div>
 
-        {/* Actions */}
+        {/* Forfaits */}
         <motion.div 
-          className="flex space-x-3 mb-4"
+          className="space-y-3 mb-4"
           initial={{ opacity: 0, y: 10 }}
           animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: 0.4, delay: 0.4 }}
         >
-          <motion.a
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center px-4 py-2 rounded-xl font-medium backdrop-blur-md border border-white/20 text-white hover:bg-white/10 transition-all duration-300 flex-1 justify-center"
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <BsGithub className="mr-2" />
-            Code
-          </motion.a>
-          
-          <motion.a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center px-4 py-2 rounded-xl font-medium bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex-1 justify-center"
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <HiExternalLink className="mr-2" />
-            Voir
-          </motion.a>
+          {service.plans.map((plan, planIndex) => (
+            <motion.div
+              key={planIndex}
+              className={`p-3 rounded-xl backdrop-blur-md border transition-all duration-300 ${
+                plan.popular 
+                  ? 'border-blue-500/50 bg-gradient-to-r from-blue-500/20 to-purple-500/20' 
+                  : 'border-white/10 bg-white/5'
+              }`}
+              whileHover={{ scale: 1.02, y: -2 }}
+            >
+              <div className="flex justify-between items-center mb-2">
+                <span className={`font-semibold ${plan.popular ? 'text-blue-300' : 'text-white'}`}>
+                  {plan.title}
+                </span>
+                <span className="text-lg font-bold text-white">{plan.price}</span>
+              </div>
+              <div className="text-xs text-gray-300 mb-2">{plan.duration}</div>
+              <div className="space-y-1">
+                {plan.features.slice(0, 2).map((feature, featureIndex) => (
+                  <div key={featureIndex} className="flex items-center text-xs text-gray-300">
+                    <span className="w-1 h-1 bg-blue-500 rounded-full mr-2"></span>
+                    {feature}
+                  </div>
+                ))}
+                {plan.features.length > 2 && (
+                  <div className="text-xs text-blue-400">+{plan.features.length - 2} autres fonctionnalités</div>
+                )}
+              </div>
+            </motion.div>
+          ))}
         </motion.div>
 
-        {/* Stats */}
-        <motion.div 
-          className="flex items-center justify-between pt-3 border-t border-white/20"
+        {/* Bouton d'action */}
+        <motion.button 
+          className="w-full py-3 rounded-xl font-medium bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 transition-all duration-300"
           initial={{ opacity: 0, y: 10 }}
           animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: 0.4, delay: 0.5 }}
+          whileHover={{ scale: 1.02, y: -2 }}
+          whileTap={{ scale: 0.98 }}
         >
-          <span className="flex items-center text-gray-300 text-xs">
-            <FaCodeBranch className="mr-1.5" />
-            {project.numberOfBranches}
-          </span>
-          <span className="flex items-center text-gray-300 text-xs">
-            <AiFillStar className="mr-1.5 text-yellow-400" />
-            {project.numberOfLikes}
-          </span>
-          <span className="flex items-center text-gray-300 text-xs">
-            <FaExpand className="mr-1.5" />
-            Détails
-          </span>
-        </motion.div>
+          Choisir ce service
+        </motion.button>
       </div>
 
       {/* Overlay de survol */}
@@ -357,8 +361,8 @@ const ProjectCard = ({ project, isActive, index }) => {
   );
 };
 
-// Composant principal Portfolio
-const ProjectsSection = () => {
+// Composant principal Services
+const ServicesSection = () => {
   const { theme } = useTheme();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
@@ -388,30 +392,30 @@ const ProjectsSection = () => {
 
   const goToPrevSlide = () => {
     if (swiperRef) {
-      swiperRef.slidePrev(1000); // Animation plus longue pour plus de douceur
+      swiperRef.slidePrev(1000);
     }
   };
 
   const goToNextSlide = () => {
     if (swiperRef) {
-      swiperRef.slideNext(1000); // Animation plus longue pour plus de douceur
+      swiperRef.slideNext(1000);
     }
   };
 
   const goToSlide = (index) => {
     if (swiperRef) {
-      swiperRef.slideToLoop(index, 1000); // Animation plus longue pour plus de douceur
+      swiperRef.slideToLoop(index, 1000);
     }
   };
 
   return (
     <section 
-      id="portfolio" 
+      id="services" 
       className="py-20 px-4 relative overflow-hidden bg-white dark:bg-[#0a0e17]"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      {/* Background décoratif amélioré */}
+      {/* Background décoratif */}
       <div className="absolute inset-0 z-0 opacity-[0.03] dark:opacity-[0.05]">
         <div className="absolute top-10 left-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
         <div className="absolute top-10 right-10 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
@@ -440,7 +444,7 @@ const ProjectsSection = () => {
               WebkitTextFillColor: 'transparent'
             }}
           >
-            Mes Réalisations
+            Mes Services
           </motion.h2>
           
           <motion.p 
@@ -450,10 +454,10 @@ const ProjectsSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            Découvrez une sélection de mes projets les plus innovants et créatifs
+            Des solutions complètes pour transformer vos idées en réalité digitale
           </motion.p>
           
-          {/* Contrôles de navigation améliorés */}
+          {/* Contrôles de navigation */}
           <motion.div 
             className="flex items-center justify-center space-x-4 mb-8"
             initial={{ opacity: 0, y: 20 }}
@@ -525,7 +529,7 @@ const ProjectsSection = () => {
           </motion.div>
         </motion.div>
 
-        {/* Carousel 3D amélioré */}
+        {/* Carousel des services */}
         <motion.div
           className="mb-12"
           initial={{ opacity: 0, scale: 0.95 }}
@@ -539,13 +543,13 @@ const ProjectsSection = () => {
             centeredSlides={true}
             slidesPerView={'auto'}
             spaceBetween={40}
-            speed={1000} // Vitesse augmentée pour plus de fluidité
+            speed={1000}
             effect="coverflow"
             loop={true}
-            loopAdditionalSlides={3}
+            loopAdditionalSlides={2}
             mousewheel={{ 
               forceToAxis: true,
-              sensitivity: 0.8, // Sensibilité réduite pour un défilement plus doux
+              sensitivity: 0.8,
             }}
             autoplay={isAutoPlay ? {
               delay: 4000,
@@ -566,7 +570,7 @@ const ProjectsSection = () => {
             }}
             modules={[EffectCoverflow, Pagination, Mousewheel, Autoplay]}
             onSlideChange={handleSlideChange}
-            className="project-swiper"
+            className="service-swiper"
             breakpoints={{
               320: {
                 slidesPerView: 1,
@@ -600,9 +604,9 @@ const ProjectsSection = () => {
               },
             }}
           >
-            {projects.map((project, index) => (
-              <SwiperSlide key={project.id} className="!w-[380px] !h-auto">
-                <ProjectCard project={project} isActive={index === activeIndex} index={index} />
+            {servicesData.map((service, index) => (
+              <SwiperSlide key={service.id} className="!w-[380px] !h-auto">
+                <ServiceCard service={service} isActive={index === activeIndex} index={index} />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -616,7 +620,7 @@ const ProjectsSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 1 }}
         >
-          {projects.map((_, index) => (
+          {servicesData.map((_, index) => (
             <motion.button
               key={index}
               onClick={() => goToSlide(index)}
@@ -633,7 +637,7 @@ const ProjectsSection = () => {
           ))}
         </motion.div>
 
-        {/* Indicateur de projet actuel amélioré */}
+        {/* Indicateur de service actuel */}
         <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 20 }}
@@ -642,53 +646,43 @@ const ProjectsSection = () => {
           transition={{ duration: 0.7, delay: 1.2 }}
         >
           <div className="inline-flex items-center px-6 py-3 rounded-2xl backdrop-blur-md border border-white/10 bg-white/5">
-            <span className="text-gray-600 dark:text-gray-400 mr-2">Projet</span>
+            <span className="text-gray-600 dark:text-gray-400 mr-2">Service</span>
             <span className="font-bold text-gray-800 dark:text-gray-200 text-lg mx-1">
               {activeIndex + 1}
             </span>
             <span className="text-gray-600 dark:text-gray-400 mx-2">sur</span>
             <span className="font-bold text-gray-800 dark:text-gray-200 text-lg">
-              {projects.length}
+              {servicesData.length}
             </span>
           </div>
         </motion.div>
       </div>
 
-      {/* Styles personnalisés améliorés */}
+      {/* Styles personnalisés */}
       <style jsx>{`
-        .project-swiper {
+        .service-swiper {
           padding: 60px 0;
           margin: 0 -20px;
         }
 
-        .project-swiper .swiper-slide {
-          transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); /* Animation plus douce */
+        .service-swiper .swiper-slide {
+          transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
           border-radius: 24px;
           overflow: hidden;
           transform-origin: center;
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
-        .project-swiper .swiper-slide-active {
+        .service-swiper .swiper-slide-active {
           transform: scale(1.05);
           z-index: 10;
         }
 
-        .project-swiper .swiper-slide-shadow-left,
-        .project-swiper .swiper-slide-shadow-right {
-          border-radius: 24px;
-          background: linear-gradient(
-            90deg,
-            rgba(0, 0, 0, 0.5) 0%,
-            transparent 100%
-          );
-        }
-
-        .project-swiper .swiper-pagination {
+        .service-swiper .swiper-pagination {
           bottom: 20px !important;
         }
 
-        .project-swiper .swiper-pagination-bullet {
+        .service-swiper .swiper-pagination-bullet {
           background: rgba(66, 133, 244, 0.6);
           width: 16px;
           height: 4px;
@@ -697,22 +691,15 @@ const ProjectsSection = () => {
           transition: all 0.4s ease;
         }
 
-        .project-swiper .swiper-pagination-bullet-active {
+        .service-swiper .swiper-pagination-bullet-active {
           background: linear-gradient(135deg, #4285f4, #9c27b0);
           opacity: 1;
           width: 32px;
           transform: scale(1.2);
         }
 
-        .dark .project-swiper .swiper-pagination-bullet {
+        .dark .service-swiper .swiper-pagination-bullet {
           background: rgba(156, 39, 176, 0.6);
-        }
-
-        .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
         }
 
         @keyframes blob {
@@ -738,38 +725,19 @@ const ProjectsSection = () => {
           animation-delay: 6s;
         }
 
-        /* Effet de réflexion pour les slides */
-        .project-swiper .swiper-slide::after {
-          content: '';
-          position: absolute;
-          bottom: -10px;
-          left: 10%;
-          right: 10%;
-          height: 20px;
-          background: linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.1) 0%,
-            transparent 100%
-          );
-          border-radius: 50%;
-          filter: blur(5px);
-          transform: scaleY(0.5);
-          opacity: 0.5;
-        }
-
         @media (max-width: 768px) {
-          .project-swiper {
+          .service-swiper {
             padding: 40px 0;
             margin: 0 -10px;
           }
           
-          .project-swiper .swiper-slide {
+          .service-swiper .swiper-slide {
             width: 320px !important;
           }
         }
 
         @media (max-width: 480px) {
-          .project-swiper .swiper-slide {
+          .service-swiper .swiper-slide {
             width: 280px !important;
           }
         }
@@ -778,4 +746,4 @@ const ProjectsSection = () => {
   );
 };
 
-export default ProjectsSection;
+export default ServicesSection;

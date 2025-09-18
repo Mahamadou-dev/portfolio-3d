@@ -11,10 +11,12 @@ import { useTheme } from '../../contexts/ThemeContext';
 const TYPEWRITER_PHRASES = [
   "Je crée des choses en rapport avec le web",
   "Développeur Web Full Stack",
-  "Expert C# .NET",
-  "Spécialiste React & Node.js",
-  "Créateur d'applications mobiles",
+  "Développeur C# .NET",
+  "Développeur React & Next.js",
+  "Développeur Android",
+  "Passionné par IA et ML",
   "Fondateur de GremahTech"
+
 ];
 
 // Composant pour l'effet Typewriter
@@ -172,44 +174,42 @@ function LargeCodeScreen() {
   );
 }
 const CSHARP_CODE = [
-  "using UnityEngine;",
-  "using System.Collections;",
-  "",
-  "public class PlayerController : MonoBehaviour",
-  "{",
-  "    public float moveSpeed = 5f;",
-  "    public float jumpForce = 10f;",
-  "    private Rigidbody rb;",
-  "    private bool isGrounded;",
-  "",
-  "    void Start()",
-  "    {",
-  "        rb = GetComponent<Rigidbody>();",
-  "    }",
-  "",
-  "    void Update()",
-  "    {",
-  "        float moveX = Input.GetAxis(\"Horizontal\");",
-  "        float moveZ = Input.GetAxis(\"Vertical\");",
-  "        Vector3 movement = new Vector3(moveX, 0, moveZ);",
-  "        rb.AddForce(movement * moveSpeed);",
-  "",
-  "        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)",
-  "        {",
-  "            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);",
-  "            isGrounded = false;",
-  "        }",
-  "    }",
-  "",
-  "    void OnCollisionEnter(Collision collision)",
-  "    {",
-  "        if (collision.gameObject.CompareTag(\"Ground\"))",
-  "        {",
-  "            isGrounded = true;",
-  "        }",
-  "    }",
-  "}"
-];
+
+      "1 using Microsoft.AspNetCore.Builder;",
+      "2 using Microsoft.AspNetCore.Http;",
+      "3 using Microsoft.Extensions.Hosting;",
+      "4 using System.Collections.Generic;",
+      "5",
+      "6 var builder = WebApplication.CreateBuilder(args);",
+      "7 var app = builder.Build();",
+      "8",
+      "9 // In-memory list",
+      "10 List<string> forecasts = new() { \"Sunny\", \"Cloudy\", \"Rainy\" };",
+      "11",
+      "12 app.MapGet(\"/weather\", () => forecasts);",
+      "13",
+      "14 app.MapGet(\"/weather/{id:int}\", (int id) =>",
+      "15     id >= 0 && id < forecasts.Count ? Results.Ok(forecasts[id]) : Results.NotFound());",
+      "16",
+      "17 app.MapPost(\"/weather\", (string forecast) => {",
+      "18     forecasts.Add(forecast);",
+      "19     return Results.Created($\"/weather/{forecasts.Count - 1}\", forecast);",
+      "20 });",
+      "21",
+      "22 app.MapPut(\"/weather/{id:int}\", (int id, string forecast) => {",
+      "23     if (id < 0 || id >= forecasts.Count) return Results.NotFound();",
+      "24     forecasts[id] = forecast;",
+      "25     return Results.NoContent();",
+      "26 });",
+      "27",
+      "28 app.MapDelete(\"/weather/{id:int}\", (int id) => {",
+      "29     if (id < 0 || id >= forecasts.Count) return Results.NotFound();",
+      "30     forecasts.RemoveAt(id);",
+      "31     return Results.NoContent();",
+      "32 });",
+      "33",
+      "34 app.Run();"
+    ];
 
 // Composant pour les particules Gemini
 function GeminiParticles() {

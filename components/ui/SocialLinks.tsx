@@ -1,37 +1,53 @@
+// src/components/SocialLinks.jsx
 'use client';
 
 import { motion } from 'framer-motion';
+import { FaGithub, FaLinkedin, FaFacebook, FaYoutube, FaWhatsapp } from 'react-icons/fa';
+import { AiOutlineMail } from 'react-icons/ai';
+import { FaXTwitter } from 'react-icons/fa6'; // Twitter a changé de nom pour X
 
 const socialPlatforms = [
   {
     name: 'GitHub',
-    url: 'https://github.com',
-    icon: '🐱',
+    url: 'https://github.com/Mahamadou-dev',
+    icon: <FaGithub />, // Remplacement de '🐱'
     color: 'hover:text-gray-800 dark:hover:text-white'
   },
   {
     name: 'LinkedIn',
-    url: 'https://linkedin.com',
-    icon: '💼',
+    url: 'https://www.linkedin.com/in/mahamadou-amadou-habou-gremah-54766632b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
+    icon: <FaLinkedin />, // Remplacement de '💼'
     color: 'hover:text-blue-600'
   },
   {
-    name: 'Twitter',
+    name: 'Twitter (X)',
     url: 'https://twitter.com',
-    icon: '🐦',
-    color: 'hover:text-blue-400'
+    icon: <FaXTwitter />, // Remplacement de '🐦'
+    color: 'hover:text-gray-800 dark:hover:text-white'
   },
   {
-    name: 'Dribbble',
-    url: 'https://dribbble.com',
-    icon: '🎨',
-    color: 'hover:text-pink-500'
+    name: 'Facebook',
+    url: 'https://www.facebook.com/mahamadou.amadouhabougremah.1?mibextid=ZbWKwL',
+    icon: <FaFacebook />,
+    color: 'hover:text-blue-600'
+  },
+  {
+    name: 'YouTube',
+    url: 'https://youtube.com/@amadouhabougremahmahamadou805?si=vMjXRoRKiekAz6Qc',
+    icon: <FaYoutube />,
+    color: 'hover:text-red-600'
+  },
+  {
+    name: 'WhatsApp',
+    url: 'https://wa.me/22788778095?text=Bonjour,%20j%27aimerais%20en%20savoir%20plus%20sur%20vos%20services%20GremahTech.',
+    icon: <FaWhatsapp />,
+    color: 'hover:text-green-500'
   },
   {
     name: 'Email',
-    url: 'mailto:contact@example.com',
-    icon: '✉️',
-    color: 'hover:text-primary'
+    url: 'mailto:mahamadou8877@gmail.com',
+    icon: <AiOutlineMail />, // Remplacement de '✉️'
+    color: 'hover:text-gray-600 dark:hover:text-gray-400'
   }
 ];
 
