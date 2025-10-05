@@ -1,0 +1,519 @@
+{
+  "header": {
+    "nav": {
+      "home": "Accueil",
+      "about": "À propos",
+      "skills": "Compétences",
+      "education": "Éducation",
+      "portfolio": "Portfolio",
+      "services": "Services",
+      "contact": "Contact"
+    },
+    "themeToggle": "Changer de thème",
+    "menuToggle": "Ouvrir/fermer le menu"
+  },
+
+    "about": {
+    "title": "À propos de moi",
+    "introduction": "Salut, je m'appelle",
+    "a_young_student": "Un jeune étudiant",
+    "niger": "NIGERIEN",
+    "residing_in_tunisia_and_it_passionated": "résidant en Tunisie et surtout passioné d'informatique.",
+    "currently_studies": "Je suis actuellement en deuxième année de licence en génie logiciel & Systèmes d'Information à l'Université De Monastir en Tunisie.",
+    "also_the_founder_and_ceo_of": "Je suis également le fondateur & PDG de",
+    "tiamtech_description": "une petite start-up basée au Niger fournissant des services tels que le développement de SITES WEB, le développement d'API Restful, le développement d'applications mobiles, etc...",
+    "anest_post": "Je suis commissaire aux comptes de la trésorerie de la section Monastir de l'ANEST (Association des Étudiants et Stagiaires Nigériens en Tunisie), où je veille à la transparence et à la conformité des finances de l'association.",
+    "download_my_resume_button_text": "Télécharger mon CV",
+    "personalInfo": {
+      "age": {
+        "label": "Âge",
+        "value": "22 ans"
+      },
+      "nationality": {
+        "label": "Nationalité",
+        "value": "Nigérienne"
+      },
+      "location": {
+        "label": "Localisation",
+        "value": "Monastir, Tunisie"
+      },
+      "availability": {
+        "label": "Disponibilité",
+        "value": "Ouvert aux opportunités"
+      }
+    }
+  },
+  "skills": {
+    "title": "Compétences",
+    "strengths": {
+      "productivity": {
+        "title": "Productivité"
+      },
+      "problem_solving": {
+        "title": "Résolution"
+      },
+      "perseverance": {
+        "title": "Persévérance"
+      }
+    },
+    "categories": {
+      "frontend": {
+        "title": "FRONTEND"
+      },
+      "backend": {
+        "title": "BACKEND"
+      },
+      "mobile": {
+        "title": "MOBILE"
+      },
+      "design": {
+        "title": "DESIGN"
+      },
+      "tools": {
+        "title": "OUTILS"
+      }
+    }
+  },
+  "contact": {
+    "title": "Contactez-moi",
+    "subtitle": "Discutons de votre prochain projet ensemble",
+    "workTogether": {
+      "title": "Travaillons ensemble",
+      "description": "Je suis toujours ouvert à discuter de nouvelles opportunités et projets passionnants. N'hésitez pas à me contacter directement !"
+    },
+    "followMe": "Suivez-moi",
+    "info": {
+      "email": {
+        "label": "Email",
+        "value": "mahamadou8877@gmail.com",
+        "href": "mailto:mahamadou8877@gmail.com"
+      },
+      "location": {
+        "label": "Localisation",
+        "value": "Monastir, Tunisie"
+      },
+      "phone1": {
+        "label": "Téléphone",
+        "value": "+216 55 299 368",
+        "href": "tel:+21655299368"
+      },
+      "phone2": {
+        "label": "Téléphone",
+        "value": "+227 88 77 80 95",
+        "href": "tel:+22788778095"
+      }
+    },
+    "form": {
+      "name": {
+        "label": "Nom complet *",
+        "placeholder": "Votre nom"
+      },
+      "email": {
+        "label": "Email *",
+        "placeholder": "votre@email.com"
+      },
+      "subject": {
+        "label": "Sujet *",
+        "placeholder": "Sujet de votre message"
+      },
+      "message": {
+        "label": "Message *",
+        "placeholder": "Décrivez votre projet..."
+      },
+      "submitting": "Envoi en cours...",
+      "submit": "Envoyer le message",
+      "privacy": "Vos informations sont confidentielles et ne seront pas partagées.",
+      "status": {
+        "success": "✅ Message envoyé avec succès ! Je vous réponds rapidement.",
+        "error": "❌ Erreur lors de l'envoi. Veuillez réessayer ou me contacter directement par email."
+      }
+    }
+  },
+  "experience": {
+    "title": "Mon Parcours",
+    "subtitle": "Parcours académique et professionnel qui a façonné mon expertise",
+    "type": {
+      "education": "Éducation",
+      "experience": "Expérience"
+    },
+    "achievements": "Réalisations",
+    "subjects": "Matières",
+    "technologies": "Technologies",
+    "education": {
+      "softwareEngineering": {
+        "title": "Licence en Génie Logiciel & Systèmes d'Information",
+        "institution": "Université de Monastir",
+        "period": "2023 - Présent",
+        "location": "Monastir, Tunisie",
+        "description": "Formation approfondie en développement logiciel, architecture des systèmes d'information, bases de données et technologies web modernes avec une approche pratique et innovante.",
+        "achievements": [
+          "Major de promotion avec une moyenne de 16.5/20",
+          "Projets distingués en développement web fullstack",
+          "Spécialisation en architecture cloud et microservices"
+        ],
+        "technologies": ["Java", "Python", "SQL", "UML", "DevOps", "Docker", "AWS"],
+        "subjects": [
+          "Algorithmique et structures de données avancées",
+          "Développement Web moderne (React, Node.js)",
+          "Développement d'applications mobiles cross-platform",
+          "Architecture des réseaux et sécurité",
+          "Intelligence Artificielle et Machine Learning",
+          "Internet des objets (IoT) et systèmes embarqués",
+          "Services Web et architecture SOA/API",
+          "Cloud Computing et Big Data",
+          "cloud, virtualisation et conteneurisation"
+        ]
+      },
+      "preparatoryYear": {
+        "title": "Année Préparatoire",
+        "institution": "CSP TARAT",
+        "period": "2022 - 2023",
+        "location": "Arlit, Niger",
+        "description": "Année préparatoire intensive pour l'enseignement supérieur avec focus sur les sciences fondamentales et préparation aux études d'ingénierie.",
+        "achievements": [
+          "Mention Très Bien avec félicitations du jury",
+          "Excellence académique en sciences fondamentales",
+          "Préparation universitaire intensive et méthodologique"
+        ],
+        "technologies": ["Mathématiques avancées", "Physique", "Chimie", "Sciences de l'ingénieur"],
+        "subjects": [
+          "Mathématiques avancées et analyse",
+          "Physique fondamentale",
+          "Chimie organique et inorganique",
+          "Sciences de l'ingénieur"
+        ]
+      }
+    },
+    "work": {
+      "freelance": {
+        "title": "Développeur Fullstack Freelance & Fondateur",
+        "institution": "GremahTech",
+        "period": "2024 - Présent",
+        "location": "Projets internationaux (Remote)",
+        "description": "Création et développement d'applications web et mobiles sur mesure pour une clientèle internationale, avec un focus sur l'innovation technique et l'expérience utilisateur exceptionnelle.",
+        "achievements": [
+          "15+ projets livrés avec un taux de satisfaction client de 100%",
+          "Développement de solutions SaaS innovantes pour startups",
+          "Optimisation des performances avec des gains de 300% en vitesse"
+        ],
+        "technologies": ["React", "Next.js", "Node.js", "MongoDB", "AWS", "Firebase", "TypeScript", "Tailwind"]
+      },
+      "anest": {
+        "title": "Commissaire aux Comptes & Trésorier",
+        "institution": "ANEST Monastir",
+        "period": "2024 - Présent",
+        "location": "Monastir, Tunisie",
+        "description": "Gestion stratégique de la trésorerie et supervision financière pour une association estudiantine de 200+ membres, garantissant transparence et optimisation des ressources.",
+        "achievements": [
+          "Mise en place d'un système de gestion financière digitalisé",
+          "Optimisation de 40% des coûts opérationnels",
+          "Rapports financiers trimestriels applaudis par les membres"
+        ],
+        "technologies": ["Excel avancé", "Gestion budgétaire", "Analytique financière", "Leadership", "Communication"]
+      }
+    }
+  },
+  "portfolio": {
+    "title": "Portfolio & Certifications",
+    "subtitle": "Découvrez mes projets innovants et certifications professionnelles",
+    "tabs": {
+      "projects": "Projets",
+      "certifications": "Certifications"
+    },
+    "buttons": {
+      "github": "Github",
+      "visit": "Visiter",
+      "viewCertification": "Voir certification"
+    },
+    "certification": {
+      "issuer": "Émetteur",
+      "date": "Date"
+    },
+    "empty": "Aucun {{type}} à afficher pour le moment",
+    "projects": [
+      {
+        "id": 1,
+        "title": "E-Commerce Immersif 3D",
+        "description": "Plateforme de vente avec visualisation 3D des produits et réalité augmentée. Interface intuitive et expérience utilisateur immersive.",
+        "technologies": [
+          { "title": "React", "icon": "React", "color": "#61DAFB" },
+          { "title": "Three.js", "icon": "Three.js", "color": "#000000" },
+          { "title": "Node.js", "icon": "Node.js", "color": "#339933" },
+          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" }
+        ],
+        "image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop",
+        "github": "https://github.com",
+        "liveUrl": "https://example.com",
+        "numberOfBranches": 12,
+        "numberOfLikes": 25
+      },
+      {
+        "id": 2,
+        "title": "Dashboard IA Analytique",
+        "description": "Tableau de bord intelligent avec machine learning et analytics en temps réel pour données complexes.",
+        "technologies": [
+          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
+          { "title": "Python", "icon": "Python", "color": "#3776AB" },
+          { "title": "TensorFlow", "icon": "TensorFlow", "color": "#FF6F00" },
+          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" }
+        ],
+        "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
+        "github": "https://github.com",
+        "liveUrl": "https://example.com",
+        "numberOfBranches": 8,
+        "numberOfLikes": 42
+      },
+      {
+        "id": 3,
+        "title": "App Mobile Fitness IA",
+        "description": "Application fitness avec coach IA personnalisé, suivi d'activité et recommandations intelligentes.",
+        "technologies": [
+          { "title": "React Native", "icon": "React", "color": "#61DAFB" },
+          { "title": "Node.js", "icon": "Node.js", "color": "#339933" },
+          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
+          { "title": "AWS", "icon": "Amazon", "color": "#FF9900" }
+        ],
+        "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop",
+        "github": "https://github.com",
+        "liveUrl": "https://example.com",
+        "numberOfBranches": 20,
+        "numberOfLikes": 89
+      }
+    ],
+    "certifications": [
+      {
+        "id": 1,
+        "title": "Développement Full Stack Avancé",
+        "issuer": "Meta",
+        "description": "Certification complète en développement web full stack avec React, Node.js et architectures cloud",
+        "date": "Jan 2024",
+        "image": "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=400&fit=crop",
+        "credentialUrl": "https://example.com",
+        "skills": ["React", "Node.js", "MongoDB", "Express", "GraphQL"]
+      },
+      {
+        "id": 2,
+        "title": "Machine Learning Engineer",
+        "issuer": "Google",
+        "description": "Certification avancée en intelligence artificielle, machine learning et deep learning",
+        "date": "Dec 2023",
+        "image": "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=600&h=400&fit=crop",
+        "credentialUrl": "https://example.com",
+        "skills": ["Python", "TensorFlow", "Scikit-learn", "Deep Learning"]
+      },
+      {
+        "id": 3,
+        "title": "Architecture Cloud AWS",
+        "issuer": "Amazon Web Services",
+        "description": "Architecture cloud avancée, solutions AWS et optimisation des coûts pour entreprises",
+        "date": "Nov 2023",
+        "image": "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=600&h=400&fit=crop",
+        "credentialUrl": "https://example.com",
+        "skills": ["AWS", "CloudFormation", "DevOps", "Microservices"]
+      }
+    ]
+  },
+    "services": {
+    "title": "Mes Services",
+    "subtitle": "Solutions complètes adaptées à vos besoins digitaux",
+    "perHour": "heure",
+    "choosePlan": "Choisir ce plan",
+    "flexibilityNote": "💡 Flexibilité : Tous les tarifs sont adaptables selon la complexité et la durée de votre projet",
+    "plans": {
+      "basic": {
+        "title": "Basique"
+      },
+      "standard": {
+        "title": "Standard"
+      },
+      "premium": {
+        "title": "Premium"
+      }
+    },
+    "categories": [
+      {
+        "id": 0,
+        "title": "Dev des Logiciels",
+        "description": "Applications web, mobiles et backend sur mesure avec technologies modernes",
+        "advantages": [
+          "Applications web responsive React/Next.js",
+          "Apps mobiles iOS/Android Flutter",
+          "Backend robuste Node.js/Python",
+          "API RESTful sécurisées",
+          "Bases de données optimisées",
+          "Tests et déploiement continu",
+          "Maintenance et support"
+        ],
+        "icon": "💻",
+        "color": "from-blue-500 to-cyan-500",
+        "plans": [
+          {
+            "title": "basic",
+            "priceperHour": { "FCFA": 15000, "USD": 25 },
+            "advantagesIndexes": [0, 1, 2]
+          },
+          {
+            "title": "standard",
+            "priceperHour": { "FCFA": 25000, "USD": 42 },
+            "advantagesIndexes": [0, 1, 2, 3, 4]
+          },
+          {
+            "title": "premium",
+            "priceperHour": { "FCFA": 40000, "USD": 67 },
+            "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
+          }
+        ],
+        "technologies": [
+          { "icon": "⚛️", "name": "React" },
+          { "icon": "🔗", "name": "Node.js" },
+          { "icon": "📱", "name": "Flutter" },
+          { "icon": "🐍", "name": "Python" }
+        ]
+      },
+      {
+        "id": 1,
+        "title": "Assistances IT",
+        "description": "Support, maintenance et optimisation de vos systèmes informatiques",
+        "advantages": [
+          "Support technique à distance 24/7",
+          "Diagnostic et résolution rapide",
+          "Installation et configuration",
+          "Maintenance préventive régulière",
+          "Sauvegarde et sécurité des données",
+          "Optimisation des performances",
+          "Formation utilisateurs"
+        ],
+        "icon": "🔧",
+        "color": "from-green-500 to-teal-500",
+        "plans": [
+          {
+            "title": "basic",
+            "priceperHour": { "FCFA": 10000, "USD": 17 },
+            "advantagesIndexes": [0, 1]
+          },
+          {
+            "title": "standard",
+            "priceperHour": { "FCFA": 18000, "USD": 30 },
+            "advantagesIndexes": [0, 1, 2, 3]
+          },
+          {
+            "title": "premium",
+            "priceperHour": { "FCFA": 30000, "USD": 50 },
+            "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
+          }
+        ],
+        "technologies": [
+          { "icon": "☁️", "name": "Cloud" },
+          { "icon": "🔒", "name": "Sécurité" },
+          { "icon": "⚡", "name": "Performance" }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Design & Création de Contenu",
+        "description": "Design UI/UX moderne et création de contenu engageant",
+        "advantages": [
+          "Design d'interfaces modernes Figma",
+          "Expérience utilisateur optimisée",
+          "Création de maquettes interactives",
+          "Design system cohérent",
+          "Contenu graphique et visuel",
+          "Branding et identité visuelle",
+          "Optimisation conversion"
+        ],
+        "icon": "🎨",
+        "color": "from-purple-500 to-pink-500",
+        "plans": [
+          {
+            "title": "basic",
+            "priceperHour": { "FCFA": 12000, "USD": 20 },
+            "advantagesIndexes": [0, 1]
+          },
+          {
+            "title": "standard",
+            "priceperHour": { "FCFA": 20000, "USD": 33 },
+            "advantagesIndexes": [0, 1, 2, 3]
+          },
+          {
+            "title": "premium",
+            "priceperHour": { "FCFA": 35000, "USD": 58 },
+            "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
+          }
+        ],
+        "technologies": [
+          { "icon": "✏️", "name": "Figma" },
+          { "icon": "🎭", "name": "Adobe" },
+          { "icon": "📐", "name": "UI/UX" }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Formations Personnalisées",
+        "description": "Cours sur mesure en développement et technologies digitales",
+        "advantages": [
+          "Programmes personnalisés adaptés",
+          "Projets pratiques concrets",
+          "Support continu et mentoring",
+          "Ressources pédagogiques exclusives",
+          "Préparation aux certifications",
+          "Accès communauté privée",
+          "Suivi progression détaillé"
+        ],
+        "icon": "🎓",
+        "color": "from-orange-500 to-red-500",
+        "plans": [
+          {
+            "title": "basic",
+            "priceperHour": { "FCFA": 8000, "USD": 13 },
+            "advantagesIndexes": [0, 1]
+          },
+          {
+            "title": "standard",
+            "priceperHour": { "FCFA": 15000, "USD": 25 },
+            "advantagesIndexes": [0, 1, 2, 3]
+          },
+          {
+            "title": "premium",
+            "priceperHour": { "FCFA": 25000, "USD": 42 },
+            "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
+          }
+        ],
+        "technologies": [
+          { "icon": "👨‍💻", "name": "Code" },
+          { "icon": "⚙️", "name": "Outils" },
+          { "icon": "📚", "name": "Ressources" }
+        ]
+      }
+    ]
+  },
+  "hero": {
+    "greeting": "Barka dey, moi c'est",
+    "greetingTooltip": "Barka dey signifie 'Salut' en Hausa, ma langue maternelle.",
+    "name": "Mahamadou Gremah",
+    "typewriterPhrases": [
+      "Développeur Web Full Stack",
+      "Développeur C# .NET",
+      "Développeur React & Next.js",
+      "Développeur Android",
+      "Passionné par IA et ML",
+      "Fondateur de GremahTech"
+    ],
+    "description": "Je suis un jeune étudiant nigérien passionné d'informatique. Actuellement en <strong>2ème année de licence en génie logiciel et systèmes d'information</strong> à la <strong>Faculté des Sciences de Monastir</strong> en Tunisie. Fondateur de <strong>GremahTech</strong>, une start-up spécialisée dans le développement web et mobile.",
+    "buttons": {
+      "viewWork": "Voir nos récents travaux",
+      "contact": "Contactez-nous"
+    },
+    "loading": "Chargement..."
+  },
+    "footer": {
+    "copyright": "© {{year}} GremahTech. Tous droits réservés.",
+    "builtWith": "Construit avec ❤️ par",
+    "connectWith": "Connectons-nous",
+    "legal": {
+      "legalNotice": "Mentions légales",
+      "privacy": "Confidentialité",
+      "downloadCV": "Télécharger mon CV"
+    },
+    "lastUpdate": "Dernière mise à jour: {{date}}"
+  }
+}

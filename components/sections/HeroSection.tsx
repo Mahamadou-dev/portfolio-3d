@@ -1,426 +1,255 @@
 'use client';
 
-import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import React, { useEffect, useState, Suspense } from 'react';
+import { Canvas } from '@react-three/fiber';
 import { motion } from 'framer-motion';
-import { Float, OrbitControls, Sparkles, Text } from '@react-three/drei';
-import * as THREE from 'three';
+import { OrbitControls, useGLTF, Float, Sparkles, Html } from '@react-three/drei';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useI18n } from "../i18n-provider";
 
-// Données pour l'effet Typewriter
-const TYPEWRITER_PHRASES = [
-  "Je crée des choses en rapport avec le web",
-  "Développeur Web Full Stack",
-  "Développeur C# .NET",
-  "Développeur React & Next.js",
-  "Développeur Android",
-  "Passionné par IA et ML",
-  "Fondateur de GremahTech"
+// Types TypeScript
+interface TypewriterProps {
+  phrases: string[];
+}
 
-];
+interface Computer3DProps {
+  isMobile: boolean;
+}
 
-// Composant pour l'effet Typewriter
-const TypewriterEffect = () => {
+// Loader pour le canvas
+const CanvasLoader = () => {
+  const { t } = useI18n();
+  
+  return (
+    <Html center>
+      <div className="flex justify-center items-center flex-col">
+        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+          {t("hero.loading")}
+        </p>
+      </div>
+    </Html>
+  );
+};
+
+// Composant Typewriter optimisé
+const TypewriterEffect: React.FC<TypewriterProps> = ({ phrases }) => {
   const [text, setText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
-  const [typingSpeed, setTypingSpeed] = useState(150);
 
   useEffect(() => {
-    const handleTyping = () => {
-      const i = loopNum % TYPEWRITER_PHRASES.length;
-      const currentPhrase = TYPEWRITER_PHRASES[i];
-
+    const currentPhrase = phrases[loopNum % phrases.length];
+    
+    const timer = setTimeout(() => {
       if (isDeleting) {
         setText(currentPhrase.substring(0, text.length - 1));
-        setTypingSpeed(50); // Vitesse d'effacement rapide
       } else {
         setText(currentPhrase.substring(0, text.length + 1));
-        setTypingSpeed(150); // Vitesse d'écriture normale
       }
 
-      // Logique de changement d'état (écriture/effacement)
       if (!isDeleting && text === currentPhrase) {
-        setTimeout(() => setIsDeleting(true), 1500); // Pause avant d'effacer
+        setTimeout(() => setIsDeleting(true), 1000);
       } else if (isDeleting && text === '') {
         setIsDeleting(false);
         setLoopNum(loopNum + 1);
       }
-    };
+    }, isDeleting ? 50 : 100);
 
-    const timer = setTimeout(handleTyping, typingSpeed);
     return () => clearTimeout(timer);
-  }, [text, isDeleting, loopNum, typingSpeed]);
+  }, [text, isDeleting, loopNum, phrases]);
 
   return (
-    <h2
-      className="text-3xl md:text-5xl font-bold mb-5 text-gray-800 dark:text-gray-200"
-      style={{ 
-        background: 'linear-gradient(135deg, #4285f4, #9c27b0)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        minHeight: '3.5rem' // pour éviter le décalage du contenu
-      }}
-    >
-      {text}
-      <span className="inline-block animate-pulse-cursor color-[linear-gradient(135deg, #4285f4, #9c27b0, #00bcd4)]">|</span>
+    <h2 className="text-2xl md:text-4xl font-bold mb-4 min-h-[3rem] flex items-center justify-center">
+      <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        {text}
+      </span>
+      <span className="inline-block w-1 h-8 ml-1 bg-blue-600 animate-pulse" />
     </h2>
   );
 };
 
-// Composant pour l'écran de code agrandi
-function LargeCodeScreen() {
-  const groupRef = useRef();
-  const [currentLine, setCurrentLine] = useState(0);
-  const [currentCode, setCurrentCode] = useState('');
-  const [isTyping, setIsTyping] = useState(true);
-
-  useEffect(() => {
-    let timer;
-    const typeCode = () => {
-      if (isTyping && currentLine < CSHARP_CODE.length) {
-        const currentLineText = CSHARP_CODE[currentLine];
-        if (currentCode.length < currentLineText.length) {
-          timer = setTimeout(() => {
-            setCurrentCode(currentLineText.substring(0, currentCode.length + 1));
-          }, Math.random() * 80 + 30);
-        } else {
-          timer = setTimeout(() => {
-            setCurrentLine(prev => prev + 1);
-            setCurrentCode('');
-          }, 400);
-        }
-      } else if (currentLine >= CSHARP_CODE.length) {
-        setIsTyping(false);
-        setTimeout(() => {
-          setCurrentLine(0);
-          setCurrentCode('');
-          setIsTyping(true);
-        }, 3000);
-      }
-    };
-    timer = setTimeout(typeCode, 100);
-    return () => clearTimeout(timer);
-  }, [currentCode, currentLine, isTyping]);
-  useFrame((state) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.05;
-    }
-  });
-  const codeElements = useMemo(() => 
-    CSHARP_CODE.slice(0, currentLine + 1).map((line, i) => {
-      let color = "#4285f4";
-      if (line.includes("public") || line.includes("private") || line.includes("void")) {
-        color = "#4285f4";
-      } else if (line.includes("class") || line.includes("float") || line.includes("bool")) {
-        color = "#34a853";
-      } else if (line.includes("if") || line.includes("else") || line.includes("return")) {
-        color = "#ea4335";
-      } else if (line.includes("new")) {
-        color = "#fbbc05";
-      } else if (/[0-9]/.test(line)) {
-        color = "#9c27b0";
-      } else if (line.startsWith("//")) {
-        color = "#6a9955";
-      } else if (line.startsWith("using")) {
-        color = "#4285f4";
-      }
-      return (
-        <Text
-          key={i}
-          color={color}
-          fontSize={0.12}
-          maxWidth={6}
-          lineHeight={1.2}
-          letterSpacing={0.02}
-          textAlign="left"
-          anchorX="left"
-          anchorY="top"
-          position={[0, -i * 0.2, 0]}
-        >
-          {i === currentLine ? currentCode + (isTyping ? "█" : "") : line}
-        </Text>
-      );
-    }), [currentCode, currentLine, isTyping]
-  );
+// Composant 3D Computer avec votre modèle
+const Computer3D: React.FC<Computer3DProps> = ({ isMobile }) => {
+  const computer = useGLTF('/desktop_pc/scene.gltf');
+  
   return (
-    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.6}>
-      <group ref={groupRef} position={[0, 0, -3]} rotation={[0, -0.2, 0]}>
-        <mesh position={[0, 0.5, -0.05]}>
-          <boxGeometry args={[6.5, 4.5, 0.15]} />
-          <meshStandardMaterial color="#0a0e17" metalness={0.9} roughness={0.1} />
-        </mesh>
-        <mesh position={[0, 0.5, 0.025]}>
-          <planeGeometry args={[6.2, 4.2]} />
-          <meshStandardMaterial color="#111827" emissive="#1e293b" emissiveIntensity={0.2} toneMapped={false} />
-        </mesh>
-        <group position={[-2.8, 2.5, 0.06]}>{codeElements}</group>
-        <mesh position={[0, -1.8, 0.2]} rotation={[0.2, 0, 0]}>
-          <boxGeometry args={[4, 0.1, 1.5]} />
-          <meshStandardMaterial color="#1a202c" metalness={0.7} roughness={0.3} />
-        </mesh>
-        {Array.from({ length: 40 }, (_, i) => (
-          <mesh
-            key={i}
-            position={[ -1.8 + (i % 10) * 0.36, -1.75, 0.3 + Math.floor(i / 10) * 0.2 ]}
-            rotation={[0.2, 0, 0]}
-          >
-            <boxGeometry args={[0.3, 0.02, 0.15]} />
-            <meshStandardMaterial color="#0f141f" metalness={0.6} roughness={0.4} />
-          </mesh>
-        ))}
-      </group>
+    <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
+      <primitive
+        object={computer.scene}
+        scale={isMobile ? 0.7 : 0.8}
+        position={isMobile ? [0, -1.5, 0] : [0, -2, 0]}
+        rotation={[-0.01, -0.2, -0.01]}
+      />
     </Float>
   );
-}
-const CSHARP_CODE = [
+};
 
-      "1 using Microsoft.AspNetCore.Builder;",
-      "2 using Microsoft.AspNetCore.Http;",
-      "3 using Microsoft.Extensions.Hosting;",
-      "4 using System.Collections.Generic;",
-      "5",
-      "6 var builder = WebApplication.CreateBuilder(args);",
-      "7 var app = builder.Build();",
-      "8",
-      "9 // In-memory list",
-      "10 List<string> forecasts = new() { \"Sunny\", \"Cloudy\", \"Rainy\" };",
-      "11",
-      "12 app.MapGet(\"/weather\", () => forecasts);",
-      "13",
-      "14 app.MapGet(\"/weather/{id:int}\", (int id) =>",
-      "15     id >= 0 && id < forecasts.Count ? Results.Ok(forecasts[id]) : Results.NotFound());",
-      "16",
-      "17 app.MapPost(\"/weather\", (string forecast) => {",
-      "18     forecasts.Add(forecast);",
-      "19     return Results.Created($\"/weather/{forecasts.Count - 1}\", forecast);",
-      "20 });",
-      "21",
-      "22 app.MapPut(\"/weather/{id:int}\", (int id, string forecast) => {",
-      "23     if (id < 0 || id >= forecasts.Count) return Results.NotFound();",
-      "24     forecasts[id] = forecast;",
-      "25     return Results.NoContent();",
-      "26 });",
-      "27",
-      "28 app.MapDelete(\"/weather/{id:int}\", (int id) => {",
-      "29     if (id < 0 || id >= forecasts.Count) return Results.NotFound();",
-      "30     forecasts.RemoveAt(id);",
-      "31     return Results.NoContent();",
-      "32 });",
-      "33",
-      "34 app.Run();"
-    ];
+// Composant ComputersCanvas
+const ComputersCanvas: React.FC = () => {
+  const [isMobile, setIsMobile] = useState(false);
 
-// Composant pour les particules Gemini
-function GeminiParticles() {
-  const particlesRef = useRef();
-  const count = 2000;
-  
-  const positions = useMemo(() => {
-    const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
-    const geminiColors = [
-      [0.258, 0.523, 0.956],
-      [0.203, 0.658, 0.325],
-      [0.917, 0.262, 0.207],
-      [0.988, 0.552, 0.235]
-    ];
-    for (let i = 0; i < count * 3; i += 3) {
-      const radius = 8 + Math.random() * 12;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI;
-      positions[i] = radius * Math.sin(phi) * Math.cos(theta);
-      positions[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      positions[i + 2] = radius * Math.cos(phi);
-      const colorIndex = Math.floor(Math.random() * geminiColors.length);
-      colors[i] = geminiColors[colorIndex][0];
-      colors[i + 1] = geminiColors[colorIndex][1];
-      colors[i + 2] = geminiColors[colorIndex][2];
-    }
-    return { positions, colors };
-  }, [count]);
-  useFrame((state) => {
-    if (particlesRef.current) {
-      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.02;
-      particlesRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.05) * 0.1;
-    }
-  });
-  return (
-    <points ref={particlesRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions.positions} itemSize={3} />
-        <bufferAttribute attach="attributes-color" count={count} array={positions.colors} itemSize={3} />
-      </bufferGeometry>
-      <pointsMaterial size={0.03} vertexColors transparent opacity={0.8} sizeAttenuation blending={THREE.AdditiveBlending} />
-    </points>
-  );
-}
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mediaQuery.matches);
 
-// Composant principal
-export default function HeroSection() {
-  const mousePosition = useRef({ x: 0, y: 0 });
-  const { theme } = useTheme();
-  const isDarkMode = theme === 'dark';
+    const handleMediaQueryChange = (event: MediaQueryListEvent) => {
+      setIsMobile(event.matches);
+    };
 
-  // On définit les couleurs en fonction de l'état
-  const bgColor = isDarkMode ? '#0a0e17' : '#ffffff';
+    mediaQuery.addEventListener('change', handleMediaQueryChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleMediaQueryChange);
+    };
+  }, []);
 
   return (
-    <section id='home' className="h-[100vh] mt-16 relative flex items-center justify-center overflow-hidden transition-colors duration-500 bg-white dark:bg-[#0a0e17]">
-      <Canvas camera={{ position: [0, 0, 10], fov: 75 }} className="absolute inset-0 z-0">
-        <color attach="background" args={[bgColor]} />
-        <ambientLight intensity={0.4} />
-        <pointLight position={[10, 10, 10]} intensity={1.2} color="#4285f4" />
-        <pointLight position={[-10, -10, -10]} intensity={0.6} color="#34a853" />
-        <pointLight position={[0, -10, 0]} intensity={0.5} color="#ea4335" />
-        <directionalLight position={[0, 5, 5]} intensity={1.0} color="#ffffff" />
-        <GeminiParticles />
-        <LargeCodeScreen />
-        <Sparkles 
-          count={200} 
-          scale={15} 
-          size={3} 
-          speed={0.5} 
-          color="#4285f4" 
-          opacity={1}
-        />
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          autoRotate
-          autoRotateSpeed={0.5}
-          maxPolarAngle={Math.PI / 2}
-          minPolarAngle={Math.PI / 3}
-        />
+    <div className="w-full h-72 md:h-96 relative z-30">
+      <Canvas
+        frameloop="demand"
+        shadows
+        camera={{ position: [12, 4, 8], fov: 35 }}
+        gl={{ preserveDrawingBuffer: true }}
+        className="relative z-30"
+      >
+        <Suspense fallback={<CanvasLoader />}>
+          <ambientLight intensity={0.7} />
+          <spotLight
+            position={[15, 20, 15]}
+            angle={0.2}
+            penumbra={1}
+            intensity={1}
+            castShadow
+          />
+          <pointLight position={[-10, -10, -10]} intensity={0.6} />
+          <pointLight position={[5, 5, 5]} intensity={0.4} color="#3b82f6" />
+          
+          <Computer3D isMobile={isMobile} />
+          
+          <Sparkles 
+            count={30} 
+            scale={8} 
+            size={2} 
+            speed={0.3}
+            color="#4285f4"
+          />
+          
+          <OrbitControls
+            enableZoom={false}
+            maxPolarAngle={Math.PI / 2}
+            minPolarAngle={Math.PI / 3}
+            autoRotate
+            autoRotateSpeed={2}
+          />
+        </Suspense>
       </Canvas>
-      
-      <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0a0e17]/80 via-transparent to-[#0a0e17]/80 dark:bg-gradient-to-t dark:from-[#0a0e17]/80 dark:via-transparent dark:to-[#0a0e17]/80"></div>
+    </div>
+  );
+};
 
-      <div className="z-20 max-w-4xl mx-auto px-6 flex flex-col items-center justify-center w-full h-full">
-        <motion.div
-          className="w-full text-center mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
-        >
+// Composant principal HeroSection
+const HeroSection: React.FC = () => {
+  const { theme } = useTheme();
+  const { t } = useI18n();
+
+  return (
+    <section id="home" className="min-h-[85vh] flex items-center justify-center relative overflow-hidden py-32 my-8">
+      <div className="container mx-auto max-w-7xl px-12 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Contenu texte */}
           <motion.div
-            className="relative mb-4"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4 }}
+            className="text-center lg:text-left relative z-20"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7 }}
           >
-            <span 
-              className="text-lg cursor-pointer hover:underline text-green-600 dark:text-green-400"
-              title="Barka dey veut dire 'Salut' dans ma langue natale."
+            {/* Salutation */}
+            <motion.div
+              className="mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
             >
-              Barka dey, moi c'est
-            </span>
+              <span 
+                className="text-lg text-green-600 dark:text-green-400 cursor-help font-kanit"
+                title={t("hero.greetingTooltip")}
+              >
+                {t("hero.greeting")}
+              </span>
+            </motion.div>
+
+            {/* Nom */}
+            <motion.h1
+              className="text-4xl md:text-5xl font-bold mb-6 font-righteous"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
+                {t("hero.name")}
+              </span>
+            </motion.h1>
+
+            {/* Typewriter */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <TypewriterEffect phrases={t("hero.typewriterPhrases")} />
+            </motion.div>
+
+            {/* Description */}
+            <motion.div
+              className="mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              <p 
+                className="text-base text-gray-600 dark:text-gray-300 leading-relaxed font-kanit"
+                dangerouslySetInnerHTML={{ __html: t("hero.description") }}
+              />
+            </motion.div>
+
+            {/* Boutons */}
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1 }}
+            >
+              <motion.button
+                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium text-base hover:shadow-xl transition-all duration-300 font-kanit"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {t("hero.buttons.viewWork")}
+              </motion.button>
+              <motion.button
+                className="px-8 py-4 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400 rounded-lg font-medium text-base hover:bg-blue-600 hover:text-white transition-all duration-300 font-kanit"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {t("hero.buttons.contact")}
+              </motion.button>
+            </motion.div>
           </motion.div>
-          <motion.h1
-            className="text-4xl md:text-5xl font-bold mb-3.5"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.6 }}
-            style={{ 
-              background: 'linear-gradient(135deg, #4285f4, #9c27b0, #00bcd4)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}
-          >
-            Mahamadou Gremah
-          </motion.h1>
-        </motion.div>
 
-        <motion.div
-          className="w-full text-center mb-5"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.8 }}
-        >
-          <TypewriterEffect />
-        </motion.div>
-
-        <motion.div
-          className="w-full text-center relative p-8 mb-8 backdrop-blur-md rounded-2xl border border-gray-300/30 dark:border-gray-700/30"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.0 }}
-          style={{
-            background: 'linear-gradient(135deg, rgba(66, 133, 244, 0.1), rgba(156, 39, 176, 0.1), rgba(0, 188, 212, 0.1))',
-          }}
-        >
+          {/* Modèle 3D */}
           <motion.div
-            className="text-lg leading-relaxed text-gray-800 dark:text-gray-200"
+            className="flex justify-center items-center relative z-30"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
           >
-            <p>
-              Je suis un jeune étudiant nigérien passionné d'informatique.<br />
-              Actuellement, je suis <strong>en 2ème année de licence en génie logiciels et Systèmes d'information</strong><br/>
-              à la <strong>Faculté des Sciences de Monastir</strong> en Tunisie.<br />
-              Je suis également à la tête d'une petite start-up nommée <strong className='bg'>GremahTech</strong>,<br />
-              qui fournit des services informatiques tels que le développement de sites Web, d'applications mobiles et certains services informatiques.
-            </p>
+            <ComputersCanvas />
           </motion.div>
-          <div className="absolute top-4 right-4 w-20 h-20 rounded-full opacity-20 bg-gradient-to-br from-blue-500 to-green-500"></div>
-          <div className="absolute bottom-4 left-4 w-16 h-16 rounded-full opacity-15 bg-gradient-to-br from-red-500 to-yellow-500"></div>
-        </motion.div>
-
-        <motion.div
-          className="flex gap-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.2 }}
-        >
-          <motion.button
-            className="px-6 py-3 font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group bg-gradient-to-r from-blue-500 via-purple-600 to-cyan-500 text-white"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <span className="relative z-10">Voir nos récents travaux</span>
-          </motion.button>
-          <motion.button
-            className="px-6 py-3 border-2 font-medium rounded-lg transition-all duration-300 border-blue-500 text-blue-500 dark:border-blue-400 dark:text-blue-400 bg-transparent hover:bg-blue-500 hover:text-white dark:hover:bg-blue-400"
-            whileHover={{ 
-              scale: 1.05,
-              backgroundColor: '#3b82f6',
-              color: 'white'
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Contactez-nous
-          </motion.button>
-        </motion.div>
+        </div>
       </div>
-
-      <style jsx>{`
-        @keyframes pulse-cursor {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-        .animate-pulse-cursor {
-          animation: pulse-cursor 1s infinite step-end;
-        }
-        @keyframes borderGlow {
-          0%, 100% {
-            background-position: 0% 50%;
-            opacity: 0.3;
-          }
-          50% {
-            background-position: 100% 50%;
-            opacity: 0.6;
-          }
-        }
-        .animate-pulse {
-          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: .5;
-          }
-        }
-      `}</style>
     </section>
   );
-}
+};
+
+export default HeroSection;

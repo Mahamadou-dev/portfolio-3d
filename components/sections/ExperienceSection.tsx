@@ -1,475 +1,428 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Text, Sphere, OrbitControls, Float } from '@react-three/drei';
-import * as THREE from 'three';
-import { useRef, useState } from 'react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../contexts/ThemeContext';
-import { FaGraduationCap, FaBriefcase, FaCalendarAlt, FaMapMarkerAlt, FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import { SiMicrosoftacademic, SiGooglescholar } from 'react-icons/si';
+import { 
+  FaGraduationCap, 
+  FaBriefcase, 
+  FaCalendarAlt, 
+  FaMapMarkerAlt, 
+  FaTrophy, 
+  FaStar, 
+  FaCode,
+  FaAward,
+  FaRocket
+} from 'react-icons/fa';
+import { BsDot } from 'react-icons/bs';
+import { Tabs, Tab, Box } from '@mui/material';
+import { useI18n } from "../i18n-provider";
 
-// Données des expériences éducatives et professionnelles
-const experiences = [
-  {
-    id: 1,
-    type: "education",
-    title: "Licence en Génie Logiciel & Systèmes d'Information",
-    institution: "Faculté des Sciences de Monastir",
-    period: "2023 - Présent",
-    location: "Monastir, Tunisie",
-    description: "Formation approfondie en développement logiciel, architecture des systèmes d'information, bases de données et technologies web modernes.",
-    achievements: ["Major de promotion", "Projets distingués en développement web", "Spécialisation en architecture cloud"],
-    technologies: ["Java", "Python", "SQL", "UML", "DevOps"],
-    subjects: ["Algorithmique et structures de données", "Développement Web", "Développement d'applications mobiles", 
-               "Réseaux", "Algèbre linéaire", "Statistiques/Probabilités", "Apprentissage automatique (ML)", 
-               "Internet des objets (IOT)", "Services Web et architecture SOA", "Cloud et Big Data"],
-    icon: <SiGooglescholar className="text-2xl" />,
-    logo: "🎓"
-  },
-  {
-    id: 2,
-    type: "education",
-    title: "Baccalauréat Scientifique( BAC C)",
-    institution: "Lycée AMADOU KOURAN DAGA (LAKD), CSP TARAT (ARLIT)",
-    period: "2020 - 2022",
-    location: "ZINDER | ARLIT, NIGER",
-    description: "Parcours scientifique avec spécialisation en mathématiques et sciences physiques. Formation préuniversitaire d'excellence.",
-    achievements: ["Mention Très Bien", "Major en mathématiques", "Projet scientifique primé"],
-    technologies: ["Mathématiques", "Physique", "Sciences de l'ingénieur"],
-    subjects: ["Mathématiques avancées", "Physique fondamentale", "Chimie", "Sciences de la vie et de la Terre", 
-               "Philosophie", "Histoire-Géographie", "Langues vivantes"],
-    icon: <SiGooglescholar className="text-2xl" />,
-    logo: "📚"
-  },
-  {
-    id: 3,
-    type: "experience",
-    title: "Développeur Fullstack Freelance",
-    institution: "GremahTech",
-    period: "2024 - Présent",
-    location: "Projets internationaux",
-    description: "Création d'applications web et mobiles sur mesure pour clients internationaux. Gestion de projet et développement fullstack.",
-    achievements: ["10+ projets livrés", "Clients satisfaits à 100%", "Solutions optimisées pour performances"],
-    technologies: ["React", "Node.js", "MongoDB", "AWS", "Firebase"],
-    subjects: [],
-    icon: <FaBriefcase className="text-2xl" />,
-    logo: "💼"
-  },
-  {
-    id: 4,
-    type: "experience",
-    title: "Commissaire aux Comptes",
-    institution: "ANEST Monastir",
-    period: "2024 - Présent",
-    location: "Monastir, Tunisie",
-    description: "Gestion de la trésorerie et supervision financière pour l'Association des Étudiants et Stagiaires Nigériens en Tunisie.",
-    achievements: ["Transparence financière totale", "Optimisation des ressources", "Rapports financiers détaillés"],
-    technologies: ["Excel", "Gestion budgétaire", "Analytique financière"],
-    subjects: [],
-    icon: <FaBriefcase className="text-2xl" />,
-    logo: "📊"
-  }
-];
-
-// Composant 3D pour les sphères de la timeline
-function ExperienceSphere({ experience, index, isActive, onClick, totalItems }) {
-  const meshRef = useRef();
-  const groupRef = useRef();
-  
-  // Position en cercle
-  const angle = (index / totalItems) * Math.PI * 2;
-  const radius = 4.5;
-  const x = Math.cos(angle) * radius;
-  const z = Math.sin(angle) * radius;
-  const y = Math.sin(index * 0.8) * 0.5; // Légère variation en hauteur
-
-  useFrame((state) => {
-    if (meshRef.current && groupRef.current) {
-      // Position du groupe
-      groupRef.current.position.x = x;
-      groupRef.current.position.z = z;
-      groupRef.current.position.y = y;
-      
-      // Animation de la sphère
-      meshRef.current.rotation.y += 0.01;
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5 + index) * 0.1;
-      
-      // Effet de pulsation pour l'élément actif
-      if (isActive) {
-        meshRef.current.scale.x = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
-        meshRef.current.scale.y = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
-        meshRef.current.scale.z = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
-      } else {
-        meshRef.current.scale.x = 1;
-        meshRef.current.scale.y = 1;
-        meshRef.current.scale.z = 1;
-      }
-    }
-  });
-
-  return (
-    <group ref={groupRef} onClick={() => onClick(experience.id)}>
-      <Float speed={3} rotationIntensity={0.5} floatIntensity={0.8}>
-        <Sphere ref={meshRef} args={[0.5, 32, 32]}>
-          <meshStandardMaterial
-            color={isActive ? "#9c27b0" : (experience.type === "education" ? "#4285f4" : "#34a853")}
-            transparent
-            opacity={0.9}
-            metalness={0.7}
-            roughness={0.2}
-            emissive={isActive ? "#9c27b0" : (experience.type === "education" ? "#4285f4" : "#34a853")}
-            emissiveIntensity={0.2}
-          />
-        </Sphere>
-      </Float>
-      <Text
-        position={[0, -1, 0]}
-        color="white"
-        fontSize={0.3}
-        anchorX="center"
-        anchorY="middle"
-        maxWidth={3}
-      >
-        {experience.institution.split(' ')[0]}
-      </Text>
-    </group>
-  );
+// Types TypeScript
+interface Experience {
+  id: number;
+  type: 'education' | 'experience';
+  title: string;
+  institution: string;
+  period: string;
+  location: string;
+  description: string;
+  achievements: string[];
+  technologies: string[];
+  subjects: string[];
+  logo: string;
+  color: string;
+  gradient: string;
 }
 
-// Composant 3D pour la timeline
-function ExperienceTimeline3D({ activeExperience, setActiveExperience }) {
-  const { theme } = useTheme();
-  const isDarkMode = theme === 'dark';
-  const bgColor = isDarkMode ? '#0a0e17' : '#ffffff';
-
-  return (
-    <Canvas camera={{ position: [0, 0, 10], fov: 60 }} className="rounded-2xl h-96 w-full">
-      <color attach="background" args={[bgColor]} />
-      <ambientLight intensity={0.6} />
-      <pointLight position={[10, 10, 10]} intensity={1.2} color="#4285f4" />
-      <pointLight position={[-10, -10, -10]} intensity={0.8} color="#9c27b0" />
-      <pointLight position={[0, 10, 0]} intensity={0.5} color="#34a853" />
-      
-      <group rotation={[0, 0, 0]}>
-        {experiences.map((exp, index) => (
-          <ExperienceSphere
-            key={exp.id}
-            experience={exp}
-            index={index}
-            isActive={activeExperience === exp.id}
-            onClick={setActiveExperience}
-            totalItems={experiences.length}
-          />
-        ))}
-        
-        {/* Cercle de la timeline */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]}>
-          <ringGeometry args={[3.8, 4.2, 64]} />
-          <meshBasicMaterial color={isDarkMode ? "#374151" : "#E5E7EB"} transparent opacity={0.5} side={THREE.DoubleSide} />
-        </mesh>
-      </group>
-      
-      <OrbitControls
-        enableZoom={false}
-        enablePan={false}
-        autoRotate
-        autoRotateSpeed={0.5}
-        maxPolarAngle={Math.PI / 1.5}
-        minPolarAngle={Math.PI / 3}
-      />
-    </Canvas>
-  );
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
 }
 
-// Composant de carte d'expérience
-function ExperienceCard({ experience, isActive, onClick }) {
+// Composant TabPanel
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
-  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <motion.div
-      className={`p-6 rounded-2xl cursor-pointer transition-all duration-500 ${
-        isActive ? 'shadow-2xl' : 'opacity-80'
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
+      {...other}
+      className={`transition-colors duration-300 ${
+        isDarkMode ? 'text-light' : 'text-dark'
       }`}
-      onClick={onClick}
-      whileHover={{ scale: 1.02 }}
-      style={{
-        background: isActive
-          ? isDarkMode
-            ? 'linear-gradient(135deg, rgba(66, 133, 244, 0.15), rgba(156, 39, 176, 0.15))'
-            : 'linear-gradient(135deg, rgba(66, 133, 244, 0.1), rgba(156, 39, 176, 0.1))'
-          : isDarkMode
-          ? 'rgba(17, 24, 39, 0.7)'
-          : 'rgba(255, 255, 255, 0.9)',
-        border: isDarkMode
-          ? `1px solid ${isActive ? 'rgba(156, 39, 176, 0.4)' : 'rgba(55, 65, 81, 0.5)'}`
-          : `1px solid ${isActive ? 'rgba(66, 133, 244, 0.3)' : 'rgba(229, 231, 235, 0.8)'}`,
-        boxShadow: isActive
-          ? isDarkMode
-            ? '0 10px 40px -10px rgba(156, 39, 176, 0.4)'
-            : '0 10px 40px -10px rgba(66, 133, 244, 0.3)'
-          : '0 4px 20px -4px rgba(0, 0, 0, 0.1)'
-      }}
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center">
-          <div
-            className="p-3 rounded-full mr-4"
-            style={{
-              background: experience.type === "education" 
-                ? 'linear-gradient(135deg, #4285f4, #34a853)'
-                : 'linear-gradient(135deg, #9c27b0, #ff6b9d)'
-            }}
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <span className="text-xl">{experience.logo}</span>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-              {experience.title}
-            </h3>
-            <p className={`font-medium ${
-              experience.type === "education" ? "text-blue-600 dark:text-blue-400" : "text-purple-600 dark:text-purple-400"
-            }`}>
-              {experience.institution}
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col items-end">
-          <div className={`px-3 py-1 rounded-full text-xs font-medium mb-2 ${
-            experience.type === "education" 
-              ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" 
-              : "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
-          }`}>
-            {experience.type === "education" ? "Éducation" : "Expérience"}
-          </div>
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsExpanded(!isExpanded);
-            }}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          >
-            {isExpanded ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
-          </button>
-        </div>
-      </div>
+            {children}
+          </motion.div>
+        </Box>
+      )}
+    </div>
+  );
+}
 
-      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-4">
-        <FaCalendarAlt className="mr-2" />
-        <span className="mr-4">{experience.period}</span>
-        <FaMapMarkerAlt className="mr-2" />
-        <span>{experience.location}</span>
-      </div>
+function a11yProps(index: number) {
+  return {
+    id: `vertical-tab-${index}`,
+    'aria-controls': `vertical-tabpanel-${index}`,
+  };
+}
 
-      <p className="text-gray-700 dark:text-gray-300 mb-4">
-        {experience.description}
-      </p>
+// Composant principal
+const ExperienceSection: React.FC = () => {
+  const { theme } = useTheme();
+  const { t } = useI18n();
+  const [value, setValue] = useState(0);
+  const isDarkMode = theme === 'dark';
 
-      {(isActive || isExpanded) && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+  const experiences: Experience[] = [
+    {
+      id: 1,
+      type: "education",
+      title: t("experience.education.softwareEngineering.title"),
+      institution: t("experience.education.softwareEngineering.institution"),
+      period: t("experience.education.softwareEngineering.period"),
+      location: t("experience.education.softwareEngineering.location"),
+      description: t("experience.education.softwareEngineering.description"),
+      achievements: t("experience.education.softwareEngineering.achievements", { returnObjects: true }),
+      technologies: t("experience.education.softwareEngineering.technologies", { returnObjects: true }),
+      subjects: t("experience.education.softwareEngineering.subjects", { returnObjects: true }),
+      logo: "🎓",
+      color: "#4285f4",
+      gradient: "from-purple-500 to-pink-500"
+    },
+    {
+      id: 2,
+      type: "education",
+      title: t("experience.education.preparatoryYear.title"),
+      institution: t("experience.education.preparatoryYear.institution"),
+      period: t("experience.education.preparatoryYear.period"),
+      location: t("experience.education.preparatoryYear.location"),
+      description: t("experience.education.preparatoryYear.description"),
+      achievements: t("experience.education.preparatoryYear.achievements", { returnObjects: true }),
+      technologies: t("experience.education.preparatoryYear.technologies", { returnObjects: true }),
+      subjects: t("experience.education.preparatoryYear.subjects", { returnObjects: true }),
+      logo: "📚",
+      color: "#34a853",
+      gradient: "from-purple-500 to-pink-500"
+    },
+    {
+      id: 3,
+      type: "experience",
+      title: t("experience.work.freelance.title"),
+      institution: t("experience.work.freelance.institution"),
+      period: t("experience.work.freelance.period"),
+      location: t("experience.work.freelance.location"),
+      description: t("experience.work.freelance.description"),
+      achievements: t("experience.work.freelance.achievements", { returnObjects: true }),
+      technologies: t("experience.work.freelance.technologies", { returnObjects: true }),
+      subjects: [],
+      logo: "🚀",
+      color: "#9c27b0",
+      gradient: "from-purple-500 to-pink-500"
+    },
+    {
+      id: 4,
+      type: "experience",
+      title: t("experience.work.anest.title"),
+      institution: t("experience.work.anest.institution"),
+      period: t("experience.work.anest.period"),
+      location: t("experience.work.anest.location"),
+      description: t("experience.work.anest.description"),
+      achievements: t("experience.work.anest.achievements", { returnObjects: true }),
+      technologies: t("experience.work.anest.technologies", { returnObjects: true }),
+      subjects: [],
+      logo: "⭐",
+      color: "#ff6b9d",
+      gradient: "from-purple-500 to-pink-500"
+    }
+  ];
+
+  return (
+    <section 
+      className="py-4 px-4 relative bg-light dark:bg-dark transition-colors duration-300"
+      id="education"
+    >
+      <div className="container mx-auto max-w-6xl">
+        {/* En-tête de section réduit */}
+        <motion.div 
+          className="text-center mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-2">Réalisations :</h4>
-          <ul className="mb-4">
-            {experience.achievements.map((achievement, index) => (
-              <li key={index} className="flex items-center text-sm text-gray-700 dark:text-gray-300 mb-1">
-                <span className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 mr-2"></span>
-                {achievement}
-              </li>
-            ))}
-          </ul>
-
-          <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-2">Technologies :</h4>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {experience.technologies.map((tech, index) => (
-              <span
-                key={index}
-                className="px-3 py-1 rounded-full text-xs font-medium"
-                style={{
-                  background: experience.type === "education" 
-                    ? 'rgba(66, 133, 244, 0.15)' 
-                    : 'rgba(156, 39, 176, 0.15)',
-                  color: experience.type === "education" 
-                    ? '#4285f4' 
-                    : '#9c27b0'
-                }}
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-          
-          {/* Nouvelle section pour les matières principales */}
-          {experience.type === "education" && experience.subjects && experience.subjects.length > 0 && (
-            <>
-              <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-2">Matières Principales :</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {experience.subjects.map((subject, index) => (
-                  <div key={index} className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                    <span className="w-2 h-2 rounded-full bg-gradient-to-r from-green-500 to-teal-500 mr-2 flex-shrink-0"></span>
-                    <span className="text-xs">{subject}</span>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </motion.div>
-      )}
-    </motion.div>
-  );
-}
-
-export default function ExperienceSection() {
-  const { theme } = useTheme();
-  const isDarkMode = theme === 'dark';
-  const [activeExperience, setActiveExperience] = useState(1);
-  const [viewMode, setViewMode] = useState('all');
-
-  const filteredExperiences = experiences.filter(exp => {
-    if (viewMode === 'all') return true;
-    return exp.type === viewMode;
-  });
-
-  return (
-    <section id="education" className="py-20 px-4 relative overflow-hidden bg-white dark:bg-[#0a0e17]">
-      {/* Background décoratif */}
-      <div className="absolute inset-0 z-0 opacity-10">
-        <div className="absolute top-0 left-0 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-        <div className="absolute top-0 right-0 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-green-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
-      </div>
-
-      <div className="container mx-auto relative z-10 max-w-4xl">
-        <motion.h2 
-          className="text-4xl md:text-5xl font-bold text-center mb-4"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          style={{ 
-            background: 'linear-gradient(135deg, #4285f4, #9c27b0, #00bcd4)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          }}
-        >
-          Mon Parcours
-        </motion.h2>
-
-        <motion.p 
-          className="text-center text-lg text-gray-600 dark:text-gray-400 mb-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-        >
-          Éducation et expériences professionnelles qui ont façonné mon expertise
-        </motion.p>
-
-        {/* Filtres */}
-        <motion.div 
-          className="flex justify-center mb-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-        >
-          <div className="flex space-x-2 p-1 rounded-xl backdrop-blur-md border"
-            style={{
-              borderColor: isDarkMode ? 'rgba(55, 65, 81, 0.5)' : 'rgba(229, 231, 235, 0.8)',
-              background: isDarkMode ? 'rgba(17, 24, 39, 0.5)' : 'rgba(255, 255, 255, 0.5)'
-            }}
-          >
-            {[
-              { key: 'all', label: 'Tout', icon: <FaBriefcase className="mr-2" /> },
-              { key: 'education', label: 'Éducation', icon: <FaGraduationCap className="mr-2" /> },
-              { key: 'experience', label: 'Expérience', icon: <FaBriefcase className="mr-2" /> }
-            ].map((item) => (
-              <button
-                key={item.key}
-                onClick={() => setViewMode(item.key)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center transition-all duration-300 ${
-                  viewMode === item.key
-                    ? 'text-white'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-                }`}
-                style={{
-                  background: viewMode === item.key
-                    ? 'linear-gradient(135deg, #4285f4, #9c27b0)'
-                    : 'transparent'
-                }}
-              >
-                {item.icon}
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Contenu en une seule colonne */}
-        <div className="space-y-12">
-          {/* Timeline 3D - Version compacte */}
           <motion.div
-            className="h-96 rounded-2xl overflow-hidden mb-8"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            style={{
-              boxShadow: isDarkMode
-                ? '0 25px 50px -12px rgba(76, 29, 149, 0.25)'
-                : '0 25px 50px -12px rgba(66, 133, 244, 0.25)'
-            }}
+            className="inline-flex items-center justify-center mb-2"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.1, type: 'spring' }}
           >
-            <ExperienceTimeline3D 
-              activeExperience={activeExperience} 
-              setActiveExperience={setActiveExperience} 
-            />
+            <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 shadow-md"> 
+              <FaGraduationCap className="text-4xl text-white" /> 
+            </div>
           </motion.div>
-          
-          {/* Détails des expériences */}
-          <motion.div
-            className="space-y-6"
+
+          <motion.h2 
+            className="text-3xl md:text-4xl font-bold mb-2 font-righteous"
+            style={{ 
+              background: 'linear-gradient(135deg, #4285f4 0%, #9c27b0 50%, #34a853 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}
+          >
+            {t("experience.title")}
+          </motion.h2>
+
+          <motion.p 
+            className="text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto font-kanit"
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            {filteredExperiences.map((exp) => (
-              <ExperienceCard
-                key={exp.id}
-                experience={exp}
-                isActive={activeExperience === exp.id}
-                onClick={() => setActiveExperience(exp.id)}
-              />
-            ))}
-          </motion.div>
-        </div>
-      </div>
+            {t("experience.subtitle")}
+          </motion.p>
+        </motion.div>
 
-      <style jsx>{`
-        @keyframes blob {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
-        }
-        
-        .animate-blob {
-          animation: blob 10s infinite;
-        }
-        
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
+        {/* Contenu principal compact */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <Box
+            sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: 2,
+              minHeight: '500px'
+            }}
+            className={`rounded-2xl shadow-xl overflow-hidden transition-colors duration-300 ${
+              isDarkMode 
+                ? 'bg-darkElevation border-gray-700' 
+                : 'bg-light border-gray-100'
+            }`}
+          >
+            {/* Onglets verticaux compacts */}
+            <Tabs
+              orientation="vertical"
+              variant="scrollable"
+              value={value}
+              onChange={handleChange}
+              aria-label="Expériences professionnelles"
+              sx={{ 
+                borderRight: 3, 
+                borderColor: 'divider',
+                minWidth: { xs: '100%', md: 200 },
+                '& .MuiTab-root': {
+                  alignItems: 'flex-start',
+                  padding: '10px 16px',
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  minHeight: '60px',
+                  '&:hover': {
+                    backgroundColor: 'rgba(156,39,176,0.1)',
+                  },
+                  '&.Mui-selected': {
+                    color: isDarkMode ? '#9c27b0' : '#4285f4',
+                    backgroundColor: 'rgba(156, 39, 176, 0.08)' ,
+                  }
+                }
+              }}
+              className="font-kanit transition-colors duration-300 bg-transparent"
+            >
+              {experiences.map((exp, index) => (
+                <Tab 
+                  key={exp.id}
+                  label={
+                    <div className="flex flex-col items-start">
+                      <span className="text-sm font-semibold">{exp.period}</span>
+                      <span className={`text-xs mt-1 ${
+                        isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                      }`}>
+                        {exp.institution.length > 25 ? exp.institution.substring(0, 25) + '...' : exp.institution}
+                      </span>
+                    </div>
+                  }
+                  {...a11yProps(index)}
+                />
+              ))}
+            </Tabs>
+
+            {/* Contenu des onglets compact */}
+            <div className="flex-1 p-2">
+              {experiences.map((exp, index) => (
+                <TabPanel key={exp.id} value={value} index={index}>
+                  {/* Carte d'expérience compacte */}
+                  <motion.div
+                    className="rounded-2xl overflow-hidden border-b shadow-lg"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <div className={`h-2 bg-gradient-to-r ${exp.gradient}`} />
+
+                    <div className={`p-6 transition-colors duration-300 ${
+                      isDarkMode ? 'bg-darkElevation' : 'bg-transparent'
+                    }`}>
+                      {/* En-tête compact */}
+                      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-4">
+                        <div className="flex items-start space-x-3 flex-1">
+                          <motion.div
+                            className={`w-12 h-12 rounded-xl bg-gradient-to-br ${exp.gradient} flex items-center justify-center text-xl shadow-md`}
+                            whileHover={{ scale: 1.05 }}
+                          >
+                            <span className="text-white">{exp.logo}</span>
+                          </motion.div>
+
+                          <div className="flex-1 min-w-0">
+                            <h3 className={`text-xl font-bold mb-1 leading-tight truncate ${
+                              isDarkMode ? 'text-white' : 'text-gray-800'
+                            }`}>
+                              {exp.institution}
+                            </h3>
+                            <p className={`font-semibold text-base bg-gradient-to-r ${exp.gradient} bg-clip-text text-transparent truncate`}>
+                              {exp.title}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className={`mt-3 lg:mt-0 px-3 py-1 rounded-lg bg-gradient-to-r ${exp.gradient} text-white font-bold text-xs shadow-md`}>
+                          {exp.period}
+                        </div>
+                      </div>
+
+                      {/* Métadonnées compactes */}
+                      <div className="flex flex-wrap items-center gap-2 mb-4">
+                        <div className={`flex items-center px-2 py-1 rounded-md text-xs ${
+                          isDarkMode ? 'bg-gray-800' : 'bg-gray-50'
+                        }`}>
+                          <FaMapMarkerAlt className="mr-1" style={{ color: exp.color }} />
+                          <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
+                            {exp.location}
+                          </span>
+                        </div>
+                        
+                        <div className={`flex items-center px-2 py-1 rounded-md text-xs ${
+                          isDarkMode ? 'bg-gray-800' : 'bg-gray-50'
+                        }`}>
+                          {exp.type === "education" ? 
+                            <FaGraduationCap className="mr-1" style={{ color: exp.color }} /> :
+                            <FaBriefcase className="mr-1" style={{ color: exp.color }} />
+                          }
+                          <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
+                            {exp.type === "education" ? t("experience.type.education") : t("experience.type.experience")}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Description courte */}
+                      <p className={`text-sm leading-relaxed mb-4 line-clamp-2 ${
+                        isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                      }`}>
+                        {exp.description}
+                      </p>
+
+                      {/* Réalisations compactes */}
+                      <div className="mb-4">
+                        <h4 className={`font-bold mb-3 flex items-center text-base ${
+                          isDarkMode ? 'text-white' : 'text-gray-800'
+                        }`}>
+                          <FaTrophy className="mr-2" style={{ color: exp.color }} />
+                          {t("experience.achievements")}
+                        </h4>
+                        <div className="space-y-2">
+                          {exp.achievements.slice(0, 2).map((achievement, idx) => (
+                            <div
+                              key={idx}
+                              className={`flex items-center p-2 rounded-lg text-sm ${
+                                isDarkMode 
+                                  ? 'bg-gray-800 border-gray-700' 
+                                  : 'bg-gray-50 border-gray-200'
+                              }`}
+                            >
+                              <FaStar className="mr-2 flex-shrink-0" style={{ color: exp.color }} />
+                              <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
+                                {achievement}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Technologies ou Matières compactes */}
+                      {exp.type === "education" ? (
+                        <div>
+                          <h4 className={`font-bold mb-2 flex items-center text-base ${
+                            isDarkMode ? 'text-white' : 'text-gray-800'
+                          }`}>
+                            <BsDot className="text-xl mr-1" style={{ color: exp.color }} />
+                            {t("experience.subjects")}
+                          </h4>
+                          <div className="flex flex-wrap gap-1">
+                            {exp.subjects.map((subject, idx) => (
+                              <span
+                                key={idx}
+                                className={`px-2 py-1 rounded text-xs ${
+                                  isDarkMode ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-700'
+                                }`}
+                              >
+                                {subject.length > 40 ? subject.substring(0, 20) + '...' : subject}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          <h4 className={`font-bold mb-2 flex items-center text-base ${
+                            isDarkMode ? 'text-white' : 'text-gray-800'
+                          }`}>
+                            <FaCode className="mr-1" style={{ color: exp.color }} />
+                            {t("experience.technologies")}
+                          </h4>
+                          <div className="flex flex-wrap gap-1">
+                            {exp.technologies.slice(0, 4).map((tech, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2 py-1 rounded text-xs backdrop-blur-sm border"
+                                style={{
+                                  background: `linear-gradient(135deg, ${exp.color}15, ${exp.color}10)`,
+                                  color: exp.color,
+                                  borderColor: `${exp.color}30`
+                                }}
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                </TabPanel>
+              ))}
+            </div>
+          </Box>
+        </motion.div>
+      </div>
     </section>
   );
-}
+};
+
+export default ExperienceSection;
