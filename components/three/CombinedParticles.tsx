@@ -4,7 +4,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Points, PointMaterial, Sparkles, Text } from '@react-three/drei';
-import * as random from 'maath/random/dist/maath-random.esm';
+import * as random from 'maath/random';
 import * as THREE from 'three';
 import { useTheme } from '../../contexts/ThemeContext';
 
@@ -69,7 +69,7 @@ const colorPalettes = {
   // Génération des couches de particules
   const particleLayers: ParticleLayer[] = [
     {
-      positions: random.inSphere(new Float32Array(config.count), { radius: config.sphereRadius }),
+      positions: random.inSphere(new Float32Array(config.count * 3), { radius: config.sphereRadius }) as Float32Array,
       color: palette.primary[0],
       size: config.baseSize * (isDarkTheme ? 1 : 1.2), // Plus grosses en mode jour
       opacity: isDarkTheme ? 0.9 : 0.8, // Opacité ajustée
@@ -77,7 +77,7 @@ const colorPalettes = {
       reaction: 0.8
     },
     {
-      positions: random.inSphere(new Float32Array(config.count), { radius: config.sphereRadius * 0.8 }),
+      positions: random.inSphere(new Float32Array(config.count * 3), { radius: config.sphereRadius * 0.8 }) as Float32Array,
       color: palette.secondary[1],
       size: config.baseSize * 0.7 * (isDarkTheme ? 1 : 1.3),
       opacity: isDarkTheme ? 0.7 : 0.7,
@@ -85,7 +85,7 @@ const colorPalettes = {
       reaction: 1.2
     },
     {
-      positions: random.inSphere(new Float32Array(config.count), { radius: config.sphereRadius * 0.6 }),
+      positions: random.inSphere(new Float32Array(config.count * 3), { radius: config.sphereRadius * 0.6 }) as Float32Array,
       color: palette.accent[2],
       size: config.baseSize * 0.5 * (isDarkTheme ? 1 : 1.4),
       opacity: isDarkTheme ? 0.6 : 0.6,
@@ -97,7 +97,7 @@ const colorPalettes = {
   // Couche supplémentaire pour Hero
   if (isHeroSection) {
     particleLayers.push({
-      positions: random.inSphere(new Float32Array(config.count), { radius: config.sphereRadius * 0.4 }),
+      positions: random.inSphere(new Float32Array(config.count * 3), { radius: config.sphereRadius * 0.4 }) as Float32Array,
       color: palette.special[0],
       size: config.baseSize * 0.3 * (isDarkTheme ? 1 : 1.5),
       opacity: isDarkTheme ? 0.5 : 0.6,
@@ -241,7 +241,7 @@ function MouseReactiveParticles({
 }) {
   const particlesRef = useRef<THREE.Points>(null);
   const [particles] = useState(() => 
-    random.inSphere(new Float32Array(200), { radius: 0.5 })
+    random.inSphere(new Float32Array(200 * 3), { radius: 0.5 }) as Float32Array
   );
 
   useFrame((state) => {

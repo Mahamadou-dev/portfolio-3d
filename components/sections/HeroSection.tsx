@@ -191,14 +191,19 @@ const HeroSection: React.FC = () => {
               </span>
             </motion.h1>
 
-            {/* Typewriter */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              <TypewriterEffect phrases={t("hero.typewriterPhrases")} />
-            </motion.div>
+                          {/* Typewriter */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+              >
+                <TypewriterEffect phrases={
+                  (() => {
+                    const phrases = t("hero.typewriterPhrases");
+                    return Array.isArray(phrases) ? phrases : [phrases];
+                  })()
+                } />
+              </motion.div>
 
             {/* Description */}
             <motion.div

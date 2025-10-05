@@ -17,7 +17,7 @@ import {
 import { BsDot } from 'react-icons/bs';
 import { Tabs, Tab, Box } from '@mui/material';
 import { useI18n } from "../i18n-provider";
-
+type TranslationArray = string[];
 // Types TypeScript
 interface Experience {
   id: number;
@@ -100,9 +100,9 @@ const ExperienceSection: React.FC = () => {
       period: t("experience.education.softwareEngineering.period"),
       location: t("experience.education.softwareEngineering.location"),
       description: t("experience.education.softwareEngineering.description"),
-      achievements: t("experience.education.softwareEngineering.achievements", { returnObjects: true }),
-      technologies: t("experience.education.softwareEngineering.technologies", { returnObjects: true }),
-      subjects: t("experience.education.softwareEngineering.subjects", { returnObjects: true }),
+      achievements: t("experience.education.softwareEngineering.achievements" as any) as unknown as TranslationArray,
+      technologies: t("experience.education.softwareEngineering.technologies" as any) as unknown as TranslationArray,
+      subjects: t("experience.education.softwareEngineering.subjects" as any) as unknown as TranslationArray,
       logo: "🎓",
       color: "#4285f4",
       gradient: "from-purple-500 to-pink-500"
@@ -115,9 +115,9 @@ const ExperienceSection: React.FC = () => {
       period: t("experience.education.preparatoryYear.period"),
       location: t("experience.education.preparatoryYear.location"),
       description: t("experience.education.preparatoryYear.description"),
-      achievements: t("experience.education.preparatoryYear.achievements", { returnObjects: true }),
-      technologies: t("experience.education.preparatoryYear.technologies", { returnObjects: true }),
-      subjects: t("experience.education.preparatoryYear.subjects", { returnObjects: true }),
+      achievements: t("experience.education.preparatoryYear.achievements" as any) as unknown as TranslationArray,
+      technologies: t("experience.education.preparatoryYear.technologies" as any) as unknown as TranslationArray,
+      subjects: t("experience.education.preparatoryYear.subjects" as any) as unknown as TranslationArray,
       logo: "📚",
       color: "#34a853",
       gradient: "from-purple-500 to-pink-500"
@@ -130,8 +130,8 @@ const ExperienceSection: React.FC = () => {
       period: t("experience.work.freelance.period"),
       location: t("experience.work.freelance.location"),
       description: t("experience.work.freelance.description"),
-      achievements: t("experience.work.freelance.achievements", { returnObjects: true }),
-      technologies: t("experience.work.freelance.technologies", { returnObjects: true }),
+      achievements: t("experience.work.freelance.achievements" as any) as unknown as TranslationArray,
+      technologies: t("experience.work.freelance.technologies" as any) as unknown as TranslationArray,
       subjects: [],
       logo: "🚀",
       color: "#9c27b0",
@@ -145,8 +145,8 @@ const ExperienceSection: React.FC = () => {
       period: t("experience.work.anest.period"),
       location: t("experience.work.anest.location"),
       description: t("experience.work.anest.description"),
-      achievements: t("experience.work.anest.achievements", { returnObjects: true }),
-      technologies: t("experience.work.anest.technologies", { returnObjects: true }),
+      achievements: t("experience.work.anest.achievements" as any) as unknown as TranslationArray,
+      technologies: t("experience.work.anest.technologies" as any) as unknown as TranslationArray,
       subjects: [],
       logo: "⭐",
       color: "#ff6b9d",
