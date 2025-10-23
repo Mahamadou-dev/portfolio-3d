@@ -287,13 +287,13 @@ function SkillCategory({
                                 className="flex flex-col items-center p-3 rounded-xl transition-all duration-200"
                                 style={{
                                     border: isDarkMode ? '1px solid rgba(75, 85, 99, 0.2)' : '1px solid rgba(209, 213, 219, 0.5)',
-                                    backgroundColor: isDarkMode ? 'rgba(17, 24, 39, 0.1)' : 'rgba(255, 255, 255, 0.4)'
+                                    backgroundColor: isDarkMode ? 'rgba(17, 24, 39, 0.1)' : 'rgba(255, 255, 255, 0.4)',
+                                    willChange: 'transform, opacity'
                                 }}
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 whileInView={{ opacity: 1, scale: 1 }}
                                 viewport={{ once: true, amount: 0.1 }}
                                 transition={{ duration: 0.4, delay: skillIndex * 0.05 }}
-                                style={{ willChange: 'transform, opacity' }}
                             >
                                 <ProgressCircle skill={skill} size={50} />
                                 <span className="mt-2 text-xs font-medium text-center text-gray-700 dark:text-gray-300">
