@@ -64,7 +64,7 @@ export default function Footer() {
             transition={{ delay: 0.2 }}
           >
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-              {t("footer.builtWith")} <span className="text-lg font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-righteous">GremahTech</span> 
+              {t("footer.builtWith")} <span className="text-lg font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-righteous"><a rel='noopener' href="https://gremah-tech.vercel.app" target='_blank'> GremahTech </a></span> 
             </p>
           </motion.div>
 

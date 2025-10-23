@@ -122,111 +122,146 @@ export default function Header() {
   );
 
   return (
-    <motion.header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass shadow-lg' : 'bg-transparent'}`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6 }}
-    >
-      <div className="container mx-auto px-5">
-        <div className="flex justify-between items-center h-16 w-full">
-          {/* Logo */}
-          <motion.a
-            href="#home"
-            onClick={(e) => handleNavClick('#home', e)}
-            className="flex items-center flex-shrink-0"
-            whileHover={{ scale: 1.05 }}
-          >
-            <img src="/logo2.png" alt="GremahTech Logo" className="h-24 w-auto object-contain" />
-          </motion.a>
-
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center justify-center space-x-4 flex-grow">
-            {NAV_ITEMS.map((item) => (
-              <motion.a
-                key={item.key}
-                href={item.href}
-                onClick={(e) => handleNavClick(item.href, e)}
-                className={`relative text-sm font-medium px-3 py-2 ${
-                  activeSection === item.href.substring(1)
-                    ? 'text-blue-600 dark:text-blue-400'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-                }`}
-              >
-                {t(`header.nav.${item.key}`)}
-              </motion.a>
-            ))}
-          </nav>
-
-          {/* Right actions */}
-          <div className="hidden md:flex items-center space-x-4">
-            <ModeToggle />
-            <LanguageSwitcher />
-          </div>
-
-          {/* Mobile actions */}
-          <div className="md:hidden flex items-center space-x-2">
-            <ModeToggle />
-            <LanguageSwitcher />
-            <MobileMenuButton />
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <motion.div
-              className="fixed inset-0 bg-black/30 backdrop-blur-lg z-40"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setIsOpen(false)}
-            />
-
-            <motion.div
-              className="fixed top-16 left-0 right-0 bg-white/80 dark:bg-black/80 backdrop-blur-2xl z-50 shadow-lg border-t border-gray-300/20 dark:border-gray-700/30"
-              initial={{ y: -30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -30, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <nav className="py-4 px-6 space-y-3">
-                {NAV_ITEMS.map((item) => (
-                  <motion.a
-                    key={item.key}
-                    href={item.href}
-                    onClick={(e) => handleNavClick(item.href, e)}
-                    className={`block py-3 px-4 text-base font-medium rounded-lg ${
-                      activeSection === item.href.substring(1)
-                        ? 'bg-blue-100/40 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/30'
-                    }`}
-                    whileHover={{ x: 5 }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    {t(`header.nav.${item.key}`)}
-                  </motion.a>
-                ))}
-              </nav>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      <style jsx>{`
-        .glass {
+    <>
+      {/* Styles CSS globaux pour l'effet glass */}
+      <style jsx global>{`
+        .header-glass {
           background: rgba(255, 255, 255, 0.75);
           backdrop-filter: blur(20px) saturate(180%);
           -webkit-backdrop-filter: blur(20px) saturate(180%);
           border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
-        .dark .glass {
+        
+        .dark .header-glass {
           background: rgba(0, 0, 0, 0.7);
+          backdrop-filter: blur(20px) saturate(180%);
+          -webkit-backdrop-filter: blur(20px) saturate(180%);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-transparent {
+          background: transparent;
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
+          border-bottom: 1px solid transparent;
+        }
+
+        /* Fallback pour les navigateurs qui ne supportent pas backdrop-filter */
+        @supports not (backdrop-filter: blur(20px)) {
+          .header-glass {
+            background: rgba(255, 255, 255, 0.95);
+          }
+          .dark .header-glass {
+            background: rgba(0, 0, 0, 0.95);
+          }
         }
       `}</style>
-    </motion.header>
+
+      <motion.header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled ? 'header-glass shadow-lg' : 'header-transparent'
+        }`}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="container mx-auto px-5">
+          <div className="flex justify-between items-center h-16 w-full">
+            {/* Logo */}
+            <motion.a
+              href="#home"
+              onClick={(e) => handleNavClick('#home', e)}
+              className="flex items-center flex-shrink-0"
+              whileHover={{ scale: 1.05 }}
+            >
+              <img src="/logo2.png" alt="GremahTech Logo" className="h-24 w-auto object-contain" />
+            </motion.a>
+
+            {/* Desktop Nav */}
+            <nav className="hidden md:flex items-center justify-center space-x-4 flex-grow">
+              {NAV_ITEMS.map((item) => (
+                <motion.a
+                  key={item.key}
+                  href={item.href}
+                  onClick={(e) => handleNavClick(item.href, e)}
+                  className={`relative text-sm font-medium px-3 py-2 transition-colors duration-200 ${
+                    activeSection === item.href.substring(1)
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+                  }`}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {t(`header.nav.${item.key}`)}
+                  {activeSection === item.href.substring(1) && (
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400"
+                      layoutId="activeSection"
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                </motion.a>
+              ))}
+            </nav>
+
+            {/* Right actions */}
+            <div className="hidden md:flex items-center space-x-4">
+              <ModeToggle />
+              <LanguageSwitcher />
+            </div>
+
+            {/* Mobile actions */}
+            <div className="md:hidden flex items-center space-x-2">
+              <ModeToggle />
+              <LanguageSwitcher />
+              <MobileMenuButton />
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isOpen && (
+            <>
+              <motion.div
+                className="fixed inset-0 bg-black/30 backdrop-blur-lg z-40"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                onClick={() => setIsOpen(false)}
+              />
+
+              <motion.div
+                className="fixed top-16 left-0 right-0 bg-white/90 dark:bg-gray-900/95 backdrop-blur-2xl z-50 shadow-lg border-t border-gray-300/20 dark:border-gray-700/30"
+                initial={{ y: -30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -30, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <nav className="py-4 px-6 space-y-3">
+                  {NAV_ITEMS.map((item) => (
+                    <motion.a
+                      key={item.key}
+                      href={item.href}
+                      onClick={(e) => handleNavClick(item.href, e)}
+                      className={`block py-3 px-4 text-base font-medium rounded-lg transition-all duration-200 ${
+                        activeSection === item.href.substring(1)
+                          ? 'bg-blue-100/40 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/30 border-l-4 border-transparent'
+                      }`}
+                      whileHover={{ x: 5 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      {t(`header.nav.${item.key}`)}
+                    </motion.a>
+                  ))}
+                </nav>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+      </motion.header>
+    </>
   );
 }

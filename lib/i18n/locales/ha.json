@@ -72,6 +72,12 @@
       "tools": {
         "title": "KAYAN AIKI"
       }
+      ,"machine_learning": {
+        "title": " COMPUTER MAI KOYO"
+      },
+      "cybersecurity": {
+        "title": "TSARON BAYANAI"
+      }
     }
   },
     "contact": {
@@ -409,7 +415,7 @@
         "issuer": "Microsoft & FreeCodeCamp",
         "description": "Tushen shirye-shiryen C#",
         "date": "2025",
-        "image": "/C#Fundamentals.png",
+        "image": "/CSharpFundamentals.png",
         "credentialUrl": "https://freecodecamp.org/certification/fcc680be38e-24e6-4887-bcfd-66b9b7e9f5ab/foundational-c-sharp-with-microsoft",
         "skills": ["C#", "POO", "Visual Studio"]
       },

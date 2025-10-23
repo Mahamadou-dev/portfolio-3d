@@ -348,7 +348,7 @@ const ExperienceSection: React.FC = () => {
                           {t("experience.achievements")}
                         </h4>
                         <div className="space-y-2">
-                          {exp.achievements.slice(0, 2).map((achievement, idx) => (
+                          {exp.achievements.map((achievement, idx) => (
                             <div
                               key={idx}
                               className={`flex items-center p-2 rounded-lg text-sm ${
@@ -383,7 +383,7 @@ const ExperienceSection: React.FC = () => {
                                   isDarkMode ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-700'
                                 }`}
                               >
-                                {subject.length > 40 ? subject.substring(0, 20) + '...' : subject}
+                                {subject.length > 40 ? subject.substring(0, 25) + '...' : subject}
                               </span>
                             ))}
                           </div>
