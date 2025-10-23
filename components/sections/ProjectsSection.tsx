@@ -181,7 +181,7 @@ const CertificationSlide: React.FC<{ certification: Certification; index: number
     } shadow-2xl border-2 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
       {/* Image */}
       <div className="lg:w-1/2 h-64 lg:h-full">
-        <a href={certification.credentialUrl}  rel="noopener noreferrer" className="block w-full h-full">
+        <a href={certification.credentialUrl} target='_blank' rel="noopener noreferrer" className="block w-full h-full">
           <img 
             src={certification.image}
             alt={certification.title}
@@ -256,6 +256,7 @@ const CertificationSlide: React.FC<{ certification: Certification; index: number
           className="flex items-center justify-center w-full px-4 py-3 rounded-lg bg-gradient-to-r from-green-500 to-teal-500 text-white font-kanit text-sm hover:from-green-600 hover:to-teal-600 transition-all mt-4"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
+          target='_blank'
         >
           <HiExternalLink className="mr-2" />
           {t("portfolio.buttons.viewCertification")}
