@@ -36,10 +36,17 @@ const PlanCard: React.FC<{
   plan: Plan;
   service: ServiceCategory;
   index: number;
-}> = ({ plan, service, index }) => {
+  onPlanSelect: (subject: string) => void; // ✨ AJOUT
+}> = ({ plan, service, index, onPlanSelect }) => { // ✨ AJOUT de onPlanSelect
   const { theme } = useTheme();
   const { t } = useI18n();
   const isDarkMode = theme === 'dark';
+
+  const handleChoosePlan = () => {
+    // Crée une chaîne de caractères formatée pour le sujet
+    const subject = `Demande de devis : ${service.title} - Plan ${getLevelText(plan.title)}`;
+    onPlanSelect(subject);
+  };
 
   const getLevelText = (level: string) => {
     return t(`services.plans.${level}.title`);
@@ -101,19 +108,21 @@ const PlanCard: React.FC<{
       </div>
 
       {/* Bouton */}
-      <motion.button
-        className={`w-full py-2 rounded-lg font-medium text-sm bg-gradient-to-r ${getLevelColor(plan.title)} text-white hover:shadow-md transition-all mt-auto`}
+       <motion.a
+        href="#contact" // Fait défiler vers la section contact
+        onClick={handleChoosePlan} // Appelle notre nouvelle fonction
+        className={`w-full block text-center py-2 rounded-lg font-medium text-sm bg-gradient-to-r ${getLevelColor(plan.title)} text-white hover:shadow-md transition-all mt-auto cursor-pointer`}
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.98 }}
       >
         {t("services.choosePlan")}
-      </motion.button>
+      </motion.a>
     </motion.div>
   );
 };
 
 // Composant Service Category
-const ServiceCategorySection: React.FC<{ service: ServiceCategory }> = ({ service }) => {
+const ServiceCategorySection: React.FC<{ service: ServiceCategory; onPlanSelect: (subject: string) => void; }> = ({ service, onPlanSelect }) => {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
 
@@ -169,13 +178,14 @@ const ServiceCategorySection: React.FC<{ service: ServiceCategory }> = ({ servic
       </div>
 
       {/* Plans */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {service.plans.map((plan, index) => (
           <PlanCard 
             key={index}
             plan={plan}
             service={service}
             index={index}
+            onPlanSelect={onPlanSelect} // 🔄 Fais passer la prop
           />
         ))}
       </div>
@@ -184,7 +194,8 @@ const ServiceCategorySection: React.FC<{ service: ServiceCategory }> = ({ servic
 };
 
 // Composant principal
-const ServicesSection: React.FC = () => {
+const ServicesSection: React.FC<{ onPlanSelect: (subject: string) => void; }> = ({ onPlanSelect }) => {
+  // ...
   const [activeCategory, setActiveCategory] = useState<number>(0);
   const { t } = useI18n();
 
@@ -260,9 +271,12 @@ const ServicesSection: React.FC = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <ServiceCategorySection service={servicesData[activeCategory]} />
+          <ServiceCategorySection 
+            service={servicesData[activeCategory]} 
+            onPlanSelect={onPlanSelect} // 🔄 Fais passer la prop
+          />
         </motion.div>
-
+         
         {/* Note */}
         <motion.div 
           className="text-center mt-6 p-4 rounded-lg border"
@@ -274,7 +288,27 @@ const ServicesSection: React.FC = () => {
           <p className="text-sm text-gray-600 dark:text-gray-400">
             {t("services.flexibilityNote")}
           </p>
+          
         </motion.div>
+        <motion.div
+          className="text-center mt-10"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          <motion.a
+            href="https://gremah-tech.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center px-8 py-3 rounded-lg font-kanit font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Découvrir d'autres services chez GremahTech
+          </motion.a>
+        </motion.div>
+        {/* --- FIN DE L'AJOUT --- */}
       </div>
     </section>
   );

@@ -120,7 +120,7 @@ const ExperienceSection: React.FC = () => {
       subjects: t("experience.education.preparatoryYear.subjects" as any) as unknown as TranslationArray,
       logo: "📚",
       color: "#34a853",
-      gradient: "from-purple-500 to-pink-500"
+      gradient: "from-blue-500 to-purple-500"
     },
     {
       id: 3,
@@ -150,7 +150,7 @@ const ExperienceSection: React.FC = () => {
       subjects: [],
       logo: "⭐",
       color: "#ff6b9d",
-      gradient: "from-purple-500 to-pink-500"
+      gradient: "from-blue-500 to-purple-500"
     }
   ];
 
@@ -397,7 +397,7 @@ const ExperienceSection: React.FC = () => {
                             {t("experience.technologies")}
                           </h4>
                           <div className="flex flex-wrap gap-1">
-                            {exp.technologies.slice(0, 4).map((tech, idx) => (
+                            {exp.technologies.slice(0, 8).map((tech, idx) => (
                               <span
                                 key={idx}
                                 className="px-2 py-1 rounded text-xs backdrop-blur-sm border"

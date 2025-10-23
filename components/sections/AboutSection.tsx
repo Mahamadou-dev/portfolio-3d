@@ -299,7 +299,7 @@ export default function AboutSection() {
             >
               {t("about.also_the_founder_and_ceo_of")}
               <span className="font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                 {" "}GremahTech
+                 {" "}<a href='https://gremah-tech.vercel.app'target='_blank'> GremahTech </a>
               </span>
               , {t("about.tiamtech_description")}
             </motion.p>

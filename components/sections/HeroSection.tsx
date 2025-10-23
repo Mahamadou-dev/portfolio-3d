@@ -229,6 +229,7 @@ const HeroSection: React.FC = () => {
                 className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium text-base hover:shadow-xl transition-all duration-300 font-kanit"
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.98 }}
+                onClick={ () => { window.location.href = '#portfolio' } }
               >
                 {t("hero.buttons.viewWork")}
               </motion.button>
@@ -236,6 +237,7 @@ const HeroSection: React.FC = () => {
                 className="px-8 py-4 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400 rounded-lg font-medium text-base hover:bg-blue-600 hover:text-white transition-all duration-300 font-kanit"
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.98 }}
+                onClick={ () => { window.location.href = '#contact' } }
               >
                 {t("hero.buttons.contact")}
               </motion.button>

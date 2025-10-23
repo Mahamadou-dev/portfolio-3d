@@ -26,18 +26,6 @@ const socialPlatforms = [
     color: 'hover:text-gray-800 dark:hover:text-white'
   },
   {
-    name: 'Facebook',
-    url: 'https://www.facebook.com/mahamadou.amadouhabougremah.1?mibextid=ZbWKwL',
-    icon: <FaFacebook />,
-    color: 'hover:text-blue-600'
-  },
-  {
-    name: 'YouTube',
-    url: 'https://youtube.com/@amadouhabougremahmahamadou805?si=vMjXRoRKiekAz6Qc',
-    icon: <FaYoutube />,
-    color: 'hover:text-red-600'
-  },
-  {
     name: 'WhatsApp',
     url: 'https://wa.me/22788778095?text=Bonjour,%20j%27aimerais%20en%20savoir%20plus%20sur%20vos%20services%20GremahTech.',
     icon: <FaWhatsapp />,

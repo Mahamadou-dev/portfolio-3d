@@ -118,6 +118,7 @@ const ProjectSlide: React.FC<{ project: Project; index: number }> = ({ project, 
           <div className="flex gap-3 mb-4">
             <motion.a
               href={project.github}
+              target='_blank'
               className={`flex items-center justify-center px-4 py-2 rounded-lg font-kanit text-sm flex-1 ${
                 isDarkMode 
                   ? 'bg-gray-700 text-white hover:bg-gray-600' 
@@ -135,6 +136,7 @@ const ProjectSlide: React.FC<{ project: Project; index: number }> = ({ project, 
               className="flex items-center justify-center px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white font-kanit text-sm flex-1 hover:from-blue-600 hover:to-purple-600 transition-all"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              target='_blank'
             >
               <HiExternalLink className="mr-2" />
               {t("portfolio.buttons.visit")}
@@ -179,11 +181,13 @@ const CertificationSlide: React.FC<{ certification: Certification; index: number
     } shadow-2xl border-2 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
       {/* Image */}
       <div className="lg:w-1/2 h-64 lg:h-full">
-        <img 
-          src={certification.image}
-          alt={certification.title}
-          className="w-full h-full object-cover"
-        />
+        <a href={certification.credentialUrl}  rel="noopener noreferrer" className="block w-full h-full">
+          <img 
+            src={certification.image}
+            alt={certification.title}
+            className="w-full h-full object-cover"
+          />
+        </a>
       </div>
       
       {/* Contenu */}

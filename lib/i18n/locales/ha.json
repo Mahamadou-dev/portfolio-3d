@@ -18,7 +18,7 @@
     "a_young_student": "Dalibi matashi",
     "niger": "DAN NIJAR",
     "residing_in_tunisia_and_it_passionated": "mai zama a Tunisiya kuma mai sha'awar fasahar kwamfuta.",
-    "currently_studies": "A halin yanzu ina cikin shekara ta biyu ta digiri a fannin Injiniyan Software & Tsarin Bayanai a Jami'ar Monastir a Tunisiya.",
+    "currently_studies": "A halin yanzu ina cikin shekara ta 3 na digiri a Injiniyan Software da Tsarin Bayanai a Kwalejin Kimiyya ta Monastir.",
     "also_the_founder_and_ceo_of": "Ni ne kuma wanda ya kafa kuma Shugaba na",
     "tiamtech_description": "ƙaramin kamfani mai basussuka da ke Nijar yana ba da ayyuka kamar haɓaka SHAFUKAN YANAR GIZO, haɓaka API Restful, haɓaka aikace-aikacen wayar hannu, da sauransu...",
     "anest_post": "Ni ne mai duba asusun kuɗi na sashin Monastir na ANEST (Ƙungiyar Dalibai da Masu Horarwa 'Yan Nijar a Tunisiya), inda nake tabbatar da gaskiya da bin ka'idojin kuɗaɗen ƙungiyar.",
@@ -26,7 +26,7 @@
     "personalInfo": {
       "age": {
         "label": "Shekaru",
-        "value": "Shekaru 22"
+        "value": "Shekaru 20"
       },
       "nationality": {
         "label": "Ƙasa",
@@ -44,6 +44,7 @@
   },
   "skills": {
     "title": "Gwaninta",
+    "recent_technologies_intro":"Ga wasu fasahohi da na yi aiki da su kwanan nan:",
     "strengths": {
       "productivity": {
         "title": "Yawan aiki"
@@ -146,9 +147,8 @@
         "location": "Monastir, Tunisiya",
         "description": "Horon zurfi a haɓaka software, tsarin tsarin bayanai, bayanai da fasahohin yanar gizo na zamani tare da hanya mai aiki da ƙirƙira.",
         "achievements": [
-          "Mafi girma a ajin tare da matsakaicin 16.5/20",
-          "Ayyukan da suka bambanta a cikin haɓakar gidan yanar gizo cikakke",
-          "Ƙwarewa a tsarin gajimare da microservices"
+          "Mafi girma a ajin tare da matsakaicin 16.22/20 a shekara ta 2",
+          "Ayyukan da suka bambanta a cikin haɓakar gidan yanar gizo cikakke"
         ],
         "technologies": ["Java", "Python", "SQL", "UML", "DevOps", "Docker", "AWS"],
         "subjects": [
@@ -170,9 +170,9 @@
         "location": "Arlit, Nijar",
         "description": "Shekara mai zurfi na shirye-shirye don ilimi mai girma tare da mayar da hankali kan kimiyyun asali da shirye-shiryen karatun injiniya.",
         "achievements": [
-          "Mention Very Good tare da taya murna daga alkali",
+          "Lambar yabo ta musamman tare da taya murna daga alkali",
           "Ƙwararrun ilimi a kimiyyun asali",
-          "Shirye-shiryen jami'a mai zurfi da tsari"
+          "na farko a yankin Agadez a jarrabawar Baccalaureate ta Kimiyya"
         ],
         "technologies": ["Lissafi na ci gaba", "Kimiyyar lissafi", "Sinadaran", "Kimiyyar Injiniya"],
         "subjects": [
@@ -189,13 +189,13 @@
         "institution": "GremahTech",
         "period": "2024 - Yanzu",
         "location": "Ayyukan ƙasa da ƙasa (Nesa)",
-        "description": "Ƙirƙira da haɓaka aikace-aikacen yanar gizo da na wayar hannu na al'ada don abokan ciniki na duniya, tare da mayar da hankali kan ƙirƙirar fasaha da ƙwarewar mai amfani na musamman.",
+        "description": "Karamin kamfani na cikin gida da ya himmatu wajen kawo sauyin zamani na dijital a Nijar, yana samar da manhajojin kwamfuta, ayyukan tallafi na IT, da kuma horarwa a fannin fasaha.",
         "achievements": [
-          "15+ ayyukan da aka bayar tare da kimar gamsuwar abokin ciniki 100%",
+          "Kammala ayyukan da aka bayar tare da kimar gamsuwar abokin ciniki 100%",
           "Haɓakar mafita na SaaS masu ƙirƙira don farawa",
           "Ingantaccen aiki tare da ribar saurin 300%"
         ],
-        "technologies": ["React", "Next.js", "Node.js", "MongoDB", "AWS", "Firebase", "TypeScript", "Tailwind"]
+        "technologies": ["React", "Next.js", "Node.js", "MongoDB", "AWS", "Firebase", "TypeScript", "Tailwind","..."]
       },
       "anest": {
         "title": "Mai Duba Asusun Kuɗi & Ma'ajin",
@@ -205,113 +205,259 @@
         "description": "Gudanar da asusun kuɗi na dabarun da kulawar kuɗi don ƙungiyar ɗalibai sama da 200, yana tabbatar da gaskiya da ingantaccen amfani da albarkatun.",
         "achievements": [
           "Aiwatar da tsarin sarrafa kuɗi na dijital",
-          "Ingantaccen farashin aiki na 40%",
+          "Ingantaccen farashin aiki",
           "Rahoton kuɗi na kwata-kwata wanda membobin suka yaba"
         ],
         "technologies": ["Excel na ci gaba", "Gudanar da kasafin kuɗi", "Binciken kuɗi", "Jagoranci", "Sadarwa"]
       }
     }
   },
+
+
   "portfolio": {
-    "title": "Portfolio & Takaddun shaida",
-    "subtitle": "Gano ayyukana masu ƙirƙira da takaddun shaida na ƙwararru",
+    "title": "Tarin Ayyuka & Takaddun Shaida",
+    "subtitle": "Gano ayyukana na zahiri da takaddun shaida na kwarewa",
     "tabs": {
       "projects": "Ayyuka",
-      "certifications": "Takaddun shaida"
+      "certifications": "Takaddun Shaida"
     },
     "buttons": {
-      "github": "Github",
-      "visit": "Ziyarci",
-      "viewCertification": "Dubi takaddun shaida"
+      "github": "GitHub",
+      "visit": "Ziyarta",
+      "viewCertification": "Duba Takardar Shaida"
     },
     "certification": {
       "issuer": "Mai Bayarwa",
-      "date": "Kwanan wata"
+      "date": "Kwanan Wata"
     },
-    "empty": "Babu {{type}} don nuna a halin yanzu",
+    "empty": "Babu {{type}} da za a nuna a yanzu",
     "projects": [
       {
         "id": 1,
-        "title": "E-Commerce mai shiga ciki 3D",
-        "description": "Dandalin siyarwa tare da kallon samfuran 3D da gaskiyar haɓaka. Interface mai sauƙi da ƙwarewar mai amfani mai shiga ciki.",
+        "title": "GremahElectro",
+        "description": "Dandalin kasuwancin e-commerce na farko a Zinder, wanda ya kware a siyar da na'urorin lantarki masu inganci a yanar gizo, tare da sauƙin amfani da biyan kuɗi amintacce.",
         "technologies": [
           { "title": "React", "icon": "React", "color": "#61DAFB" },
           { "title": "Three.js", "icon": "Three.js", "color": "#000000" },
           { "title": "Node.js", "icon": "Node.js", "color": "#339933" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" }
+          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
+          { "title": "Appwrite", "icon": "Appwrite", "color": "#F938AA" },
+          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" }
         ],
-        "image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop",
-        "github": "https://github.com",
-        "liveUrl": "https://example.com",
+        "image": "/Electro.png",
+        "github": "https://github.com/Mahamadou-dev/Gremah_Electro",
+        "liveUrl": "https://gremah-electro.netlify.app",
         "numberOfBranches": 12,
         "numberOfLikes": 25
       },
       {
         "id": 2,
-        "title": "Dashboard na AI Analytics",
-        "description": "Dashboard mai hankali tare da koyon injini da nazari na ainihi don bayanai masu rikitarwa.",
+        "title": "GremahMind",
+        "description": "Aikace-aikacen yanar gizo da ke amfani da AI don nazarin rubutu da fayilolin PDF don samar da taƙaitaccen bayani da mahimman bayanai, mai amfani ga ɗalibai da ƙwararru.",
         "technologies": [
           { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
           { "title": "Python", "icon": "Python", "color": "#3776AB" },
-          { "title": "TensorFlow", "icon": "TensorFlow", "color": "#FF6F00" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" }
+          { "title": "FastAPI", "icon": "FastAPI", "color": "#FF6F00" },
+          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
+          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
+          { "title": "Hugging Face", "icon": "HuggingFace", "color": "#FF6F00" },
+          { "title": "Appwrite", "icon": "Appwrite", "color": "#F938AA" },
+          { "title": "Three.js", "icon": "Three.js", "color": "#000000" }
         ],
-        "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
-        "github": "https://github.com",
-        "liveUrl": "https://example.com",
+        "image": "/Gmind.png",
+        "github": "https://github.com/Mahamadou-dev/GremahMind-docs_fstack.git",
+        "liveUrl": "https://gremah-mind-docs.vercel.app",
         "numberOfBranches": 8,
         "numberOfLikes": 42
       },
       {
         "id": 3,
-        "title": "App na Fitness na AI",
-        "description": "Aikace-aikacen fitness tare da kocin AI na sirri, bin aiki da shawarwari masu hankali.",
+        "title": "FSMClassrooms",
+        "description": "REST API don FSMClassrooms, aikace-aikacen yanar gizo mai kama da Google Classroom don Kwalejin Kimiyya ta Monastir, don gudanar da darussa, ayyukan dakin gwaje-gwaje, da kimanta ɗalibai.",
         "technologies": [
-          { "title": "React Native", "icon": "React", "color": "#61DAFB" },
-          { "title": "Node.js", "icon": "Node.js", "color": "#339933" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
-          { "title": "AWS", "icon": "Amazon", "color": "#FF9900" }
+          { "title": "ASP.NET Core", "icon": "ASP", "color": "#61DAFB" },
+          { "title": "SQL Server", "icon": "SQL Server", "color": "#339933" },
+          { "title": "Microsoft Azure", "icon": "Azure", "color": "#47A248" },
+          { "title": "Entity Framework", "icon": "Entity Framework", "color": "#FF9900" }
         ],
-        "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop",
-        "github": "https://github.com",
+        "image": "/FSMClassrooms.png",
+        "github": "https://github.com/Mahamadou-dev/ClassroomApp.git",
         "liveUrl": "https://example.com",
         "numberOfBranches": 20,
         "numberOfLikes": 89
+      },
+      {
+        "id": 4,
+        "title": "HabaruBlog",
+        "description": "Dandalin rubutun blog na zamani don ƙirƙira, rabawa, da gano labarai tare da sauƙin amfani da fasalulluka na sada zumunta.",
+        "technologies": [
+          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
+          { "title": "Node.js", "icon": "Node.js", "color": "#339933" },
+          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
+          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
+          { "title": "Appwrite", "icon": "Appwrite", "color": "#F938AA" },
+          { "title": "Three.js", "icon": "Three.js", "color": "#000000" }
+        ],
+        "image": "HabaruBlog.png",
+        "github": "https://github.com/Mahamadou-dev/habaru-feminine-elegance.git",
+        "liveUrl": "https://habarublog.netlify.app",
+        "numberOfBranches": 15,
+        "numberOfLikes": 34
+      },
+      {
+        "id": 5,
+        "title": "e-Koudi Bank",
+        "description": "Cikakken aikace-aikacen tebur na Java don gudanar da ayyukan banki: abokan ciniki, asusu, ma'amaloli, lamuni, da rahotannin kuɗi.",
+        "technologies": [
+          { "title": "Java", "icon": "Java", "color": "#007396" },
+          { "title": "Java Swing", "icon": "JavaSwing", "color": "#FF9900" },
+          { "title": "MySQL", "icon": "MySQL", "color": "#4479A1" }
+        ],
+        "image": "/EKoudi.png",
+        "github": "https://github.com/Mahamadou-dev/e-Koudi-Bank.git",
+        "liveUrl": "https://example.com",
+        "numberOfBranches": 10,
+        "numberOfLikes": 29
+      },
+      {
+        "id": 6,
+        "title": "Jakarta Banking",
+        "description": "Karamin cikakken aikace-aikacen yanar gizo na Java don gudanar da abokan ciniki da asusu, wanda ya dace da ƙananan bankuna da cibiyoyin ba da lamuni.",
+        "technologies": [
+          { "title": "Java", "icon": "Java", "color": "#007396" },
+          { "title": "Jakarta EE", "icon": "Jakarta EE", "color": "#6DB33F" },
+          { "title": "MySQL", "icon": "MySQL", "color": "#4479A1" }
+        ],
+        "image": "/GestionClientJEE.png",
+        "github": "https://github.com/Mahamadou-dev/TP-4-JEE-.git",
+        "liveUrl": "https://example.com",
+        "numberOfBranches": 7,
+        "numberOfLikes": 15
+      },
+      {
+        "id": 7,
+        "title": "Géo Concept Tech",
+        "description": "Shafin yanar gizo na nunawa don Géo Concept Tech, wanda ya kware a fannin fasahohin geospatial da GIS a Nijar.",
+        "technologies": [
+          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
+          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
+          { "title": "Vercel", "icon": "Vercel", "color": "#000000" },
+          { "title": "Framer Motion", "icon": "Framer Motion", "color": "#0055FF" },
+          { "title": "Three.js", "icon": "Three.js", "color": "#000000" }
+        ],
+        "image": "/Geo-concept.png",
+        "github": "https://github.com",
+        "liveUrl": "https://geo-concept.vercel.app",
+        "numberOfBranches": 5,
+        "numberOfLikes": 20
       }
     ],
     "certifications": [
       {
         "id": 1,
-        "title": "Haɓaka Full Stack na Ci gaba",
-        "issuer": "Meta",
-        "description": "Cikakken takaddun shaida a cikin haɓakar gidan yanar gizo cikakke tare da React, Node.js da tsarin gajimare",
-        "date": "Jan 2024",
-        "image": "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=400&fit=crop",
+        "title": "Zane-zanen Hoto",
+        "issuer": "Cabinet Multi Service de Niamey",
+        "description": "Horon kan layi na makonni 2 a fannin zane-zanen hoto",
+        "date": "2025",
+        "image": "/Infographie.png",
         "credentialUrl": "https://example.com",
-        "skills": ["React", "Node.js", "MongoDB", "Express", "GraphQL"]
+        "skills": ["Zane-zanen Hoto", "Zane", "Adobe Photoshop"]
       },
       {
         "id": 2,
-        "title": "Injiniyan Koyon Injini",
-        "issuer": "Google",
-        "description": "Takaddun shaida na ci gaba a cikin hankalin wucin gadi, koyon injini da zurfin koyo",
-        "date": "Dec 2023",
-        "image": "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=600&h=400&fit=crop",
-        "credentialUrl": "https://example.com",
-        "skills": ["Python", "TensorFlow", "Scikit-learn", "Deep Learning"]
+        "title": "Python 1",
+        "issuer": "Python Institute & Cisco Networking Academy",
+        "description": "Takardar shaidar Python na matakin farko",
+        "date": "2025",
+        "image": "/Python1.png",
+        "credentialUrl": "https://www.credly.com/badges/12f73882-f113-4675-905d-08a93aeed04c/linked_in_profile",
+        "skills": ["Python", "Shirye-shirye", "Algorithms"]
       },
       {
         "id": 3,
-        "title": "Tsarin Gajimare na AWS",
-        "issuer": "Amazon Web Services",
-        "description": "Tsarin gajimare na ci gaba, mafita na AWS da ingantaccen farashi don kasuwanci",
-        "date": "Nov 2023",
-        "image": "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=600&h=400&fit=crop",
+        "title": "Muhimman Abubuwan Linux",
+        "issuer": "NDG",
+        "description": "Tushen tsarin Linux da gudanarwarsa",
+        "date": "2025",
+        "image": "/Linux.png",
+        "credentialUrl": "https://www.credly.com/badges/6867af60-c8b3-474e-8d86-f73537f3b1a5/linked_in_profile",
+        "skills": ["Linux", "Umarnin Shell", "Gudanarwa"]
+      },
+      {
+        "id": 4,
+        "title": "Gabatarwa ga Tsaron Intanet",
+        "issuer": "Cisco",
+        "description": "Ka'idojin asali na tsaron intanet",
+        "date": "2025",
+        "image": "Cybersecurity.png",
+        "credentialUrl": "https://www.credly.com/badges/02e8f1ed-9edc-4c7e-804a-3493a942545d/linked_in_profile",
+        "skills": ["Tsaron Intanet", "Sadurwa", "Kariyar Bayanai"]
+      },
+      {
+        "id": 5,
+        "title": "HTML5",
+        "issuer": "JS Institute & Cisco",
+        "description": "Ƙwarewa a tushen HTML5 don haɓaka yanar gizo",
+        "date": "2025",
+        "image": "/HTML5.png",
+        "credentialUrl": "https://www.credly.com/badges/c912ef12-018d-4418-b81a-681b8e11844f/linked_in_profile",
+        "skills": ["HTML5", "Tsarin Yanar Gizo", "SEO"]
+      },
+      {
+        "id": 6,
+        "title": "Tushen C#",
+        "issuer": "Microsoft & FreeCodeCamp",
+        "description": "Tushen shirye-shiryen C#",
+        "date": "2025",
+        "image": "/C#Fundamentals.png",
+        "credentialUrl": "https://freecodecamp.org/certification/fcc680be38e-24e6-4887-bcfd-66b9b7e9f5ab/foundational-c-sharp-with-microsoft",
+        "skills": ["C#", "POO", "Visual Studio"]
+      },
+      {
+        "id": 7,
+        "title": "Amazon EC2",
+        "issuer": "AWS",
+        "description": "Gudanarwa da tura misalan EC2",
+        "date": "2025",
+        "image": "/AmazonEC2.png",
         "credentialUrl": "https://example.com",
-        "skills": ["AWS", "CloudFormation", "DevOps", "Microservices"]
+        "skills": ["AWS EC2", "Kwamfuta a Giron Sama", "Turawa"]
+      },
+      {
+        "id": 8,
+        "title": "Amazon S3",
+        "issuer": "AWS",
+        "description": "Adanawa da gudanar da abubuwa a cikin Amazon S3",
+        "date": "2025",
+        "image": "/AmazonS3.png",
+        "credentialUrl": "https://example.com",
+        "skills": ["AWS S3", "Adana a Giron Sama", "Gudanar da Bayanai"]
+      },
+      {
+        "id": 9,
+        "title": "Tushen Kayan Kwamfuta",
+        "issuer": "Cisco",
+        "description": "Horarwa akan ainihin ra'ayoyin kayan aikin kwamfuta",
+        "date": "2025",
+        "image": "/Hardware.png",
+        "credentialUrl": "https://www.credly.com/badges/dd96cfde-2c4b-4abb-ac61-00f4f7fadba0/linked_in_profile",
+        "skills": ["Kayan Kwamfuta", "Abubuwan Haɗi", "Gine-ginen PC"]
+      },
+      {
+        "id": 10,
+        "title": "Learn-a-Thon 2025",
+        "issuer": "Cisco",
+        "description": "Shiga cikin wani babban gasar hackathon na fasaha da tsaron intanet",
+        "date": "2025",
+        "image": "LearnAThon2025.png",
+        "credentialUrl": "https://www.credly.com/badges/83758877-c66b-4ebb-bfff-02477f21b9e7/linked_in_profile",
+        "skills": ["Shirye-shirye", "Tsaron Intanet", "Aiki a Ƙungiyance"]
       }
     ]
-  },
+  }
+,
+
+
    "services": {
     "title": "Ayyukana",
     "subtitle": "Cikakkun mafita da suka dace da bukatun ku na dijital",
@@ -329,161 +475,47 @@
         "title": "Na Musamman"
       }
     },
-    "categories": [
-      {
-        "id": 0,
-        "title": "Haɓaka Software",
-        "description": "Aikace-aikacen yanar gizo, wayar hannu da na baya na al'ada tare da fasahohin zamani",
-        "advantages": [
-          "Aikace-aikacen yanar gizo masu amsawa React/Next.js",
-          "Aikace-aikacen wayar hannu iOS/Android Flutter",
-          "Ingantaccen backend Node.js/Python",
-          "API RESTful masu tsaro",
-          "Bayanan da aka inganta",
-          "Gwaji da ci gaba da turawa",
-          "Kulawa da tallafi"
-        ],
-        "icon": "💻",
-        "color": "from-blue-500 to-cyan-500",
-        "plans": [
-          {
-            "title": "basic",
-            "priceperHour": { "FCFA": 15000, "USD": 25 },
-            "advantagesIndexes": [0, 1, 2]
-          },
-          {
-            "title": "standard",
-            "priceperHour": { "FCFA": 25000, "USD": 42 },
-            "advantagesIndexes": [0, 1, 2, 3, 4]
-          },
-          {
-            "title": "premium",
-            "priceperHour": { "FCFA": 40000, "USD": 67 },
-            "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
-          }
-        ],
-        "technologies": [
-          { "icon": "⚛️", "name": "React" },
-          { "icon": "🔗", "name": "Node.js" },
-          { "icon": "📱", "name": "Flutter" },
-          { "icon": "🐍", "name": "Python" }
-        ]
-      },
-      {
-        "id": 1,
-        "title": "Taimakon IT",
-        "description": "Tallafi, kulawa da inganta tsarin kwamfutarka",
-        "advantages": [
-          "Tallafin fasaha na nesa 24/7",
-          "Bincike da warwarewa cikin sauri",
-          "Shigarwa da saiti",
-          "Kulawa na riga-kafi na yau da kullun",
-          "Ajiyar bayanai da tsaro",
-          "Inganta aiki",
-          "Horar da masu amfani"
-        ],
-        "icon": "🔧",
-        "color": "from-green-500 to-teal-500",
-        "plans": [
-          {
-            "title": "basic",
-            "priceperHour": { "FCFA": 10000, "USD": 17 },
-            "advantagesIndexes": [0, 1]
-          },
-          {
-            "title": "standard",
-            "priceperHour": { "FCFA": 18000, "USD": 30 },
-            "advantagesIndexes": [0, 1, 2, 3]
-          },
-          {
-            "title": "premium",
-            "priceperHour": { "FCFA": 30000, "USD": 50 },
-            "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
-          }
-        ],
-        "technologies": [
-          { "icon": "☁️", "name": "Gajimare" },
-          { "icon": "🔒", "name": "Tsaro" },
-          { "icon": "⚡", "name": "Aiki" }
-        ]
-      },
-      {
-        "id": 2,
-        "title": "Zane & Ƙirƙirar Abun ciki",
-        "description": "Zane na UI/UX na zamani da ƙirƙirar abun ciki mai jan hankali",
-        "advantages": [
-          "Zanen interfaces na zamani tare da Figma",
-          "Ingantaccen ƙwarewar mai amfani",
-          "Ƙirƙirar samfura masu hulɗa",
-          "Tsarin zane mai daidaito",
-          "Abun ciki na zane da na gani",
-          "Alama da ainihin bayyanar gani",
-          "Ingantaccen juyawa"
-        ],
-        "icon": "🎨",
-        "color": "from-purple-500 to-pink-500",
-        "plans": [
-          {
-            "title": "basic",
-            "priceperHour": { "FCFA": 12000, "USD": 20 },
-            "advantagesIndexes": [0, 1]
-          },
-          {
-            "title": "standard",
-            "priceperHour": { "FCFA": 20000, "USD": 33 },
-            "advantagesIndexes": [0, 1, 2, 3]
-          },
-          {
-            "title": "premium",
-            "priceperHour": { "FCFA": 35000, "USD": 58 },
-            "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
-          }
-        ],
-        "technologies": [
-          { "icon": "✏️", "name": "Figma" },
-          { "icon": "🎭", "name": "Adobe" },
-          { "icon": "📐", "name": "UI/UX" }
-        ]
-      },
-      {
-        "id": 3,
-        "title": "Horarwa Na Musamman",
-        "description": "Darussan da suka dace a cikin haɓakawa da fasahohin dijital",
-        "advantages": [
-          "Shirye-shiryen da suka dace da sirri",
-          "Ayyuka masu aiki na gaske",
-          "Ci gaba da tallafi da jagoranci",
-          "Albarkatun ilimi na musamman",
-          "Shirye-shiryen takaddun shaida",
-          "Shiga cikin al'umma ta sirri",
-          "Bin ci gaba cikin daki-daki"
-        ],
-        "icon": "🎓",
-        "color": "from-orange-500 to-red-500",
-        "plans": [
-          {
-            "title": "basic",
-            "priceperHour": { "FCFA": 8000, "USD": 13 },
-            "advantagesIndexes": [0, 1]
-          },
-          {
-            "title": "standard",
-            "priceperHour": { "FCFA": 15000, "USD": 25 },
-            "advantagesIndexes": [0, 1, 2, 3]
-          },
-          {
-            "title": "premium",
-            "priceperHour": { "FCFA": 25000, "USD": 42 },
-            "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
-          }
-        ],
-        "technologies": [
-          { "icon": "👨‍💻", "name": "Lamba" },
-          { "icon": "⚙️", "name": "Kayan aiki" },
-          { "icon": "📚", "name": "Albarkatu" }
-        ]
-      }
-    ]
+"categories": [
+    {
+      "id": 0,
+      "icon": "💻",
+      "color": "from-blue-500 to-cyan-500",
+      "title": "Haɓaka Software",
+      "description": "Aikace-aikacen yanar gizo, wayar hannu da na baya na al'ada tare da fasahohin zamani",
+      "advantages": [
+        "Aikace-aikacen yanar gizo masu amsawa React/Next.js",
+        "Aikace-aikacen wayar hannu iOS/Android Flutter",
+        "Ingantaccen backend Node.js/Python",
+        "API RESTful masu tsaro",
+        "Bayanan da aka inganta",
+        "Gwaji da ci gaba da turawa",
+        "Kulawa da tallafi"
+      ],
+      "plans": [
+        {
+          "title": "basic",
+          "priceperHour": { "FCFA": 10000, "USD": 17 },
+          "advantagesIndexes": [0, 1, 2]
+        },
+        {
+          "title": "standard",
+          "priceperHour": { "FCFA": 20000, "USD": 33 },
+          "advantagesIndexes": [0, 1, 2, 3, 4]
+        },
+        {
+          "title": "premium",
+          "priceperHour": { "FCFA": 35000, "USD": 58 },
+          "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
+        }
+      ],
+      "technologies": [
+        { "icon": "⚛️", "name": "React" },
+        { "icon": "🔗", "name": "Node.js" },
+        { "icon": "📱", "name": "Flutter" },
+        { "icon": "🐍", "name": "Python" }
+      ]
+    }
+  ]
   },
   "hero": {
     "greeting": "Barka dey !",
@@ -494,10 +526,11 @@
       "Mai haɓaka C# .NET",
       "Mai haɓaka React & Next.js",
       "Mai haɓaka Android",
-      "Mai sha'awar AI da ML",
+      "Mai sha'awar   Machine Learning",
+      "Mai sha'awar Tsaron Intanet da bayanai",
       "Wanda ya kafa kamfanin GremahTech"
     ],
-    "description": "Ni ɗalibi ne ɗan Najar mai sha'awar kimiyyar kwamfuta. A halin yanzu ina cikin <strong>shekara ta 2 a karatun kimiyya da fasaha ɓangaren injiniyan yanar gizo da tsaron bayanai</strong> a <strong>Faculty of Sciences of Monastir</strong> a Tunisiya. Wanda ya kafa <strong>GremahTech</strong>, kamfani ne na farako wanda ya ƙware a haɓaka manhajar yanar gizo da wayar hannu a garin Damagaram.",
+    "description": "Ni ɗalibi ne ɗan Najar mai sha'awar kimiyyar kwamfuta. A halin yanzu ina cikin <strong>shekara ta 3</strong> na digiri a Injiniyan Software & Tsarin Bayanai a Jami'ar Monastir. Ni ne kuma wanda ya kafa kuma Shugaba na <strong>GremahTech</strong>, ƙaramin kamfani mai basussuka da ke Nijar wanda ke ba da ayyuka kamar haɓaka SHAFUKAN YANAR GIZO, haɓaka API Restful, haɓaka aikace-aikacen wayar hannu, da sauransu...",
     "buttons": {
       "viewWork": "Dubi ayyukanmu na baya-bayan nan",
       "contact": "Tuntuɓe mu"

@@ -18,7 +18,7 @@
     "a_young_student": "A young student",
     "niger": "NIGERIEN",
     "residing_in_tunisia_and_it_passionated": "residing in Tunisia and especially passionate about IT.",
-    "currently_studies": "I am currently in my second year of a bachelor's degree in Software Engineering & Information Systems at the University of Monastir in Tunisia.",
+    "currently_studies": "I am currently in my third year of Bachelor's degree in Software Engineering and Information Systems at the Faculty of Sciences of Monastir.",
     "also_the_founder_and_ceo_of": "I am also the founder & CEO of",
     "tiamtech_description": "a small start-up based in Niger providing services such as WEBSITE development, Restful API development, mobile application development, etc...",
     "anest_post": "I am the treasury auditor of the Monastir section of ANEST (Association of Nigerien Students and Trainees in Tunisia), where I ensure the transparency and compliance of the association's finances.",
@@ -26,7 +26,7 @@
     "personalInfo": {
       "age": {
         "label": "Age",
-        "value": "22 years"
+        "value": "20 years"
       },
       "nationality": {
         "label": "Nationality",
@@ -44,6 +44,7 @@
   },
   "skills": {
     "title": "Skills",
+    "recent_technologies_intro":	"Here are some technologies I've worked with most recently:",
     "strengths": {
       "productivity": {
         "title": "Productivity"
@@ -146,9 +147,8 @@
         "location": "Monastir, Tunisia",
         "description": "In-depth training in software development, information systems architecture, databases and modern web technologies with a practical and innovative approach.",
         "achievements": [
-          "Top of class with an average of 16.5/20",
-          "Distinguished projects in fullstack web development",
-          "Specialization in cloud architecture and microservices"
+          "Top of class with an average of 16.22/20 at 2nd year",
+          "Distinguished projects in fullstack web development"
         ],
         "technologies": ["Java", "Python", "SQL", "UML", "DevOps", "Docker", "AWS"],
         "subjects": [
@@ -172,7 +172,7 @@
         "achievements": [
           "Very Good honors with jury congratulations",
           "Academic excellence in fundamental sciences",
-          "Intensive and methodological university preparation"
+          "top of Agadez region in the Scientific Baccalaureate"
         ],
         "technologies": ["Advanced Mathematics", "Physics", "Chemistry", "Engineering Sciences"],
         "subjects": [
@@ -189,13 +189,13 @@
         "institution": "GremahTech",
         "period": "2024 - Present",
         "location": "International projects (Remote)",
-        "description": "Creation and development of custom web and mobile applications for an international clientele, with a focus on technical innovation and exceptional user experience.",
+        "description": "A local startup committed to the digital transformation of Niger, providing software solutions, IT support services, and technology training.",
         "achievements": [
-          "15+ projects delivered with 100% client satisfaction rate",
+          "Projects delivered with 100% client satisfaction rate",
           "Development of innovative SaaS solutions for startups",
           "Performance optimization with 300% speed gains"
         ],
-        "technologies": ["React", "Next.js", "Node.js", "MongoDB", "AWS", "Firebase", "TypeScript", "Tailwind"]
+        "technologies": ["React", "Next.js", "Node.js", "MongoDB", "AWS", "Firebase", "TypeScript", "Tailwind","..."]
       },
       "anest": {
         "title": "Auditor & Treasurer",
@@ -205,24 +205,25 @@
         "description": "Strategic treasury management and financial supervision for a student association of 200+ members, ensuring transparency and resource optimization.",
         "achievements": [
           "Implementation of a digital financial management system",
-          "40% optimization of operational costs",
+          "optimization of operational costs",
           "Quarterly financial reports applauded by members"
         ],
         "technologies": ["Advanced Excel", "Budget management", "Financial analytics", "Leadership", "Communication"]
       }
     }
   },
+
   "portfolio": {
     "title": "Portfolio & Certifications",
-    "subtitle": "Discover my innovative projects and professional certifications",
+    "subtitle": "Discover my practical projects and professional certifications",
     "tabs": {
       "projects": "Projects",
       "certifications": "Certifications"
     },
     "buttons": {
-      "github": "Github",
+      "github": "GitHub",
       "visit": "Visit",
-      "viewCertification": "View certification"
+      "viewCertification": "View Certification"
     },
     "certification": {
       "issuer": "Issuer",
@@ -232,86 +233,230 @@
     "projects": [
       {
         "id": 1,
-        "title": "Immersive 3D E-Commerce",
-        "description": "Sales platform with 3D product visualization and augmented reality. Intuitive interface and immersive user experience.",
+        "title": "GremahElectro",
+        "description": "First e-commerce platform in Zinder, specialized in online sales of quality electronic devices, with an intuitive interface and secure payment.",
         "technologies": [
           { "title": "React", "icon": "React", "color": "#61DAFB" },
           { "title": "Three.js", "icon": "Three.js", "color": "#000000" },
           { "title": "Node.js", "icon": "Node.js", "color": "#339933" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" }
+          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
+          { "title": "Appwrite", "icon": "Appwrite", "color": "#F938AA" },
+          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" }
         ],
-        "image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop",
-        "github": "https://github.com",
-        "liveUrl": "https://example.com",
+        "image": "/Electro.png",
+        "github": "https://github.com/Mahamadou-dev/Gremah_Electro",
+        "liveUrl": "https://gremah-electro.netlify.app",
         "numberOfBranches": 12,
         "numberOfLikes": 25
       },
       {
         "id": 2,
-        "title": "AI Analytics Dashboard",
-        "description": "Intelligent dashboard with machine learning and real-time analytics for complex data.",
+        "title": "GremahMind",
+        "description": "Web application leveraging AI to analyze text and PDF files to generate summaries and key insights, useful for students and professionals.",
         "technologies": [
           { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
           { "title": "Python", "icon": "Python", "color": "#3776AB" },
-          { "title": "TensorFlow", "icon": "TensorFlow", "color": "#FF6F00" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" }
+          { "title": "FastAPI", "icon": "FastAPI", "color": "#FF6F00" },
+          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
+          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
+          { "title": "Hugging Face", "icon": "HuggingFace", "color": "#FF6F00" },
+          { "title": "Appwrite", "icon": "Appwrite", "color": "#F938AA" },
+          { "title": "Three.js", "icon": "Three.js", "color": "#000000" }
         ],
-        "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
-        "github": "https://github.com",
-        "liveUrl": "https://example.com",
+        "image": "/Gmind.png",
+        "github": "https://github.com/Mahamadou-dev/GremahMind-docs_fstack.git",
+        "liveUrl": "https://gremah-mind-docs.vercel.app",
         "numberOfBranches": 8,
         "numberOfLikes": 42
       },
       {
         "id": 3,
-        "title": "AI Fitness Mobile App",
-        "description": "Fitness application with personalized AI coach, activity tracking and intelligent recommendations.",
+        "title": "FSMClassrooms",
+        "description": "REST API for FSMClassrooms, a Google Classroom-like web application for the Faculty of Science of Monastir, managing courses, labs, and student assessments.",
         "technologies": [
-          { "title": "React Native", "icon": "React", "color": "#61DAFB" },
-          { "title": "Node.js", "icon": "Node.js", "color": "#339933" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
-          { "title": "AWS", "icon": "Amazon", "color": "#FF9900" }
+          { "title": "ASP.NET Core", "icon": "ASP", "color": "#61DAFB" },
+          { "title": "SQL Server", "icon": "SQL Server", "color": "#339933" },
+          { "title": "Microsoft Azure", "icon": "Azure", "color": "#47A248" },
+          { "title": "Entity Framework", "icon": "Entity Framework", "color": "#FF9900" }
         ],
-        "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop",
-        "github": "https://github.com",
+        "image": "/FSMClassrooms.png",
+        "github": "https://github.com/Mahamadou-dev/ClassroomApp.git",
         "liveUrl": "https://example.com",
         "numberOfBranches": 20,
         "numberOfLikes": 89
+      },
+      {
+        "id": 4,
+        "title": "HabaruBlog",
+        "description": "Modern blogging platform to create, share, and discover articles with intuitive interface and built-in social features.",
+        "technologies": [
+          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
+          { "title": "Node.js", "icon": "Node.js", "color": "#339933" },
+          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
+          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
+          { "title": "Appwrite", "icon": "Appwrite", "color": "#F938AA" },
+          { "title": "Three.js", "icon": "Three.js", "color": "#000000" }
+        ],
+        "image": "HabaruBlog.png",
+        "github": "https://github.com/Mahamadou-dev/habaru-feminine-elegance.git",
+        "liveUrl": "https://habarublog.netlify.app",
+        "numberOfBranches": 15,
+        "numberOfLikes": 34
+      },
+      {
+        "id": 5,
+        "title": "e-Koudi_Bank",
+        "description": "Full-stack Java desktop application for banking management: clients, accounts, transactions, loans, and financial reports.",
+        "technologies": [
+          { "title": "Java", "icon": "Java", "color": "#007396" },
+          { "title": "Java Swing", "icon": "JavaSwing", "color": "#FF9900" },
+          { "title": "MySQL", "icon": "MySQL", "color": "#4479A1" }
+        ],
+        "image": "/EKoudi.png",
+        "github": "https://github.com/Mahamadou-dev/e-Koudi-Bank.git",
+        "liveUrl": "https://example.com",
+        "numberOfBranches": 10,
+        "numberOfLikes": 29
+      },
+      {
+        "id": 6,
+        "title": "Jakarta Banking",
+        "description": "Mini full-stack Java web application for client and account management, suitable for small banks and micro-finance institutions.",
+        "technologies": [
+          { "title": "Java", "icon": "Java", "color": "#007396" },
+          { "title": "Jakarta EE", "icon": "Jakarta EE", "color": "#6DB33F" },
+          { "title": "MySQL", "icon": "MySQL", "color": "#4479A1" }
+        ],
+        "image": "/GestionClientJEE.png",
+        "github": "https://github.com/Mahamadou-dev/TP-4-JEE-.git",
+        "liveUrl": "https://example.com",
+        "numberOfBranches": 7,
+        "numberOfLikes": 15
+      },
+      {
+        "id": 7,
+        "title": "Géo Concept Tech",
+        "description": "Showcase website for Géo Concept Tech, specialized in geospatial solutions and GIS technologies in Niger.",
+        "technologies": [
+          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
+          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
+          { "title": "Vercel", "icon": "Vercel", "color": "#000000" },
+          { "title": "Framer Motion", "icon": "Framer Motion", "color": "#0055FF" },
+          { "title": "Three.js", "icon": "Three.js", "color": "#000000" }
+        ],
+        "image": "/Geo-concept.png",
+        "github": "https://github.com",
+        "liveUrl": "https://geo-concept.vercel.app",
+        "numberOfBranches": 5,
+        "numberOfLikes": 20
       }
     ],
     "certifications": [
       {
         "id": 1,
-        "title": "Advanced Full Stack Development",
-        "issuer": "Meta",
-        "description": "Complete certification in full stack web development with React, Node.js and cloud architectures",
-        "date": "Jan 2024",
-        "image": "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=400&fit=crop",
+        "title": "Graphic Design",
+        "issuer": "Cabinet Multi Service de Niamey",
+        "description": "2-week online training in graphic design",
+        "date": "2025",
+        "image": "/Infographie.png",
         "credentialUrl": "https://example.com",
-        "skills": ["React", "Node.js", "MongoDB", "Express", "GraphQL"]
+        "skills": ["Graphic Design", "Illustration", "Adobe Photoshop"]
       },
       {
         "id": 2,
-        "title": "Machine Learning Engineer",
-        "issuer": "Google",
-        "description": "Advanced certification in artificial intelligence, machine learning and deep learning",
-        "date": "Dec 2023",
-        "image": "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=600&h=400&fit=crop",
-        "credentialUrl": "https://example.com",
-        "skills": ["Python", "TensorFlow", "Scikit-learn", "Deep Learning"]
+        "title": "Python 1",
+        "issuer": "Python Institute & Cisco Networking Academy",
+        "description": "Beginner-level Python certification",
+        "date": "2025",
+        "image": "/Python1.png",
+        "credentialUrl": "https://www.credly.com/badges/12f73882-f113-4675-905d-08a93aeed04c/linked_in_profile",
+        "skills": ["Python", "Programming", "Algorithms"]
       },
       {
         "id": 3,
-        "title": "AWS Cloud Architecture",
-        "issuer": "Amazon Web Services",
-        "description": "Advanced cloud architecture, AWS solutions and cost optimization for businesses",
-        "date": "Nov 2023",
-        "image": "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=600&h=400&fit=crop",
+        "title": "Linux Essentials",
+        "issuer": "NDG",
+        "description": "Fundamentals of Linux system and administration",
+        "date": "2025",
+        "image": "/Linux.png",
+        "credentialUrl": "https://www.credly.com/badges/6867af60-c8b3-474e-8d86-f73537f3b1a5/linked_in_profile",
+        "skills": ["Linux", "Shell Commands", "Administration"]
+      },
+      {
+        "id": 4,
+        "title": "Introduction to Cybersecurity",
+        "issuer": "Cisco",
+        "description": "Basic principles of cybersecurity",
+        "date": "2025",
+        "image": "Cybersecurity.png",
+        "credentialUrl": "https://www.credly.com/badges/02e8f1ed-9edc-4c7e-804a-3493a942545d/linked_in_profile",
+        "skills": ["Cybersecurity", "Networking", "Data Protection"]
+      },
+      {
+        "id": 5,
+        "title": "HTML5",
+        "issuer": "JS Institute & Cisco",
+        "description": "Mastering HTML5 basics for web development",
+        "date": "2025",
+        "image":"/HTML5.png",
+        "credentialUrl": "https://www.credly.com/badges/c912ef12-018d-4418-b81a-681b8e11844f/linked_in_profile",
+        "skills": ["HTML5", "Web Structuring", "SEO"]
+      },
+      {
+        "id": 6,
+        "title": "C# Fundamentals",
+        "issuer": "Microsoft & FreeCodeCamp",
+        "description": "Basics of C# programming",
+        "date": "2025",
+        "image":"/C#Fundamentals.png",
+        "credentialUrl": "https://freecodecamp.org/certification/fcc680be38e-24e6-4887-bcfd-66b9b7e9f5ab/foundational-c-sharp-with-microsoft",
+        "skills": ["C#", "OOP", "Visual Studio"]
+      },
+      {
+        "id": 7,
+        "title": "Amazon EC2",
+        "issuer": "AWS",
+        "description": "Management and deployment of EC2 instances",
+        "date": "2025",
+        "image": "/AmazonEC2.png",
         "credentialUrl": "https://example.com",
-        "skills": ["AWS", "CloudFormation", "DevOps", "Microservices"]
+        "skills": ["AWS EC2", "Cloud Computing", "Deployment"]
+      },
+      {
+        "id": 8,
+        "title": "Amazon S3",
+        "issuer": "AWS",
+        "description": "Storage and management of objects in Amazon S3",
+        "date": "2025",
+        "image": "/AmazonS3.png",
+        "credentialUrl": "https://example.com",
+        "skills": ["AWS S3", "Cloud Storage", "Data Management"]
+      },
+      {
+        "id": 9,
+        "title": "Computer Hardware Basics",
+        "issuer": "Cisco",
+        "description": "Training on basic computer hardware concepts",
+        "date": "2025",
+        "image": "/Hardware.png",
+        "credentialUrl": "https://www.credly.com/badges/dd96cfde-2c4b-4abb-ac61-00f4f7fadba0/linked_in_profile",
+        "skills": ["Computer Hardware", "Components", "PC Architecture"]
+      },
+
+      {
+        "id": 10,
+        "title": "Learn-a-Thon 2025",
+        "issuer": "Cisco",
+        "description": "Participation in an intensive technology and cybersecurity hackathon",
+        "date": "2025",
+        "image": "LearnAThon2025.png",
+        "credentialUrl": "https://www.credly.com/badges/83758877-c66b-4ebb-bfff-02477f21b9e7/linked_in_profile",
+        "skills": ["Programming", "Cybersecurity", "Teamwork"]
       }
     ]
   },
+
+
     "services": {
     "title": "My Services",
     "subtitle": "Complete solutions adapted to your digital needs",
@@ -329,161 +474,47 @@
         "title": "Premium"
       }
     },
-    "categories": [
-      {
-        "id": 0,
-        "title": "Software Development",
-        "description": "Custom web, mobile and backend applications with modern technologies",
-        "advantages": [
-          "Responsive React/Next.js web applications",
-          "iOS/Android Flutter mobile apps",
-          "Robust Node.js/Python backend",
-          "Secure RESTful APIs",
-          "Optimized databases",
-          "Testing and continuous deployment",
-          "Maintenance and support"
-        ],
-        "icon": "💻",
-        "color": "from-blue-500 to-cyan-500",
-        "plans": [
-          {
-            "title": "basic",
-            "priceperHour": { "FCFA": 15000, "USD": 25 },
-            "advantagesIndexes": [0, 1, 2]
-          },
-          {
-            "title": "standard",
-            "priceperHour": { "FCFA": 25000, "USD": 42 },
-            "advantagesIndexes": [0, 1, 2, 3, 4]
-          },
-          {
-            "title": "premium",
-            "priceperHour": { "FCFA": 40000, "USD": 67 },
-            "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
-          }
-        ],
-        "technologies": [
-          { "icon": "⚛️", "name": "React" },
-          { "icon": "🔗", "name": "Node.js" },
-          { "icon": "📱", "name": "Flutter" },
-          { "icon": "🐍", "name": "Python" }
-        ]
-      },
-      {
-        "id": 1,
-        "title": "IT Assistance",
-        "description": "Support, maintenance and optimization of your computer systems",
-        "advantages": [
-          "24/7 remote technical support",
-          "Quick diagnosis and resolution",
-          "Installation and configuration",
-          "Regular preventive maintenance",
-          "Data backup and security",
-          "Performance optimization",
-          "User training"
-        ],
-        "icon": "🔧",
-        "color": "from-green-500 to-teal-500",
-        "plans": [
-          {
-            "title": "basic",
-            "priceperHour": { "FCFA": 10000, "USD": 17 },
-            "advantagesIndexes": [0, 1]
-          },
-          {
-            "title": "standard",
-            "priceperHour": { "FCFA": 18000, "USD": 30 },
-            "advantagesIndexes": [0, 1, 2, 3]
-          },
-          {
-            "title": "premium",
-            "priceperHour": { "FCFA": 30000, "USD": 50 },
-            "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
-          }
-        ],
-        "technologies": [
-          { "icon": "☁️", "name": "Cloud" },
-          { "icon": "🔒", "name": "Security" },
-          { "icon": "⚡", "name": "Performance" }
-        ]
-      },
-      {
-        "id": 2,
-        "title": "Design & Content Creation",
-        "description": "Modern UI/UX design and engaging content creation",
-        "advantages": [
-          "Modern interface design with Figma",
-          "Optimized user experience",
-          "Interactive mockup creation",
-          "Consistent design system",
-          "Graphic and visual content",
-          "Branding and visual identity",
-          "Conversion optimization"
-        ],
-        "icon": "🎨",
-        "color": "from-purple-500 to-pink-500",
-        "plans": [
-          {
-            "title": "basic",
-            "priceperHour": { "FCFA": 12000, "USD": 20 },
-            "advantagesIndexes": [0, 1]
-          },
-          {
-            "title": "standard",
-            "priceperHour": { "FCFA": 20000, "USD": 33 },
-            "advantagesIndexes": [0, 1, 2, 3]
-          },
-          {
-            "title": "premium",
-            "priceperHour": { "FCFA": 35000, "USD": 58 },
-            "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
-          }
-        ],
-        "technologies": [
-          { "icon": "✏️", "name": "Figma" },
-          { "icon": "🎭", "name": "Adobe" },
-          { "icon": "📐", "name": "UI/UX" }
-        ]
-      },
-      {
-        "id": 3,
-        "title": "Custom Training",
-        "description": "Tailored courses in development and digital technologies",
-        "advantages": [
-          "Personalized adapted programs",
-          "Concrete practical projects",
-          "Continuous support and mentoring",
-          "Exclusive educational resources",
-          "Certification preparation",
-          "Private community access",
-          "Detailed progress tracking"
-        ],
-        "icon": "🎓",
-        "color": "from-orange-500 to-red-500",
-        "plans": [
-          {
-            "title": "basic",
-            "priceperHour": { "FCFA": 8000, "USD": 13 },
-            "advantagesIndexes": [0, 1]
-          },
-          {
-            "title": "standard",
-            "priceperHour": { "FCFA": 15000, "USD": 25 },
-            "advantagesIndexes": [0, 1, 2, 3]
-          },
-          {
-            "title": "premium",
-            "priceperHour": { "FCFA": 25000, "USD": 42 },
-            "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
-          }
-        ],
-        "technologies": [
-          { "icon": "👨‍💻", "name": "Code" },
-          { "icon": "⚙️", "name": "Tools" },
-          { "icon": "📚", "name": "Resources" }
-        ]
-      }
-    ]
+"categories": [
+    {
+      "id": 0,
+      "icon": "💻",
+      "color": "from-blue-500 to-cyan-500",
+      "title": "Software Development",
+      "description": "Custom web, mobile and backend applications with modern technologies",
+      "advantages": [
+        "Responsive React/Next.js web applications",
+        "iOS/Android Flutter mobile apps",
+        "Robust Node.js/Python backend",
+        "Secure RESTful APIs",
+        "Optimized databases",
+        "Testing and continuous deployment",
+        "Maintenance and support"
+      ],
+      "plans": [
+        {
+          "title": "basic",
+          "priceperHour": { "FCFA": 10000, "USD": 17 },
+          "advantagesIndexes": [0, 1, 2]
+        },
+        {
+          "title": "standard",
+          "priceperHour": { "FCFA": 20000, "USD": 33 },
+          "advantagesIndexes": [0, 1, 2, 3, 4]
+        },
+        {
+          "title": "premium",
+          "priceperHour": { "FCFA": 35000, "USD": 58 },
+          "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
+        }
+      ],
+      "technologies": [
+        { "icon": "⚛️", "name": "React" },
+        { "icon": "🔗", "name": "Node.js" },
+        { "icon": "📱", "name": "Flutter" },
+        { "icon": "🐍", "name": "Python" }
+      ]
+    }
+  ]
   },
   "hero": {
     "greeting": "Hello, I'm",
@@ -494,10 +525,11 @@
       "C# .NET Developer",
       "React & Next.js Developer",
       "Android Developer",
-      "Passionate about AI and ML",
+      "Passionate about Machine Learning",
+      "Passionate about Cybersecurity",
       "Founder of GremahTech"
     ],
-    "description": "I am a young Nigerian student passionate about computer science. Currently in <strong>2nd year of software engineering and information systems license</strong> at the <strong>Faculty of Sciences of Monastir</strong> in Tunisia. Founder of <strong>GremahTech</strong>, a start-up specialized in web and mobile development.",
+    "description": "I am a young Nigerian student passionate about computer science. Currently in <strong>3rd year of software engineering and information systems license</strong> at the <strong>Faculty of Sciences of Monastir</strong> in Tunisia. Founder of <strong>GremahTech</strong>, a start-up specialized in web and mobile development.",
     "buttons": {
       "viewWork": "View our recent work",
       "contact": "Contact us"

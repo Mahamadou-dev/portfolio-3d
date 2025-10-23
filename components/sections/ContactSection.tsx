@@ -1,11 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { FaPaperPlane, FaMapMarkerAlt, FaPhone, FaEnvelope } from 'react-icons/fa';
 import SocialLinks from '../ui/SocialLinks';
 import { useI18n } from "../i18n-provider";
+
 
 // Types TypeScript
 interface ContactFormData {
@@ -22,10 +23,11 @@ interface ContactInfo {
   href?: string;
 }
 
-export default function ContactSection() {
+export default function ContactSection({ initialSubject }: { initialSubject?: string }) {
   const { theme } = useTheme();
   const { t } = useI18n();
   const isDarkMode = theme === 'dark';
+  
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
@@ -34,7 +36,15 @@ export default function ContactSection() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-
+  useEffect(() => {
+    // Si un sujet initial est fourni, on met à jour le formulaire
+    if (initialSubject) {
+      setFormData(prevData => ({
+        ...prevData,
+        subject: initialSubject
+      }));
+    }
+  }, [initialSubject]);
   const contactInfos: ContactInfo[] = [
     {
       icon: <FaEnvelope className="text-lg" />,
