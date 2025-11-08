@@ -276,8 +276,29 @@
         "numberOfBranches": 8,
         "numberOfLikes": 42
       },
-      {
+       {
         "id": 3,
+        "title": "CryptoLab",
+        "description": "Wata manhajar yanar gizo ta ilimi don koyo, gwadawa, da kuma nuna yadda algorithms na boye bayanai (na gargajiya, na zamani, na jama'a, da na hash) suke aiki tare da rayarwa ta 3D.",
+        "technologies": [
+          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
+          { "title": "FastAPI", "icon": "FastAPI", "color": "#009688" },
+          { "title": "Python", "icon": "Python", "color": "#3776AB" },
+          { "title": "Three.js", "icon": "Three.js", "color": "#000000" },
+          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
+          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
+          { "title": "Framer Motion", "icon": "Framer Motion", "color": "#0055FF" },
+          { "title": "Vercel", "icon": "Vercel", "color": "#000000" },
+          { "title": "Render", "icon": "Render", "color": "#46E3B7" }
+        ],
+        "image": "/cryptolab.png",
+        "github": "https://github.com/Mahamadou-dev/CryptoLab-frontend",
+        "liveUrl": "https://cryptolab.vercel.app/",
+        "numberOfBranches": 3,
+        "numberOfLikes": 42
+      },
+      {
+        "id": 4,
         "title": "FSMClassrooms",
         "description": "REST API don FSMClassrooms, aikace-aikacen yanar gizo mai kama da Google Classroom don Kwalejin Kimiyya ta Monastir, don gudanar da darussa, ayyukan dakin gwaje-gwaje, da kimanta ɗalibai.",
         "technologies": [
@@ -293,7 +314,7 @@
         "numberOfLikes": 89
       },
       {
-        "id": 4,
+        "id": 5,
         "title": "HabaruBlog",
         "description": "Dandalin rubutun blog na zamani don ƙirƙira, rabawa, da gano labarai tare da sauƙin amfani da fasalulluka na sada zumunta.",
         "technologies": [
@@ -311,7 +332,7 @@
         "numberOfLikes": 34
       },
       {
-        "id": 5,
+        "id": 6,
         "title": "e-Koudi Bank",
         "description": "Cikakken aikace-aikacen tebur na Java don gudanar da ayyukan banki: abokan ciniki, asusu, ma'amaloli, lamuni, da rahotannin kuɗi.",
         "technologies": [
@@ -326,7 +347,7 @@
         "numberOfLikes": 29
       },
       {
-        "id": 6,
+        "id": 7,
         "title": "Jakarta Banking",
         "description": "Karamin cikakken aikace-aikacen yanar gizo na Java don gudanar da abokan ciniki da asusu, wanda ya dace da ƙananan bankuna da cibiyoyin ba da lamuni.",
         "technologies": [
@@ -341,7 +362,7 @@
         "numberOfLikes": 15
       },
       {
-        "id": 7,
+        "id": 8,
         "title": "Géo Concept Tech",
         "description": "Shafin yanar gizo na nunawa don Géo Concept Tech, wanda ya kware a fannin fasahohin geospatial da GIS a Nijar.",
         "technologies": [
@@ -458,6 +479,36 @@
         "image": "LearnAThon2025.png",
         "credentialUrl": "https://www.credly.com/badges/83758877-c66b-4ebb-bfff-02477f21b9e7/linked_in_profile",
         "skills": ["Shirye-shirye", "Tsaron Intanet", "Aiki a Ƙungiyance"]
+      },
+      {
+        "id": 11,
+        "title": "Gabatarwa ga Artificial Intelligence na zamani",
+        "issuer": "Cisco",
+        "description": "Koyarwar farko kan Artificial Intelligence na zamani: fahimtar samfurori, koyon inji, da aikace-aikacen yau da kullum.",
+        "date": "2025",
+        "image": "/modernAI.png",
+        "credentialUrl": "https://www.credly.com/badges/0b1c084f-7716-4d22-9d75-507c36dca5ba/public_url",
+        "skills": ["Artificial Intelligence", "Koyon Inji", "Prompt Engineering"]
+      },
+      {
+        "id": 12,
+        "title": "Gudanar da Barazanar Yanar Gizo",
+        "issuer": "Cisco Networking Academy",
+        "description": "Horon sarrafa barazanar yanar gizo da dabarun kare tsarin kwamfuta yadda ya kamata.",
+        "date": "2025",
+        "image": "/cyberThreat.png",
+        "credentialUrl": "https://www.credly.com/badges/0de5e155-845f-412a-a52e-e30a3c789212/public_url",
+        "skills": ["Tsaron kwamfuta", "Binciken haɗari", "Amsa ga matsaloli"]
+      },
+      {
+        "id": 13,
+        "title": "Python Essentials 2",
+        "issuer": "Cisco Networking Academy",
+        "description": "Koyarwar ci gaba akan shirye-shiryen Python: tsarin bayanai, shirye-shirye na abubuwa, da kyawawan hanyoyin haɓakawa.",
+        "date": "2025",
+        "image": "/python2.png",
+        "credentialUrl": "https://www.credly.com/badges/783e4289-5b27-49da-980e-7a0779b2efda/linked_in_profile",
+        "skills": ["Python", "OOP", "Warware Matsaloli"]
       }
     ]
   }

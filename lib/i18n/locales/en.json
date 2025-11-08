@@ -278,7 +278,29 @@
         "numberOfLikes": 42
       },
       {
+        
         "id": 3,
+        "title": "CryptoLab",
+        "description": "An educational web platform to learn, simulate, and visualize cryptography algorithms (Classic, Symmetric, Asymmetric, Hashing) with 3D animations.",
+        "technologies": [
+          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
+          { "title": "FastAPI", "icon": "FastAPI", "color": "#009688" },
+          { "title": "Python", "icon": "Python", "color": "#3776AB" },
+          { "title": "Three.js", "icon": "Three.js", "color": "#000000" },
+          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
+          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
+          { "title": "Framer Motion", "icon": "Framer Motion", "color": "#0055FF" },
+          { "title": "Vercel", "icon": "Vercel", "color": "#000000" },
+          { "title": "Render", "icon": "Render", "color": "#46E3B7" }
+        ],
+        "image": "/cryptolab.png",
+        "github": "https://github.com/Mahamadou-dev/CryptoLab-frontend",
+        "liveUrl": "https://cryptolab.vercel.app/",
+        "numberOfBranches": 3,
+        "numberOfLikes": 42
+      },
+      {
+        "id": 4,
         "title": "FSMClassrooms",
         "description": "REST API for FSMClassrooms, a Google Classroom-like web application for the Faculty of Science of Monastir, managing courses, labs, and student assessments.",
         "technologies": [
@@ -294,7 +316,7 @@
         "numberOfLikes": 89
       },
       {
-        "id": 4,
+        "id": 5,
         "title": "HabaruBlog",
         "description": "Modern blogging platform to create, share, and discover articles with intuitive interface and built-in social features.",
         "technologies": [
@@ -312,7 +334,7 @@
         "numberOfLikes": 34
       },
       {
-        "id": 5,
+        "id": 6,
         "title": "e-Koudi_Bank",
         "description": "Full-stack Java desktop application for banking management: clients, accounts, transactions, loans, and financial reports.",
         "technologies": [
@@ -327,7 +349,7 @@
         "numberOfLikes": 29
       },
       {
-        "id": 6,
+        "id": 7,
         "title": "Jakarta Banking",
         "description": "Mini full-stack Java web application for client and account management, suitable for small banks and micro-finance institutions.",
         "technologies": [
@@ -342,7 +364,7 @@
         "numberOfLikes": 15
       },
       {
-        "id": 7,
+        "id": 8,
         "title": "Géo Concept Tech",
         "description": "Showcase website for Géo Concept Tech, specialized in geospatial solutions and GIS technologies in Niger.",
         "technologies": [
@@ -460,27 +482,57 @@
         "image": "LearnAThon2025.png",
         "credentialUrl": "https://www.credly.com/badges/83758877-c66b-4ebb-bfff-02477f21b9e7/linked_in_profile",
         "skills": ["Programming", "Cybersecurity", "Teamwork"]
+      },
+      {
+        "id": 11,
+        "title": "Introduction to Modern AI",
+        "issuer": "Cisco",
+        "description": "Introductory course on modern Artificial Intelligence: understanding models, machine learning, and real-world applications.",
+        "date": "2025",
+        "image": "/modernAI.png",
+        "credentialUrl": "https://www.credly.com/badges/0b1c084f-7716-4d22-9d75-507c36dca5ba/public_url",
+        "skills": ["Artificial Intelligence", "Machine Learning", "Prompt Engineering"]
+      },
+      {
+        "id": 12,
+        "title": "Cyber Threat Management",
+        "issuer": "Cisco Networking Academy",
+        "description": "Training on proactive cyber threat management and the implementation of effective cybersecurity strategies.",
+        "date": "2025",
+        "image": "/cyberThreat.png",
+        "credentialUrl": "https://www.credly.com/badges/0de5e155-845f-412a-a52e-e30a3c789212/public_url",
+        "skills": ["Cybersecurity", "Risk Analysis", "Incident Response"]
+      },
+      {
+        "id": 13,
+        "title": "Python Essentials 2",
+        "issuer": "Cisco Networking Academy",
+        "description": "Advanced Python programming course: data structures, object-oriented programming, and development best practices.",
+        "date": "2025",
+        "image": "/python2.png",
+        "credentialUrl": "https://www.credly.com/badges/783e4289-5b27-49da-980e-7a0779b2efda/linked_in_profile",
+        "skills": ["Python", "OOP", "Problem Solving"]
       }
-    ]
-  },
+      ]
+    },
 
 
-    "services": {
-    "title": "My Services",
-    "subtitle": "Complete solutions adapted to your digital needs",
-    "perHour": "hour",
-    "choosePlan": "Choose this plan",
-    "flexibilityNote": "💡 Flexibility: All rates are adaptable according to the complexity and duration of your project",
-    "plans": {
-      "basic": {
-        "title": "Basic"
-      },
-      "standard": {
-        "title": "Standard"
-      },
-      "premium": {
-        "title": "Premium"
-      }
+      "services": {
+      "title": "My Services",
+      "subtitle": "Complete solutions adapted to your digital needs",
+      "perHour": "hour",
+      "choosePlan": "Choose this plan",
+      "flexibilityNote": "💡 Flexibility: All rates are adaptable according to the complexity and duration of your project",
+      "plans": {
+        "basic": {
+          "title": "Basic"
+        },
+        "standard": {
+          "title": "Standard"
+        },
+        "premium": {
+          "title": "Premium"
+        }
     },
 "categories": [
     {
