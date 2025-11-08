@@ -346,11 +346,11 @@ export default function AboutSection() {
                 className="px-6 py-3 font-medium rounded-lg shadow-lg transition-all duration-300 relative overflow-hidden group bg-gradient-to-r from-blue-600 to-purple-600 text-white flex items-center justify-center text-sm"
                 whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(102, 126, 234, 0.3)" }}
                 whileTap={{ scale: 0.95 }}
-              >
+              ><a href="https://drive.google.com/file/d/1a1LaOMFQNOjjySmAWbablHvQXDWL6XMy/view?usp=sharing">
                 <span className="relative z-10 flex items-center justify-center">
                   <Download className="w-4 h-4 mr-2" />
                   {t("about.download_my_resume_button_text")}
-                </span>
+                </span></a>
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-600 to-blue-600"></div>
               </motion.button>
             </motion.div>
