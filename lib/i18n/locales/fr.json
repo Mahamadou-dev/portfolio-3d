@@ -292,8 +292,8 @@
           { "title": "Render", "icon": "Render", "color": "#46E3B7" }
         ],
         "image": "/cryptolab.png",
-        "github": "https://github.com/Mahamadou-dev/CryptoLab-frontend",
-        "liveUrl": "https://cryptolabfrontend.vercel.app/",
+        "github": "https://github.com/Mahamadou-dev/CryptoLab-backend.git",
+        "liveUrl": "https://cryptolaboratory.vercel.app/",
         "numberOfBranches": 3,
         "numberOfLikes": 42
       },
