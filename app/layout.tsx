@@ -8,6 +8,7 @@ import Header from '../components/ui/Header';
 import Footer from '../components/ui/Footer';
 import CombinedParticles from '../components/three/CombinedParticles';
 import { I18nProvider } from '../components/i18n-provider'; // Import conservé
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -42,6 +43,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 
                 <main className="flex-grow w-full overflow-x-hidden">
                   {children} {/* ⬅️ children est déjà sous I18nProvider */}
+                  <Analytics />
+                  
                 </main>
                 <Footer />
               </div>
