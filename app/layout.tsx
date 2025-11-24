@@ -44,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <main className="flex-grow w-full overflow-x-hidden">
                   {children} {/* ⬅️ children est déjà sous I18nProvider */}
                   <Analytics />
-                  
+
                 </main>
                 <Footer />
               </div>
