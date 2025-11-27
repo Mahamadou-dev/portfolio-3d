@@ -32,7 +32,8 @@
         "swiper": "^11.2.10",
         "tailwind-merge": "^3.4.0",
         "three": "^0.164.1",
-        "typewriter-effect": "^2.22.0"
+        "typewriter-effect": "^2.22.0",
+        "vercel": "^48.10.11"
     },
     "devDependencies": {
         "@tailwindcss/postcss": "^4.1.17",
