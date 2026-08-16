@@ -7,6 +7,12 @@ import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
 const SESSION_KEY = 'gremah_sid';
+const NO_TRACK_COOKIE = 'gremah_notrack';
+
+/** Le navigateur du propriétaire porte ce cookie : on ne le compte pas. */
+function isOwner(): boolean {
+  return typeof document !== 'undefined' && document.cookie.includes(`${NO_TRACK_COOKIE}=1`);
+}
 
 /** Identifiant de session anonyme, valable le temps de l'onglet. */
 function sessionId(): string {
@@ -48,8 +54,9 @@ export default function VisitorTracker() {
   const startedAt = useRef<number>(Date.now());
 
   useEffect(() => {
-    // Le tableau de bord n'est pas du trafic visiteur.
-    if (pathname?.startsWith('/admin')) return;
+    // Le tableau de bord n'est pas du trafic visiteur, et le propriétaire ne
+    // doit pas gonfler ses propres chiffres.
+    if (pathname?.startsWith('/admin') || isOwner()) return;
 
     visitId.current = null;
     startedAt.current = Date.now();

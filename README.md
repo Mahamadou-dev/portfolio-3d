@@ -88,8 +88,33 @@ résolution d'écran, et les interactions déclenchées (clic sur un projet, sur
 une démo, sur un CTA…).
 
 **Les IP ne sont jamais stockées en clair** : seule une empreinte salée et
-hachée sert à compter les visiteurs uniques. Les robots sont détectés et
-exclus des statistiques par défaut.
+hachée sert à compter les visiteurs uniques.
+
+### Visites confirmées
+
+Un domaine fraîchement déployé attire beaucoup de scanners, et beaucoup se
+présentent avec un User-Agent Chrome parfaitement crédible. Une visite n'est
+donc comptée comme réelle qu'une fois **confirmée** : le navigateur doit
+renvoyer un signe de vie — au moins 3 secondes sur la page, ou une
+interaction. Un scanner charge et repart sans jamais envoyer cette seconde
+requête.
+
+Ce critère ne regarde jamais l'adresse IP, volontairement : derrière le CGNAT
+des opérateurs mobiles, des centaines de visiteurs légitimes partagent une
+seule IP et seraient classés robots à tort.
+
+La case « Visites confirmées seulement » est cochée par défaut dans le
+tableau de bord ; la décocher montre tout le trafic brut.
+
+Tes propres visites ne sont pas comptées : la connexion à `/admin` pose un
+cookie `gremah_notrack` sur ton navigateur, valable un an.
+
+```bash
+pnpm purge:visits                # aperçu, ne supprime rien
+pnpm purge:visits --bots         # supprime les robots identifiés
+pnpm purge:visits --unconfirmed  # + celles sans signe de vie
+pnpm purge:visits --all          # repart de zéro
+```
 
 La géolocalisation provient des en-têtes de l'hébergeur : elle apparaît une
 fois déployé sur Vercel, pas en développement local.
@@ -141,8 +166,12 @@ donc un premier rendu immédiat :
 - **`AuroraField`** — voile d'aurore en bruit fractal (fragment shader) plus
   ~1400 points animés entièrement dans le vertex shader ; réagit à la souris et
   au scroll, s'arrête quand l'onglet passe en arrière-plan.
-- **`HeroScene`** — icosaèdre déformé par du bruit simplex avec éclairage de
-  Fresnel, coque filaire contre-rotative, anneau de satellites et bloom.
+- **`HeroScene`** — « Neural Core », construit autour du parcours : un réseau
+  de 64 neurones reliés à leurs plus proches voisins, parcouru d'influx qui
+  circulent le long des synapses (IA) ; un noyau iridescent déformé par du
+  bruit simplex, veiné d'énergie ; une coque cristalline et un anneau de
+  balayage (sécurité). Post-traitement : bloom, aberration chromatique, grain,
+  vignette.
 
 `useSceneQuality` réduit densité, résolution et effets sur les machines
 modestes et respecte `prefers-reduced-motion`.

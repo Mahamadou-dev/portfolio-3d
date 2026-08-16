@@ -28,6 +28,7 @@ interface Analytics {
   days: number;
   totals: {
     pageviews: number;
+    confirmed: number;
     visitors: number;
     sessions: number;
     avgDuration: number;
@@ -165,6 +166,9 @@ function TopList({
 
 export default function AdminAnalyticsPage() {
   const [days, setDays] = useState(30);
+  // Par défaut on ne montre que les visites confirmées : c'est le chiffre
+  // honnête, débarrassé des scanners qui chargent la page et repartent.
+  const [confirmedOnly, setConfirmedOnly] = useState(true);
   const [data, setData] = useState<Analytics | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -174,7 +178,9 @@ export default function AdminAnalyticsPage() {
     setLoading(true);
     setError(null);
 
-    fetch(`/api/admin/analytics?days=${days}`, { credentials: 'same-origin' })
+    fetch(`/api/admin/analytics?days=${days}${confirmedOnly ? '&confirmed=1' : ''}`, {
+      credentials: 'same-origin',
+    })
       .then(async (res) => {
         const json = await res.json();
         if (!res.ok) throw new Error(json.error ?? 'Lecture impossible');
@@ -187,7 +193,7 @@ export default function AdminAnalyticsPage() {
     return () => {
       cancelled = true;
     };
-  }, [days]);
+  }, [days, confirmedOnly]);
 
   // Recharts n'aime pas les series vides : on garantit au moins un point.
   const series = useMemo(() => data?.daily ?? [], [data]);
@@ -203,8 +209,19 @@ export default function AdminAnalyticsPage() {
           </p>
         </div>
 
-        <div className="inline-flex rounded-lg border border-black/10 p-1 dark:border-white/10">
-          {RANGES.map((range) => (
+        <div className="flex flex-wrap items-center gap-3">
+          <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <input
+              type="checkbox"
+              checked={confirmedOnly}
+              onChange={(e) => setConfirmedOnly(e.target.checked)}
+              className="h-4 w-4 accent-blue-600"
+            />
+            Visites confirmées seulement
+          </label>
+
+          <div className="inline-flex rounded-lg border border-black/10 p-1 dark:border-white/10">
+            {RANGES.map((range) => (
             <button
               key={range.days}
               onClick={() => setDays(range.days)}
@@ -214,9 +231,10 @@ export default function AdminAnalyticsPage() {
                   : 'text-gray-600 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/5'
               }`}
             >
-              {range.label}
-            </button>
-          ))}
+                {range.label}
+              </button>
+            ))}
+          </div>
         </div>
       </header>
 
@@ -247,7 +265,11 @@ export default function AdminAnalyticsPage() {
               value={data.totals.visitors.toLocaleString('fr-FR')}
               hint="Empreintes IP distinctes"
             />
-            <StatTile label="Sessions" value={data.totals.sessions.toLocaleString('fr-FR')} />
+            <StatTile
+              label="Visites confirmées"
+              value={(data.totals.confirmed ?? 0).toLocaleString('fr-FR')}
+              hint="Signe de vie du navigateur"
+            />
             <StatTile label="Temps moyen / page" value={duration(data.totals.avgDuration)} />
             <StatTile
               label="Visites engagées"

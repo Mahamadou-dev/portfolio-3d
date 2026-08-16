@@ -33,12 +33,16 @@ export async function GET(req: NextRequest) {
 
   const days = Math.min(Math.max(Number(req.nextUrl.searchParams.get('days')) || 30, 1), 365);
   const includeBots = req.nextUrl.searchParams.get('bots') === '1';
+  // `confirmed=1` ne garde que les visites ou le navigateur a donne signe de
+  // vie : c'est le filtre le plus fiable contre les scanners.
+  const confirmedOnly = req.nextUrl.searchParams.get('confirmed') === '1';
   const since = new Date(Date.now() - days * 24 * 3600 * 1000).toISOString();
 
   try {
     const col = await visitsCol();
     const match: Record<string, unknown> = { createdAt: { $gte: since } };
     if (!includeBots) match.isBot = false;
+    if (confirmedOnly) match.confirmed = true;
 
     const [result] = await col
       .aggregate([
@@ -54,12 +58,14 @@ export async function GET(req: NextRequest) {
                   sessions: { $addToSet: '$sessionId' },
                   totalDuration: { $sum: '$durationSec' },
                   engaged: { $sum: { $cond: [{ $gte: ['$durationSec', 15] }, 1, 0] } },
+                  confirmed: { $sum: { $cond: ['$confirmed', 1, 0] } },
                 },
               },
               {
                 $project: {
                   _id: 0,
                   pageviews: 1,
+                  confirmed: 1,
                   visitors: { $size: '$visitors' },
                   sessions: { $size: '$sessions' },
                   avgDuration: {

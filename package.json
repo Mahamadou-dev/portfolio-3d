@@ -10,6 +10,7 @@
         "db:setup": "node scripts/db-setup.mjs",
         "sync:github": "node scripts/sync-github.mjs",
         "seed:certifications": "node scripts/seed-certifications.mjs",
+        "purge:visits": "node scripts/purge-visits.mjs",
         "content:init": "pnpm db:setup && pnpm sync:github && pnpm seed:certifications"
     },
     "dependencies": {

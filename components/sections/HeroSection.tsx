@@ -10,7 +10,7 @@ import { trackEvent } from '../analytics/VisitorTracker';
 // ni le premier rendu du texte (LCP).
 const HeroScene = dynamic(() => import('../three/HeroScene'), {
   ssr: false,
-  loading: () => <div className="w-full h-[22rem] md:h-[30rem]" />,
+  loading: () => <div className="w-full h-[24rem] md:h-[32rem]" />,
 });
 
 // Types TypeScript

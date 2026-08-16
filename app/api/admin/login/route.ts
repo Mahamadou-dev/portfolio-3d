@@ -1,6 +1,7 @@
 // app/api/admin/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import {
+  NO_TRACK_COOKIE,
   SESSION_COOKIE,
   createSessionToken,
   safeEqual,
@@ -56,5 +57,17 @@ export async function POST(req: NextRequest) {
   const token = await createSessionToken(username);
   const res = NextResponse.json({ ok: true, username });
   res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions());
+
+  // Marque durablement ce navigateur comme etant celui du proprietaire : ses
+  // propres visites n'iront plus polluer les statistiques. Survit a la
+  // deconnexion, c'est voulu.
+  res.cookies.set(NO_TRACK_COOKIE, '1', {
+    httpOnly: false, // le traceur cote client doit pouvoir le lire
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 365,
+  });
+
   return res;
 }

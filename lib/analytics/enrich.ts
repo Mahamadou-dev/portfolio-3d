@@ -5,7 +5,28 @@ import { createHash } from 'crypto';
 import { UAParser } from 'ua-parser-js';
 
 const BOT_RE =
-  /bot|crawler|spider|crawling|slurp|bingpreview|facebookexternalhit|headlesschrome|lighthouse|pingdom|uptime|curl|wget|python-requests|axios|node-fetch/i;
+  /bot|crawler|spider|crawling|slurp|bingpreview|facebookexternalhit|headlesschrome|headless|lighthouse|pingdom|uptime|curl|wget|python-requests|axios|node-fetch|go-http|java\/|okhttp|scrapy|phantomjs|puppeteer|playwright|semrush|ahrefs|mj12|dotbot|petalbot|dataforseo|censys|masscan|zgrab|expanse|paloalto/i;
+
+/**
+ * Beaucoup de scanners se presentent avec un User-Agent Chrome parfaitement
+ * normal : la chaine ne suffit pas toujours a les demasquer.
+ *
+ * On a d'abord essaye de les reperer au comportement — une meme empreinte IP
+ * ouvrant plusieurs sessions en quelques secondes. C'est une mauvaise idee :
+ * derriere le CGNAT des operateurs mobiles (tres repandu en Afrique de
+ * l'Ouest), des centaines de visiteurs legitimes partagent une seule IP et
+ * seraient tous classes robots.
+ *
+ * Le signal retenu ne depend donc pas de l'IP : une visite n'est « confirmee »
+ * que lorsque le navigateur renvoie un signe de vie — au moins quelques
+ * secondes passees sur la page, ou une interaction. Un scanner charge la page
+ * et repart : il n'envoie jamais cette seconde requete.
+ */
+export const CONFIRM_AFTER_SECONDS = 3;
+
+export function isHumanSignal(durationSec: number, hasEvent: boolean): boolean {
+  return hasEvent || durationSec >= CONFIRM_AFTER_SECONDS;
+}
 
 /** Hache l'IP avec un sel serveur : identifiant stable, non reversible. */
 export function hashIp(ip: string): string {

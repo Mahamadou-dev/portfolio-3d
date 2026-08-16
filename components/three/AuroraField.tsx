@@ -76,16 +76,37 @@ const AURORA_FRAG = /* glsl */ `
     );
   }
 
-  // Somme de 4 octaves : donne les volutes lentes de l'aurore.
+  // Somme de 5 octaves : donne les volutes lentes de l'aurore.
   float fbm(vec2 p) {
     float value = 0.0;
     float amplitude = 0.5;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
       value += amplitude * noise(p);
-      p *= 2.02;
+      p = p * 2.02 + vec2(1.7, 9.2); // decalage : evite les motifs alignes
       amplitude *= 0.5;
     }
     return value;
+  }
+
+  /**
+   * Domain warping : on deforme les coordonnees par du bruit AVANT d'y
+   * echantillonner du bruit. Deux niveaux de deformation transforment un
+   * degrade plat en volutes liquides — c'est ce qui distingue un fond
+   * "mesh gradient" moderne d'un simple nuage de bruit.
+   */
+  float warpedField(vec2 p, float t, out vec2 flow) {
+    vec2 q = vec2(
+      fbm(p + vec2(0.0, 0.0) + t * 0.6),
+      fbm(p + vec2(5.2, 1.3) - t * 0.4)
+    );
+
+    vec2 r = vec2(
+      fbm(p + 3.0 * q + vec2(1.7, 9.2) + t * 0.35),
+      fbm(p + 3.0 * q + vec2(8.3, 2.8) - t * 0.30)
+    );
+
+    flow = r;
+    return fbm(p + 3.5 * r);
   }
 
   void main() {
@@ -97,27 +118,34 @@ const AURORA_FRAG = /* glsl */ `
     p += uMouse * 0.06;
     p.y += uScroll * 0.25;
 
-    float t = uTime * 0.035;
+    float t = uTime * 0.03;
 
-    // Deux couches de bruit qui se decalent en sens inverse : evite l'effet
-    // "texture qui defile" et cree des interferences organiques.
-    float n1 = fbm(p * 1.6 + vec2(t, -t * 0.6));
-    float n2 = fbm(p * 2.4 - vec2(t * 0.8, t * 0.3) + n1);
+    vec2 flow;
+    float field = warpedField(p * 1.35, t, flow);
 
-    // Bandes verticales douces, comme des rideaux d'aurore.
-    float curtain = smoothstep(0.15, 0.95, n2);
-    curtain *= smoothstep(1.05, 0.15, length(p) * 0.9);
+    // Le champ deforme pilote le melange des trois teintes. Le vecteur de
+    // flux sert de second axe : les couleurs ne suivent pas une simple rampe.
+    vec3 color = mix(uColorA, uColorB, clamp(field * 1.5, 0.0, 1.0));
+    color = mix(color, uColorC, clamp(flow.x * flow.y * 1.6, 0.0, 1.0));
 
-    vec3 color = mix(uColorA, uColorB, clamp(n1 * 1.4, 0.0, 1.0));
-    color = mix(color, uColorC, clamp(n2 * n2 * 1.2, 0.0, 1.0));
+    // Voile principal, resserre vers le centre de l'ecran.
+    float veil = smoothstep(0.12, 0.92, field);
+    veil *= smoothstep(1.15, 0.1, length(p) * 0.85);
 
-    // Halo doux qui suit le curseur : discret mais rend la page "vivante".
+    // Filaments : les lignes de niveau du champ deforme, tres fines. C'est ce
+    // qui donne la lecture "energie" plutot que "brouillard".
+    float filament = abs(sin(field * 9.0 + uTime * 0.35));
+    filament = pow(1.0 - filament, 22.0);
+
+    // Halo doux qui suit le curseur : discret mais rend la page vivante.
     float halo = exp(-length(p - uMouse * 0.5) * 2.6) * 0.35;
 
-    vec3 finalColor = uBackground + (color * curtain + color * halo) * uIntensity;
+    vec3 finalColor = uBackground
+      + (color * veil + color * halo) * uIntensity
+      + uColorC * filament * uIntensity * 0.5;
 
     // Grain leger : casse le banding des degrades sur grands aplats.
-    float grain = (hash(uv * uResolution + uTime) - 0.5) * 0.012;
+    float grain = (hash(uv * uResolution + uTime) - 0.5) * 0.014;
 
     gl_FragColor = vec4(finalColor + grain, 1.0);
   }

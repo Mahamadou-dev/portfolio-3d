@@ -9,9 +9,11 @@ import {
   clientIp,
   geoFromHeaders,
   hashIp,
+  isHumanSignal,
   parseUserAgent,
   trafficSource,
 } from '../../../lib/analytics/enrich';
+import { NO_TRACK_COOKIE } from '../../../lib/auth/session';
 import type { VisitDoc } from '../../../lib/db/types';
 
 export const runtime = 'nodejs';
@@ -29,6 +31,11 @@ export async function POST(req: NextRequest) {
   // Sans base configuree, on accepte silencieusement : le site ne doit jamais
   // casser a cause du tracking.
   if (!isDbConfigured()) return NextResponse.json({ ok: true, stored: false });
+
+  // Le proprietaire du site ne doit pas gonfler ses propres statistiques.
+  if (req.cookies.get(NO_TRACK_COOKIE)?.value === '1') {
+    return NextResponse.json({ ok: true, stored: false });
+  }
 
   let body: Record<string, unknown>;
   try {
@@ -49,9 +56,16 @@ export async function POST(req: NextRequest) {
       }
 
       const duration = Math.min(Math.max(Number(body.durationSec) || 0, 0), 4 * 3600);
+      const eventName = str(body.event, 60);
+
       const update: Record<string, unknown> = { $max: { durationSec: duration } };
 
-      const eventName = str(body.event, 60);
+      // Cette seconde requete est justement le signe de vie attendu : un
+      // scanner charge la page et repart sans jamais l'envoyer.
+      if (isHumanSignal(duration, Boolean(eventName))) {
+        update.$set = { confirmed: true };
+      }
+
       if (eventName) {
         update.$push = {
           events: {
@@ -96,6 +110,8 @@ export async function POST(req: NextRequest) {
       durationSec: 0,
       events: [],
       isBot,
+      // Passe a true quand le navigateur donne signe de vie (voir plus haut).
+      confirmed: false,
       createdAt: new Date().toISOString(),
     };
 

@@ -5,6 +5,8 @@
 import { SignJWT, jwtVerify } from 'jose';
 
 export const SESSION_COOKIE = 'gremah_admin';
+/** Pose sur le navigateur du proprietaire : ses visites ne sont pas comptees. */
+export const NO_TRACK_COOKIE = 'gremah_notrack';
 const MAX_AGE_SEC = 60 * 60 * 8; // 8 h
 
 function secret(): Uint8Array {

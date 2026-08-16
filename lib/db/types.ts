@@ -92,5 +92,11 @@ export interface VisitDoc {
   /** Evenements d'interaction agreges pour cette vue. */
   events: { name: string; value?: string; at: string }[];
   isBot: boolean;
+  /**
+   * true une fois que le navigateur a donne signe de vie (quelques secondes
+   * sur la page, ou une interaction). Distingue un vrai visiteur d'un scanner
+   * qui charge et repart — sans jamais se fier a l'IP.
+   */
+  confirmed: boolean;
   createdAt: string;
 }
