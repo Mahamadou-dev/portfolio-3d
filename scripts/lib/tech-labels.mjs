@@ -1,0 +1,66 @@
+// scripts/lib/tech-labels.mjs
+// Libelles affiches pour les cles technologiques du catalogue.
+// La couleur et l'icone sont resolues cote UI par lib/tech-icons.tsx : ici on
+// ne stocke que la cle et le libelle lisible.
+export const TECH_LABELS = {
+  react: 'React',
+  'react-native': 'React Native',
+  nextjs: 'Next.js',
+  nodejs: 'Node.js',
+  threejs: 'Three.js',
+  mongodb: 'MongoDB',
+  python: 'Python',
+  tensorflow: 'TensorFlow',
+  tailwindcss: 'Tailwind CSS',
+  typescript: 'TypeScript',
+  javascript: 'JavaScript',
+  docker: 'Docker',
+  postgresql: 'PostgreSQL',
+  mysql: 'MySQL',
+  firebase: 'Firebase',
+  appwrite: 'Appwrite',
+  flutter: 'Flutter',
+  dart: 'Dart',
+  'spring-boot': 'Spring Boot',
+  fastapi: 'FastAPI',
+  express: 'Express',
+  vercel: 'Vercel',
+  linux: 'Linux',
+  supabase: 'Supabase',
+  redis: 'Redis',
+  graphql: 'GraphQL',
+  kotlin: 'Kotlin',
+  php: 'PHP',
+  laravel: 'Laravel',
+  html5: 'HTML5',
+  css3: 'CSS3',
+  figma: 'Figma',
+  kubernetes: 'Kubernetes',
+  llm: 'LLM',
+  jupyter: 'Jupyter',
+  electron: 'Electron',
+  vite: 'Vite',
+  rust: 'Rust',
+  go: 'Go',
+  csharp: 'C#',
+  dotnet: '.NET',
+  java: 'Java',
+  aws: 'AWS',
+  azure: 'Azure',
+  'deep-learning': 'Deep Learning',
+  'machine-learning': 'Machine Learning',
+  ai: 'IA',
+  mobile: 'Mobile',
+  android: 'Android',
+  sql: 'SQL',
+  microservices: 'Microservices',
+};
+
+export function techTag(key) {
+  return {
+    title: TECH_LABELS[key] ?? key,
+    icon: key,
+    // La couleur definitive vient du registre UI ; celle-ci n'est qu'un repli.
+    color: '#6b7280',
+  };
+}

@@ -93,6 +93,21 @@ const ExperienceSection: React.FC = () => {
 
   const experiences: Experience[] = [
     {
+      id: 0,
+      type: "education",
+      title: t("experience.education.masterAI.title"),
+      institution: t("experience.education.masterAI.institution"),
+      period: t("experience.education.masterAI.period"),
+      location: t("experience.education.masterAI.location"),
+      description: t("experience.education.masterAI.description"),
+      achievements: t("experience.education.masterAI.achievements" as any) as unknown as TranslationArray,
+      technologies: t("experience.education.masterAI.technologies" as any) as unknown as TranslationArray,
+      subjects: t("experience.education.masterAI.subjects" as any) as unknown as TranslationArray,
+      logo: "🧠",
+      color: "#8b5cf6",
+      gradient: "from-violet-500 to-cyan-500"
+    },
+    {
       id: 1,
       type: "education",
       title: t("experience.education.softwareEngineering.title"),

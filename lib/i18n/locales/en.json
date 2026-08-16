@@ -12,13 +12,13 @@
     "themeToggle": "Toggle theme",
     "menuToggle": "Toggle menu"
   },
-    "about": {
+  "about": {
     "title": "About Me",
     "introduction": "Hi, my name is",
-    "a_young_student": "A young student",
+    "a_young_student": "A young engineer",
     "niger": "NIGERIEN",
-    "residing_in_tunisia_and_it_passionated": "residing in Tunisia and especially passionate about IT.",
-    "currently_studies": "I am currently in my third year of Bachelor's degree in Software Engineering and Information Systems at the Faculty of Sciences of Monastir.",
+    "residing_in_tunisia_and_it_passionated": "living in Tunisia, passionate about software engineering, artificial intelligence and cybersecurity.",
+    "currently_studies": "A graduate in software engineering and information systems from the Faculty of Sciences of Monastir, where I am pursuing a research master's in Artificial Intelligence from the 2026-2027 academic year.",
     "also_the_founder_and_ceo_of": "I am also the founder & CEO of",
     "tiamtech_description": "a small start-up based in Niger providing services such as WEBSITE development, Restful API development, mobile application development, etc...",
     "anest_post": "I am the treasury auditor of the Monastir section of ANEST (Association of Nigerien Students and Trainees in Tunisia), where I ensure the transparency and compliance of the association's finances.",
@@ -26,7 +26,7 @@
     "personalInfo": {
       "age": {
         "label": "Age",
-        "value": "20 years"
+        "value": "{age} years old"
       },
       "nationality": {
         "label": "Nationality",
@@ -44,7 +44,7 @@
   },
   "skills": {
     "title": "Skills",
-    "recent_technologies_intro":	"Here are some technologies I've worked with most recently:",
+    "recent_technologies_intro": "Here are some technologies I've worked with most recently:",
     "strengths": {
       "productivity": {
         "title": "Productivity"
@@ -74,14 +74,12 @@
       },
       "machine_learning": {
         "title": "MACHINE LEARNING"
-
-    },
-    "cybersecurity": {
-      "title": "CYBERSECURITY"
-    } 
-
-  }
-},
+      },
+      "cybersecurity": {
+        "title": "CYBERSECURITY"
+      }
+    }
+  },
   "contact": {
     "title": "Contact Me",
     "subtitle": "Let's discuss your next project together",
@@ -148,17 +146,53 @@
     "subjects": "Subjects",
     "technologies": "Technologies",
     "education": {
+      "masterAI": {
+        "title": "Research Master's in Artificial Intelligence",
+        "institution": "University of Monastir — Faculty of Sciences",
+        "period": "2026 - 2027",
+        "location": "Monastir, Tunisia",
+        "description": "Research-oriented AI master, with a personal focus on the security of AI systems (AI Security) and the use of AI to strengthen cyberdefense capabilities.",
+        "achievements": [
+          "Research focus: AI model security and AI for cyberdefense",
+          "Design and evaluation of intelligent, secure and resilient systems"
+        ],
+        "technologies": [
+          "Python",
+          "PyTorch",
+          "TensorFlow",
+          "LangChain",
+          "LLM",
+          "n8n",
+          "MLOps"
+        ],
+        "subjects": [
+          "Deep learning and representations",
+          "Intelligent agents and multi-agent systems",
+          "Model security and adversarial attacks",
+          "AI applied to cyberdefense",
+          "Research methodology"
+        ]
+      },
       "softwareEngineering": {
         "title": "Bachelor's Degree in Software Engineering & Information Systems",
         "institution": "University of Monastir",
-        "period": "2023 - Present",
+        "period": "2023 - 2026",
         "location": "Monastir, Tunisia",
         "description": "In-depth training in software development, information systems architecture, databases and modern web technologies with a practical and innovative approach.",
         "achievements": [
-          "Top of class with an average of 16.22/20 at 2nd year",
+          "Top of the class with a 16.22/20 average in the second year",
+          "Final-year project: AI-assisted plant disease diagnosis for rural areas",
           "Distinguished projects in fullstack web development"
         ],
-        "technologies": ["Java", "Python", "SQL", "UML", "DevOps", "Docker", "AWS"],
+        "technologies": [
+          "Java",
+          "Python",
+          "SQL",
+          "UML",
+          "DevOps",
+          "Docker",
+          "AWS"
+        ],
         "subjects": [
           "Advanced algorithms and data structures",
           "Modern web development (React, Node.js)",
@@ -182,7 +216,12 @@
           "Academic excellence in fundamental sciences",
           "top of Agadez region in the Scientific Baccalaureate"
         ],
-        "technologies": ["Advanced Mathematics", "Physics", "Chemistry", "Engineering Sciences"],
+        "technologies": [
+          "Advanced Mathematics",
+          "Physics",
+          "Chemistry",
+          "Engineering Sciences"
+        ],
         "subjects": [
           "Advanced mathematics and analysis",
           "Fundamental physics",
@@ -203,7 +242,17 @@
           "Development of innovative SaaS solutions for startups",
           "Performance optimization with 300% speed gains"
         ],
-        "technologies": ["React", "Next.js", "Node.js", "MongoDB", "AWS", "Firebase", "TypeScript", "Tailwind","..."]
+        "technologies": [
+          "React",
+          "Next.js",
+          "Node.js",
+          "MongoDB",
+          "AWS",
+          "Firebase",
+          "TypeScript",
+          "Tailwind",
+          "..."
+        ]
       },
       "anest": {
         "title": "Auditor & Treasurer",
@@ -216,11 +265,16 @@
           "optimization of operational costs",
           "Quarterly financial reports applauded by members"
         ],
-        "technologies": ["Advanced Excel", "Budget management", "Financial analytics", "Leadership", "Communication"]
+        "technologies": [
+          "Advanced Excel",
+          "Budget management",
+          "Financial analytics",
+          "Leadership",
+          "Communication"
+        ]
       }
     }
   },
-
   "portfolio": {
     "title": "Portfolio & Certifications",
     "subtitle": "Discover my practical projects and professional certifications",
@@ -244,12 +298,36 @@
         "title": "GremahElectro",
         "description": "First e-commerce platform in Zinder, specialized in online sales of quality electronic devices, with an intuitive interface and secure payment.",
         "technologies": [
-          { "title": "React", "icon": "React", "color": "#61DAFB" },
-          { "title": "Three.js", "icon": "Three.js", "color": "#000000" },
-          { "title": "Node.js", "icon": "Node.js", "color": "#339933" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
-          { "title": "Appwrite", "icon": "Appwrite", "color": "#F938AA" },
-          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" }
+          {
+            "title": "React",
+            "icon": "React",
+            "color": "#61DAFB"
+          },
+          {
+            "title": "Three.js",
+            "icon": "Three.js",
+            "color": "#000000"
+          },
+          {
+            "title": "Node.js",
+            "icon": "Node.js",
+            "color": "#339933"
+          },
+          {
+            "title": "MongoDB",
+            "icon": "MongoDB",
+            "color": "#47A248"
+          },
+          {
+            "title": "Appwrite",
+            "icon": "Appwrite",
+            "color": "#F938AA"
+          },
+          {
+            "title": "Tailwind CSS",
+            "icon": "Tailwind CSS",
+            "color": "#38B2AC"
+          }
         ],
         "image": "/Electro.png",
         "github": "https://github.com/Mahamadou-dev/Gremah_Electro",
@@ -262,14 +340,46 @@
         "title": "GremahMind",
         "description": "Web application leveraging AI to analyze text and PDF files to generate summaries and key insights, useful for students and professionals.",
         "technologies": [
-          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
-          { "title": "Python", "icon": "Python", "color": "#3776AB" },
-          { "title": "FastAPI", "icon": "FastAPI", "color": "#FF6F00" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
-          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
-          { "title": "Hugging Face", "icon": "HuggingFace", "color": "#FF6F00" },
-          { "title": "Appwrite", "icon": "Appwrite", "color": "#F938AA" },
-          { "title": "Three.js", "icon": "Three.js", "color": "#000000" }
+          {
+            "title": "Next.js",
+            "icon": "Next.js",
+            "color": "#000000"
+          },
+          {
+            "title": "Python",
+            "icon": "Python",
+            "color": "#3776AB"
+          },
+          {
+            "title": "FastAPI",
+            "icon": "FastAPI",
+            "color": "#FF6F00"
+          },
+          {
+            "title": "MongoDB",
+            "icon": "MongoDB",
+            "color": "#47A248"
+          },
+          {
+            "title": "Tailwind CSS",
+            "icon": "Tailwind CSS",
+            "color": "#38B2AC"
+          },
+          {
+            "title": "Hugging Face",
+            "icon": "HuggingFace",
+            "color": "#FF6F00"
+          },
+          {
+            "title": "Appwrite",
+            "icon": "Appwrite",
+            "color": "#F938AA"
+          },
+          {
+            "title": "Three.js",
+            "icon": "Three.js",
+            "color": "#000000"
+          }
         ],
         "image": "/Gmind.png",
         "github": "https://github.com/Mahamadou-dev/GremahMind-docs_fstack.git",
@@ -278,20 +388,55 @@
         "numberOfLikes": 42
       },
       {
-        
         "id": 3,
         "title": "CryptoLab",
         "description": "An educational web platform to learn, simulate, and visualize cryptography algorithms (Classic, Symmetric, Asymmetric, Hashing) with 3D animations.",
         "technologies": [
-          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
-          { "title": "FastAPI", "icon": "FastAPI", "color": "#009688" },
-          { "title": "Python", "icon": "Python", "color": "#3776AB" },
-          { "title": "Three.js", "icon": "Three.js", "color": "#000000" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
-          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
-          { "title": "Framer Motion", "icon": "Framer Motion", "color": "#0055FF" },
-          { "title": "Vercel", "icon": "Vercel", "color": "#000000" },
-          { "title": "Render", "icon": "Render", "color": "#46E3B7" }
+          {
+            "title": "Next.js",
+            "icon": "Next.js",
+            "color": "#000000"
+          },
+          {
+            "title": "FastAPI",
+            "icon": "FastAPI",
+            "color": "#009688"
+          },
+          {
+            "title": "Python",
+            "icon": "Python",
+            "color": "#3776AB"
+          },
+          {
+            "title": "Three.js",
+            "icon": "Three.js",
+            "color": "#000000"
+          },
+          {
+            "title": "MongoDB",
+            "icon": "MongoDB",
+            "color": "#47A248"
+          },
+          {
+            "title": "Tailwind CSS",
+            "icon": "Tailwind CSS",
+            "color": "#38B2AC"
+          },
+          {
+            "title": "Framer Motion",
+            "icon": "Framer Motion",
+            "color": "#0055FF"
+          },
+          {
+            "title": "Vercel",
+            "icon": "Vercel",
+            "color": "#000000"
+          },
+          {
+            "title": "Render",
+            "icon": "Render",
+            "color": "#46E3B7"
+          }
         ],
         "image": "/cryptolab.png",
         "github": "https://github.com/Mahamadou-dev/CryptoLab-backend.git",
@@ -304,10 +449,26 @@
         "title": "FSMClassrooms",
         "description": "REST API for FSMClassrooms, a Google Classroom-like web application for the Faculty of Science of Monastir, managing courses, labs, and student assessments.",
         "technologies": [
-          { "title": "ASP.NET Core", "icon": "ASP", "color": "#61DAFB" },
-          { "title": "SQL Server", "icon": "SQL Server", "color": "#339933" },
-          { "title": "Microsoft Azure", "icon": "Azure", "color": "#47A248" },
-          { "title": "Entity Framework", "icon": "Entity Framework", "color": "#FF9900" }
+          {
+            "title": "ASP.NET Core",
+            "icon": "ASP",
+            "color": "#61DAFB"
+          },
+          {
+            "title": "SQL Server",
+            "icon": "SQL Server",
+            "color": "#339933"
+          },
+          {
+            "title": "Microsoft Azure",
+            "icon": "Azure",
+            "color": "#47A248"
+          },
+          {
+            "title": "Entity Framework",
+            "icon": "Entity Framework",
+            "color": "#FF9900"
+          }
         ],
         "image": "/FSMClassrooms.png",
         "github": "https://github.com/Mahamadou-dev/ClassroomApp.git",
@@ -320,12 +481,36 @@
         "title": "HabaruBlog",
         "description": "Modern blogging platform to create, share, and discover articles with intuitive interface and built-in social features.",
         "technologies": [
-          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
-          { "title": "Node.js", "icon": "Node.js", "color": "#339933" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
-          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
-          { "title": "Appwrite", "icon": "Appwrite", "color": "#F938AA" },
-          { "title": "Three.js", "icon": "Three.js", "color": "#000000" }
+          {
+            "title": "Next.js",
+            "icon": "Next.js",
+            "color": "#000000"
+          },
+          {
+            "title": "Node.js",
+            "icon": "Node.js",
+            "color": "#339933"
+          },
+          {
+            "title": "MongoDB",
+            "icon": "MongoDB",
+            "color": "#47A248"
+          },
+          {
+            "title": "Tailwind CSS",
+            "icon": "Tailwind CSS",
+            "color": "#38B2AC"
+          },
+          {
+            "title": "Appwrite",
+            "icon": "Appwrite",
+            "color": "#F938AA"
+          },
+          {
+            "title": "Three.js",
+            "icon": "Three.js",
+            "color": "#000000"
+          }
         ],
         "image": "HabaruBlog.png",
         "github": "https://github.com/Mahamadou-dev/habaru-feminine-elegance.git",
@@ -338,9 +523,21 @@
         "title": "e-Koudi_Bank",
         "description": "Full-stack Java desktop application for banking management: clients, accounts, transactions, loans, and financial reports.",
         "technologies": [
-          { "title": "Java", "icon": "Java", "color": "#007396" },
-          { "title": "Java Swing", "icon": "JavaSwing", "color": "#FF9900" },
-          { "title": "MySQL", "icon": "MySQL", "color": "#4479A1" }
+          {
+            "title": "Java",
+            "icon": "Java",
+            "color": "#007396"
+          },
+          {
+            "title": "Java Swing",
+            "icon": "JavaSwing",
+            "color": "#FF9900"
+          },
+          {
+            "title": "MySQL",
+            "icon": "MySQL",
+            "color": "#4479A1"
+          }
         ],
         "image": "/EKoudi.png",
         "github": "https://github.com/Mahamadou-dev/e-Koudi-Bank.git",
@@ -353,9 +550,21 @@
         "title": "Jakarta Banking",
         "description": "Mini full-stack Java web application for client and account management, suitable for small banks and micro-finance institutions.",
         "technologies": [
-          { "title": "Java", "icon": "Java", "color": "#007396" },
-          { "title": "Jakarta EE", "icon": "Jakarta EE", "color": "#6DB33F" },
-          { "title": "MySQL", "icon": "MySQL", "color": "#4479A1" }
+          {
+            "title": "Java",
+            "icon": "Java",
+            "color": "#007396"
+          },
+          {
+            "title": "Jakarta EE",
+            "icon": "Jakarta EE",
+            "color": "#6DB33F"
+          },
+          {
+            "title": "MySQL",
+            "icon": "MySQL",
+            "color": "#4479A1"
+          }
         ],
         "image": "/GestionClientJEE.png",
         "github": "https://github.com/Mahamadou-dev/TP-4-JEE-.git",
@@ -368,11 +577,31 @@
         "title": "Géo Concept Tech",
         "description": "Showcase website for Géo Concept Tech, specialized in geospatial solutions and GIS technologies in Niger.",
         "technologies": [
-          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
-          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
-          { "title": "Vercel", "icon": "Vercel", "color": "#000000" },
-          { "title": "Framer Motion", "icon": "Framer Motion", "color": "#0055FF" },
-          { "title": "Three.js", "icon": "Three.js", "color": "#000000" }
+          {
+            "title": "Next.js",
+            "icon": "Next.js",
+            "color": "#000000"
+          },
+          {
+            "title": "Tailwind CSS",
+            "icon": "Tailwind CSS",
+            "color": "#38B2AC"
+          },
+          {
+            "title": "Vercel",
+            "icon": "Vercel",
+            "color": "#000000"
+          },
+          {
+            "title": "Framer Motion",
+            "icon": "Framer Motion",
+            "color": "#0055FF"
+          },
+          {
+            "title": "Three.js",
+            "icon": "Three.js",
+            "color": "#000000"
+          }
         ],
         "image": "/Geo-concept.png",
         "github": "https://github.com",
@@ -390,7 +619,11 @@
         "date": "2025",
         "image": "/Infographie.png",
         "credentialUrl": "https://example.com",
-        "skills": ["Graphic Design", "Illustration", "Adobe Photoshop"]
+        "skills": [
+          "Graphic Design",
+          "Illustration",
+          "Adobe Photoshop"
+        ]
       },
       {
         "id": 2,
@@ -400,7 +633,11 @@
         "date": "2025",
         "image": "/Python1.png",
         "credentialUrl": "https://www.credly.com/badges/12f73882-f113-4675-905d-08a93aeed04c/linked_in_profile",
-        "skills": ["Python", "Programming", "Algorithms"]
+        "skills": [
+          "Python",
+          "Programming",
+          "Algorithms"
+        ]
       },
       {
         "id": 3,
@@ -410,7 +647,11 @@
         "date": "2025",
         "image": "/Linux.png",
         "credentialUrl": "https://www.credly.com/badges/6867af60-c8b3-474e-8d86-f73537f3b1a5/linked_in_profile",
-        "skills": ["Linux", "Shell Commands", "Administration"]
+        "skills": [
+          "Linux",
+          "Shell Commands",
+          "Administration"
+        ]
       },
       {
         "id": 4,
@@ -420,7 +661,11 @@
         "date": "2025",
         "image": "Cybersecurity.png",
         "credentialUrl": "https://www.credly.com/badges/02e8f1ed-9edc-4c7e-804a-3493a942545d/linked_in_profile",
-        "skills": ["Cybersecurity", "Networking", "Data Protection"]
+        "skills": [
+          "Cybersecurity",
+          "Networking",
+          "Data Protection"
+        ]
       },
       {
         "id": 5,
@@ -428,9 +673,13 @@
         "issuer": "JS Institute & Cisco",
         "description": "Mastering HTML5 basics for web development",
         "date": "2025",
-        "image":"/HTML5.png",
+        "image": "/HTML5.png",
         "credentialUrl": "https://www.credly.com/badges/c912ef12-018d-4418-b81a-681b8e11844f/linked_in_profile",
-        "skills": ["HTML5", "Web Structuring", "SEO"]
+        "skills": [
+          "HTML5",
+          "Web Structuring",
+          "SEO"
+        ]
       },
       {
         "id": 6,
@@ -438,9 +687,13 @@
         "issuer": "Microsoft & FreeCodeCamp",
         "description": "Basics of C# programming",
         "date": "2025",
-        "image":"/CSharpFundamentals.png",
+        "image": "/CSharpFundamentals.png",
         "credentialUrl": "https://freecodecamp.org/certification/fcc680be38e-24e6-4887-bcfd-66b9b7e9f5ab/foundational-c-sharp-with-microsoft",
-        "skills": ["C#", "OOP", "Visual Studio"]
+        "skills": [
+          "C#",
+          "OOP",
+          "Visual Studio"
+        ]
       },
       {
         "id": 7,
@@ -450,7 +703,11 @@
         "date": "2025",
         "image": "/AmazonEC2.png",
         "credentialUrl": "https://example.com",
-        "skills": ["AWS EC2", "Cloud Computing", "Deployment"]
+        "skills": [
+          "AWS EC2",
+          "Cloud Computing",
+          "Deployment"
+        ]
       },
       {
         "id": 8,
@@ -460,7 +717,11 @@
         "date": "2025",
         "image": "/AmazonS3.png",
         "credentialUrl": "https://example.com",
-        "skills": ["AWS S3", "Cloud Storage", "Data Management"]
+        "skills": [
+          "AWS S3",
+          "Cloud Storage",
+          "Data Management"
+        ]
       },
       {
         "id": 9,
@@ -470,9 +731,12 @@
         "date": "2025",
         "image": "/Hardware.png",
         "credentialUrl": "https://www.credly.com/badges/dd96cfde-2c4b-4abb-ac61-00f4f7fadba0/linked_in_profile",
-        "skills": ["Computer Hardware", "Components", "PC Architecture"]
+        "skills": [
+          "Computer Hardware",
+          "Components",
+          "PC Architecture"
+        ]
       },
-
       {
         "id": 10,
         "title": "Learn-a-Thon 2025",
@@ -481,7 +745,11 @@
         "date": "2025",
         "image": "LearnAThon2025.png",
         "credentialUrl": "https://www.credly.com/badges/83758877-c66b-4ebb-bfff-02477f21b9e7/linked_in_profile",
-        "skills": ["Programming", "Cybersecurity", "Teamwork"]
+        "skills": [
+          "Programming",
+          "Cybersecurity",
+          "Teamwork"
+        ]
       },
       {
         "id": 11,
@@ -491,7 +759,11 @@
         "date": "2025",
         "image": "/modernAI.png",
         "credentialUrl": "https://www.credly.com/badges/0b1c084f-7716-4d22-9d75-507c36dca5ba/public_url",
-        "skills": ["Artificial Intelligence", "Machine Learning", "Prompt Engineering"]
+        "skills": [
+          "Artificial Intelligence",
+          "Machine Learning",
+          "Prompt Engineering"
+        ]
       },
       {
         "id": 12,
@@ -501,7 +773,11 @@
         "date": "2025",
         "image": "/cyberThreat.png",
         "credentialUrl": "https://www.credly.com/badges/0de5e155-845f-412a-a52e-e30a3c789212/public_url",
-        "skills": ["Cybersecurity", "Risk Analysis", "Incident Response"]
+        "skills": [
+          "Cybersecurity",
+          "Risk Analysis",
+          "Incident Response"
+        ]
       },
       {
         "id": 13,
@@ -511,92 +787,140 @@
         "date": "2025",
         "image": "/python2.png",
         "credentialUrl": "https://www.credly.com/badges/783e4289-5b27-49da-980e-7a0779b2efda/linked_in_profile",
-        "skills": ["Python", "OOP", "Problem Solving"]
+        "skills": [
+          "Python",
+          "OOP",
+          "Problem Solving"
+        ]
       }
-      ]
-    },
-
-
-      "services": {
-      "title": "My Services",
-      "subtitle": "Complete solutions adapted to your digital needs",
-      "perHour": "hour",
-      "choosePlan": "Choose this plan",
-      "flexibilityNote": "💡 Flexibility: All rates are adaptable according to the complexity and duration of your project",
-      "plans": {
-        "basic": {
-          "title": "Basic"
-        },
-        "standard": {
-          "title": "Standard"
-        },
-        "premium": {
-          "title": "Premium"
-        }
-    },
-"categories": [
-    {
-      "id": 0,
-      "icon": "💻",
-      "color": "from-blue-500 to-cyan-500",
-      "title": "Software Development",
-      "description": "Custom web, mobile and backend applications with modern technologies",
-      "advantages": [
-        "Responsive React/Next.js web applications",
-        "iOS/Android Flutter mobile apps",
-        "Robust Node.js/Python backend",
-        "Secure RESTful APIs",
-        "Optimized databases",
-        "Testing and continuous deployment",
-        "Maintenance and support"
-      ],
-      "plans": [
-        {
-          "title": "basic",
-          "priceperHour": { "FCFA": 10000, "USD": 17 },
-          "advantagesIndexes": [0, 1, 2]
-        },
-        {
-          "title": "standard",
-          "priceperHour": { "FCFA": 20000, "USD": 33 },
-          "advantagesIndexes": [0, 1, 2, 3, 4]
-        },
-        {
-          "title": "premium",
-          "priceperHour": { "FCFA": 35000, "USD": 58 },
-          "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
-        }
-      ],
-      "technologies": [
-        { "icon": "⚛️", "name": "React" },
-        { "icon": "🔗", "name": "Node.js" },
-        { "icon": "📱", "name": "Flutter" },
-        { "icon": "🐍", "name": "Python" }
-      ]
+    ],
+    "search": "Search a project, a tech...",
+    "noResults": "No result for this search.",
+    "techUsed": "Technologies used",
+    "close": "Close",
+    "filters": {
+      "all": "All"
     }
-  ]
+  },
+  "services": {
+    "title": "My Services",
+    "subtitle": "Complete solutions adapted to your digital needs",
+    "perHour": "hour",
+    "choosePlan": "Choose this plan",
+    "flexibilityNote": "💡 Flexibility: All rates are adaptable according to the complexity and duration of your project",
+    "plans": {
+      "basic": {
+        "title": "Basic"
+      },
+      "standard": {
+        "title": "Standard"
+      },
+      "premium": {
+        "title": "Premium"
+      }
+    },
+    "categories": [
+      {
+        "id": 0,
+        "icon": "💻",
+        "color": "from-blue-500 to-cyan-500",
+        "title": "Software Development",
+        "description": "Custom web, mobile and backend applications with modern technologies",
+        "advantages": [
+          "Responsive React/Next.js web applications",
+          "iOS/Android Flutter mobile apps",
+          "Robust Node.js/Python backend",
+          "Secure RESTful APIs",
+          "Optimized databases",
+          "Testing and continuous deployment",
+          "Maintenance and support"
+        ],
+        "plans": [
+          {
+            "title": "basic",
+            "priceperHour": {
+              "FCFA": 10000,
+              "USD": 17
+            },
+            "advantagesIndexes": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "title": "standard",
+            "priceperHour": {
+              "FCFA": 20000,
+              "USD": 33
+            },
+            "advantagesIndexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "title": "premium",
+            "priceperHour": {
+              "FCFA": 35000,
+              "USD": 58
+            },
+            "advantagesIndexes": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          }
+        ],
+        "technologies": [
+          {
+            "icon": "⚛️",
+            "name": "React"
+          },
+          {
+            "icon": "🔗",
+            "name": "Node.js"
+          },
+          {
+            "icon": "📱",
+            "name": "Flutter"
+          },
+          {
+            "icon": "🐍",
+            "name": "Python"
+          }
+        ]
+      }
+    ]
   },
   "hero": {
     "greeting": "Hello, I'm",
     "greetingTooltip": "Barka dey means 'Hello' in Hausa, my native language.",
     "name": "Mahamadou Gremah",
     "typewriterPhrases": [
-      "Full Stack Web Developer",
-      "C# .NET Developer",
+      "Full Stack .NET & FastAPI Developer",
       "React & Next.js Developer",
-      "Android Developer",
-      "Passionate about Machine Learning",
-      "Passionate about Cybersecurity",
+      "Android Kotlin Developer",
+      "Machine Learning & Deep Learning",
+      "AI Agents & Automation",
+      "AI Security & Cyberdefense",
       "Founder of GremahTech"
     ],
-    "description": "I am a young Nigerian student passionate about computer science. Currently in <strong>3rd year of software engineering and information systems license</strong> at the <strong>Faculty of Sciences of Monastir</strong> in Tunisia. Founder of <strong>GremahTech</strong>, a start-up specialized in web and mobile development.",
+    "description": "Graduate in <strong>software engineering and information systems</strong> from the <strong>Faculty of Sciences of Monastir</strong>, I build web and mobile applications and high-performance APIs. I am moving on to a <strong>research master's in Artificial Intelligence</strong> (2026-2027), aiming at <strong>AI security</strong> and AI applied to <strong>cyberdefense</strong>. Founder of <strong>GremahTech</strong>.",
     "buttons": {
-      "viewWork": "View our recent work",
-      "contact": "Contact us"
+      "viewWork": "View my projects",
+      "contact": "Get in touch"
     },
     "loading": "Loading..."
   },
-    "footer": {
+  "footer": {
     "copyright": "© {{year}} GremahTech. All rights reserved.",
     "builtWith": "Built with ❤️ by",
     "connectWith": "Connect with us",
@@ -607,5 +931,4 @@
     },
     "lastUpdate": "Last update: {{date}}"
   }
-
 }

@@ -12,13 +12,13 @@
     "themeToggle": "Canza yanayi",
     "menuToggle": "Buɗe/Rufe menu"
   },
-    "about": {
+  "about": {
     "title": "Game da ni",
     "introduction": "Sannu, sunana",
-    "a_young_student": "Dalibi matashi",
+    "a_young_student": "Matashin injiniya",
     "niger": "DAN NIJAR",
-    "residing_in_tunisia_and_it_passionated": "mai zama a Tunisiya kuma mai sha'awar fasahar kwamfuta.",
-    "currently_studies": "A halin yanzu ina cikin shekara ta 3 na digiri a Injiniyan Software da Tsarin Bayanai a Kwalejin Kimiyya ta Monastir.",
+    "residing_in_tunisia_and_it_passionated": "mazaunin Tunisia, mai sha'awar injiniyan software, basirar wucin gadi da tsaron yanar gizo.",
+    "currently_studies": "Na kammala karatun injiniyan software da tsarin bayanai a Faculté des Sciences de Monastir, inda zan ci gaba da digiri na biyu na bincike a Artificial Intelligence daga shekarar karatu 2026-2027.",
     "also_the_founder_and_ceo_of": "Ni ne kuma wanda ya kafa kuma Shugaba na",
     "tiamtech_description": "ƙaramin kamfani mai basussuka da ke Nijar yana ba da ayyuka kamar haɓaka SHAFUKAN YANAR GIZO, haɓaka API Restful, haɓaka aikace-aikacen wayar hannu, da sauransu...",
     "anest_post": "Ni ne mai duba asusun kuɗi na sashin Monastir na ANEST (Ƙungiyar Dalibai da Masu Horarwa 'Yan Nijar a Tunisiya), inda nake tabbatar da gaskiya da bin ka'idojin kuɗaɗen ƙungiyar.",
@@ -26,7 +26,7 @@
     "personalInfo": {
       "age": {
         "label": "Shekaru",
-        "value": "Shekaru 20"
+        "value": "shekaru {age}"
       },
       "nationality": {
         "label": "Ƙasa",
@@ -44,7 +44,7 @@
   },
   "skills": {
     "title": "Gwaninta",
-    "recent_technologies_intro":"Ga wasu fasahohi da na yi aiki da su kwanan nan:",
+    "recent_technologies_intro": "Ga wasu fasahohi da na yi aiki da su kwanan nan:",
     "strengths": {
       "productivity": {
         "title": "Yawan aiki"
@@ -71,8 +71,8 @@
       },
       "tools": {
         "title": "KAYAN AIKI"
-      }
-      ,"machine_learning": {
+      },
+      "machine_learning": {
         "title": " COMPUTER MAI KOYO"
       },
       "cybersecurity": {
@@ -80,7 +80,7 @@
       }
     }
   },
-    "contact": {
+  "contact": {
     "title": "Tuntuɓi ni",
     "subtitle": "Bari mu tattauna aikin ku na gaba tare",
     "workTogether": {
@@ -146,17 +146,53 @@
     "subjects": "Darussan",
     "technologies": "Fasahohi",
     "education": {
+      "masterAI": {
+        "title": "Digiri na Biyu na Bincike a Artificial Intelligence",
+        "institution": "Jami’ar Monastir — Faculté des Sciences",
+        "period": "2026 - 2027",
+        "location": "Monastir, Tunisia",
+        "description": "Digiri na biyu mai mai da hankali kan bincike a AI, tare da mayar da hankali kan tsaron tsarin AI da amfani da AI wajen ƙarfafa kariyar yanar gizo.",
+        "achievements": [
+          "Fannin bincike: tsaron samfuran AI da AI don kariyar yanar gizo",
+          "Ƙira da tantance tsarin hankali, amintacce kuma mai jurewa"
+        ],
+        "technologies": [
+          "Python",
+          "PyTorch",
+          "TensorFlow",
+          "LangChain",
+          "LLM",
+          "n8n",
+          "MLOps"
+        ],
+        "subjects": [
+          "Deep learning da wakilci",
+          "Wakilan hankali da tsarin wakilai da yawa",
+          "Tsaron samfura da hare-haren adversarial",
+          "AI don kariyar yanar gizo",
+          "Hanyoyin bincike"
+        ]
+      },
       "softwareEngineering": {
         "title": "Digiri a Injiniyan Software & Tsarin Bayanai",
         "institution": "Jami'ar Monastir",
-        "period": "2023 - Yanzu",
+        "period": "2023 - 2026",
         "location": "Monastir, Tunisiya",
         "description": "Horon zurfi a haɓaka software, tsarin tsarin bayanai, bayanai da fasahohin yanar gizo na zamani tare da hanya mai aiki da ƙirƙira.",
         "achievements": [
-          "Mafi girma a ajin tare da matsakaicin 16.22/20 a shekara ta 2",
-          "Ayyukan da suka bambanta a cikin haɓakar gidan yanar gizo cikakke"
+          "Na farko a aji da matsakaicin 16.22/20 a shekara ta biyu",
+          "Aikin kammala karatu: maganin AI don gano cututtukan tsirrai a yankunan karkara",
+          "Ayyuka na musamman a haɓaka yanar gizo fullstack"
         ],
-        "technologies": ["Java", "Python", "SQL", "UML", "DevOps", "Docker", "AWS"],
+        "technologies": [
+          "Java",
+          "Python",
+          "SQL",
+          "UML",
+          "DevOps",
+          "Docker",
+          "AWS"
+        ],
         "subjects": [
           "Algorithm da tsarin bayanai na ci gaba",
           "Haɓakar yanar gizo na zamani (React, Node.js)",
@@ -180,7 +216,12 @@
           "Ƙwararrun ilimi a kimiyyun asali",
           "na farko a yankin Agadez a jarrabawar Baccalaureate ta Kimiyya"
         ],
-        "technologies": ["Lissafi na ci gaba", "Kimiyyar lissafi", "Sinadaran", "Kimiyyar Injiniya"],
+        "technologies": [
+          "Lissafi na ci gaba",
+          "Kimiyyar lissafi",
+          "Sinadaran",
+          "Kimiyyar Injiniya"
+        ],
         "subjects": [
           "Lissafi na ci gaba da bincike",
           "Kimiyyar lissafi ta asali",
@@ -201,7 +242,17 @@
           "Haɓakar mafita na SaaS masu ƙirƙira don farawa",
           "Ingantaccen aiki tare da ribar saurin 300%"
         ],
-        "technologies": ["React", "Next.js", "Node.js", "MongoDB", "AWS", "Firebase", "TypeScript", "Tailwind","..."]
+        "technologies": [
+          "React",
+          "Next.js",
+          "Node.js",
+          "MongoDB",
+          "AWS",
+          "Firebase",
+          "TypeScript",
+          "Tailwind",
+          "..."
+        ]
       },
       "anest": {
         "title": "Mai Duba Asusun Kuɗi & Ma'ajin",
@@ -214,12 +265,16 @@
           "Ingantaccen farashin aiki",
           "Rahoton kuɗi na kwata-kwata wanda membobin suka yaba"
         ],
-        "technologies": ["Excel na ci gaba", "Gudanar da kasafin kuɗi", "Binciken kuɗi", "Jagoranci", "Sadarwa"]
+        "technologies": [
+          "Excel na ci gaba",
+          "Gudanar da kasafin kuɗi",
+          "Binciken kuɗi",
+          "Jagoranci",
+          "Sadarwa"
+        ]
       }
     }
   },
-
-
   "portfolio": {
     "title": "Tarin Ayyuka & Takaddun Shaida",
     "subtitle": "Gano ayyukana na zahiri da takaddun shaida na kwarewa",
@@ -243,12 +298,36 @@
         "title": "GremahElectro",
         "description": "Dandalin kasuwancin e-commerce na farko a Zinder, wanda ya kware a siyar da na'urorin lantarki masu inganci a yanar gizo, tare da sauƙin amfani da biyan kuɗi amintacce.",
         "technologies": [
-          { "title": "React", "icon": "React", "color": "#61DAFB" },
-          { "title": "Three.js", "icon": "Three.js", "color": "#000000" },
-          { "title": "Node.js", "icon": "Node.js", "color": "#339933" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
-          { "title": "Appwrite", "icon": "Appwrite", "color": "#F938AA" },
-          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" }
+          {
+            "title": "React",
+            "icon": "React",
+            "color": "#61DAFB"
+          },
+          {
+            "title": "Three.js",
+            "icon": "Three.js",
+            "color": "#000000"
+          },
+          {
+            "title": "Node.js",
+            "icon": "Node.js",
+            "color": "#339933"
+          },
+          {
+            "title": "MongoDB",
+            "icon": "MongoDB",
+            "color": "#47A248"
+          },
+          {
+            "title": "Appwrite",
+            "icon": "Appwrite",
+            "color": "#F938AA"
+          },
+          {
+            "title": "Tailwind CSS",
+            "icon": "Tailwind CSS",
+            "color": "#38B2AC"
+          }
         ],
         "image": "/Electro.png",
         "github": "https://github.com/Mahamadou-dev/Gremah_Electro",
@@ -261,14 +340,46 @@
         "title": "GremahMind",
         "description": "Aikace-aikacen yanar gizo da ke amfani da AI don nazarin rubutu da fayilolin PDF don samar da taƙaitaccen bayani da mahimman bayanai, mai amfani ga ɗalibai da ƙwararru.",
         "technologies": [
-          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
-          { "title": "Python", "icon": "Python", "color": "#3776AB" },
-          { "title": "FastAPI", "icon": "FastAPI", "color": "#FF6F00" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
-          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
-          { "title": "Hugging Face", "icon": "HuggingFace", "color": "#FF6F00" },
-          { "title": "Appwrite", "icon": "Appwrite", "color": "#F938AA" },
-          { "title": "Three.js", "icon": "Three.js", "color": "#000000" }
+          {
+            "title": "Next.js",
+            "icon": "Next.js",
+            "color": "#000000"
+          },
+          {
+            "title": "Python",
+            "icon": "Python",
+            "color": "#3776AB"
+          },
+          {
+            "title": "FastAPI",
+            "icon": "FastAPI",
+            "color": "#FF6F00"
+          },
+          {
+            "title": "MongoDB",
+            "icon": "MongoDB",
+            "color": "#47A248"
+          },
+          {
+            "title": "Tailwind CSS",
+            "icon": "Tailwind CSS",
+            "color": "#38B2AC"
+          },
+          {
+            "title": "Hugging Face",
+            "icon": "HuggingFace",
+            "color": "#FF6F00"
+          },
+          {
+            "title": "Appwrite",
+            "icon": "Appwrite",
+            "color": "#F938AA"
+          },
+          {
+            "title": "Three.js",
+            "icon": "Three.js",
+            "color": "#000000"
+          }
         ],
         "image": "/Gmind.png",
         "github": "https://github.com/Mahamadou-dev/GremahMind-docs_fstack.git",
@@ -276,20 +387,56 @@
         "numberOfBranches": 8,
         "numberOfLikes": 42
       },
-       {
+      {
         "id": 3,
         "title": "CryptoLab",
         "description": "Wata manhajar yanar gizo ta ilimi don koyo, gwadawa, da kuma nuna yadda algorithms na boye bayanai (na gargajiya, na zamani, na jama'a, da na hash) suke aiki tare da rayarwa ta 3D.",
         "technologies": [
-          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
-          { "title": "FastAPI", "icon": "FastAPI", "color": "#009688" },
-          { "title": "Python", "icon": "Python", "color": "#3776AB" },
-          { "title": "Three.js", "icon": "Three.js", "color": "#000000" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
-          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
-          { "title": "Framer Motion", "icon": "Framer Motion", "color": "#0055FF" },
-          { "title": "Vercel", "icon": "Vercel", "color": "#000000" },
-          { "title": "Render", "icon": "Render", "color": "#46E3B7" }
+          {
+            "title": "Next.js",
+            "icon": "Next.js",
+            "color": "#000000"
+          },
+          {
+            "title": "FastAPI",
+            "icon": "FastAPI",
+            "color": "#009688"
+          },
+          {
+            "title": "Python",
+            "icon": "Python",
+            "color": "#3776AB"
+          },
+          {
+            "title": "Three.js",
+            "icon": "Three.js",
+            "color": "#000000"
+          },
+          {
+            "title": "MongoDB",
+            "icon": "MongoDB",
+            "color": "#47A248"
+          },
+          {
+            "title": "Tailwind CSS",
+            "icon": "Tailwind CSS",
+            "color": "#38B2AC"
+          },
+          {
+            "title": "Framer Motion",
+            "icon": "Framer Motion",
+            "color": "#0055FF"
+          },
+          {
+            "title": "Vercel",
+            "icon": "Vercel",
+            "color": "#000000"
+          },
+          {
+            "title": "Render",
+            "icon": "Render",
+            "color": "#46E3B7"
+          }
         ],
         "image": "/cryptolab.png",
         "github": "https://github.com/Mahamadou-dev/CryptoLab-backend.git",
@@ -302,10 +449,26 @@
         "title": "FSMClassrooms",
         "description": "REST API don FSMClassrooms, aikace-aikacen yanar gizo mai kama da Google Classroom don Kwalejin Kimiyya ta Monastir, don gudanar da darussa, ayyukan dakin gwaje-gwaje, da kimanta ɗalibai.",
         "technologies": [
-          { "title": "ASP.NET Core", "icon": "ASP", "color": "#61DAFB" },
-          { "title": "SQL Server", "icon": "SQL Server", "color": "#339933" },
-          { "title": "Microsoft Azure", "icon": "Azure", "color": "#47A248" },
-          { "title": "Entity Framework", "icon": "Entity Framework", "color": "#FF9900" }
+          {
+            "title": "ASP.NET Core",
+            "icon": "ASP",
+            "color": "#61DAFB"
+          },
+          {
+            "title": "SQL Server",
+            "icon": "SQL Server",
+            "color": "#339933"
+          },
+          {
+            "title": "Microsoft Azure",
+            "icon": "Azure",
+            "color": "#47A248"
+          },
+          {
+            "title": "Entity Framework",
+            "icon": "Entity Framework",
+            "color": "#FF9900"
+          }
         ],
         "image": "/FSMClassrooms.png",
         "github": "https://github.com/Mahamadou-dev/ClassroomApp.git",
@@ -318,12 +481,36 @@
         "title": "HabaruBlog",
         "description": "Dandalin rubutun blog na zamani don ƙirƙira, rabawa, da gano labarai tare da sauƙin amfani da fasalulluka na sada zumunta.",
         "technologies": [
-          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
-          { "title": "Node.js", "icon": "Node.js", "color": "#339933" },
-          { "title": "MongoDB", "icon": "MongoDB", "color": "#47A248" },
-          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
-          { "title": "Appwrite", "icon": "Appwrite", "color": "#F938AA" },
-          { "title": "Three.js", "icon": "Three.js", "color": "#000000" }
+          {
+            "title": "Next.js",
+            "icon": "Next.js",
+            "color": "#000000"
+          },
+          {
+            "title": "Node.js",
+            "icon": "Node.js",
+            "color": "#339933"
+          },
+          {
+            "title": "MongoDB",
+            "icon": "MongoDB",
+            "color": "#47A248"
+          },
+          {
+            "title": "Tailwind CSS",
+            "icon": "Tailwind CSS",
+            "color": "#38B2AC"
+          },
+          {
+            "title": "Appwrite",
+            "icon": "Appwrite",
+            "color": "#F938AA"
+          },
+          {
+            "title": "Three.js",
+            "icon": "Three.js",
+            "color": "#000000"
+          }
         ],
         "image": "HabaruBlog.png",
         "github": "https://github.com/Mahamadou-dev/habaru-feminine-elegance.git",
@@ -336,9 +523,21 @@
         "title": "e-Koudi Bank",
         "description": "Cikakken aikace-aikacen tebur na Java don gudanar da ayyukan banki: abokan ciniki, asusu, ma'amaloli, lamuni, da rahotannin kuɗi.",
         "technologies": [
-          { "title": "Java", "icon": "Java", "color": "#007396" },
-          { "title": "Java Swing", "icon": "JavaSwing", "color": "#FF9900" },
-          { "title": "MySQL", "icon": "MySQL", "color": "#4479A1" }
+          {
+            "title": "Java",
+            "icon": "Java",
+            "color": "#007396"
+          },
+          {
+            "title": "Java Swing",
+            "icon": "JavaSwing",
+            "color": "#FF9900"
+          },
+          {
+            "title": "MySQL",
+            "icon": "MySQL",
+            "color": "#4479A1"
+          }
         ],
         "image": "/EKoudi.png",
         "github": "https://github.com/Mahamadou-dev/e-Koudi-Bank.git",
@@ -351,9 +550,21 @@
         "title": "Jakarta Banking",
         "description": "Karamin cikakken aikace-aikacen yanar gizo na Java don gudanar da abokan ciniki da asusu, wanda ya dace da ƙananan bankuna da cibiyoyin ba da lamuni.",
         "technologies": [
-          { "title": "Java", "icon": "Java", "color": "#007396" },
-          { "title": "Jakarta EE", "icon": "Jakarta EE", "color": "#6DB33F" },
-          { "title": "MySQL", "icon": "MySQL", "color": "#4479A1" }
+          {
+            "title": "Java",
+            "icon": "Java",
+            "color": "#007396"
+          },
+          {
+            "title": "Jakarta EE",
+            "icon": "Jakarta EE",
+            "color": "#6DB33F"
+          },
+          {
+            "title": "MySQL",
+            "icon": "MySQL",
+            "color": "#4479A1"
+          }
         ],
         "image": "/GestionClientJEE.png",
         "github": "https://github.com/Mahamadou-dev/TP-4-JEE-.git",
@@ -366,11 +577,31 @@
         "title": "Géo Concept Tech",
         "description": "Shafin yanar gizo na nunawa don Géo Concept Tech, wanda ya kware a fannin fasahohin geospatial da GIS a Nijar.",
         "technologies": [
-          { "title": "Next.js", "icon": "Next.js", "color": "#000000" },
-          { "title": "Tailwind CSS", "icon": "Tailwind CSS", "color": "#38B2AC" },
-          { "title": "Vercel", "icon": "Vercel", "color": "#000000" },
-          { "title": "Framer Motion", "icon": "Framer Motion", "color": "#0055FF" },
-          { "title": "Three.js", "icon": "Three.js", "color": "#000000" }
+          {
+            "title": "Next.js",
+            "icon": "Next.js",
+            "color": "#000000"
+          },
+          {
+            "title": "Tailwind CSS",
+            "icon": "Tailwind CSS",
+            "color": "#38B2AC"
+          },
+          {
+            "title": "Vercel",
+            "icon": "Vercel",
+            "color": "#000000"
+          },
+          {
+            "title": "Framer Motion",
+            "icon": "Framer Motion",
+            "color": "#0055FF"
+          },
+          {
+            "title": "Three.js",
+            "icon": "Three.js",
+            "color": "#000000"
+          }
         ],
         "image": "/Geo-concept.png",
         "github": "https://github.com",
@@ -388,7 +619,11 @@
         "date": "2025",
         "image": "/Infographie.png",
         "credentialUrl": "https://example.com",
-        "skills": ["Zane-zanen Hoto", "Zane", "Adobe Photoshop"]
+        "skills": [
+          "Zane-zanen Hoto",
+          "Zane",
+          "Adobe Photoshop"
+        ]
       },
       {
         "id": 2,
@@ -398,7 +633,11 @@
         "date": "2025",
         "image": "/Python1.png",
         "credentialUrl": "https://www.credly.com/badges/12f73882-f113-4675-905d-08a93aeed04c/linked_in_profile",
-        "skills": ["Python", "Shirye-shirye", "Algorithms"]
+        "skills": [
+          "Python",
+          "Shirye-shirye",
+          "Algorithms"
+        ]
       },
       {
         "id": 3,
@@ -408,7 +647,11 @@
         "date": "2025",
         "image": "/Linux.png",
         "credentialUrl": "https://www.credly.com/badges/6867af60-c8b3-474e-8d86-f73537f3b1a5/linked_in_profile",
-        "skills": ["Linux", "Umarnin Shell", "Gudanarwa"]
+        "skills": [
+          "Linux",
+          "Umarnin Shell",
+          "Gudanarwa"
+        ]
       },
       {
         "id": 4,
@@ -418,7 +661,11 @@
         "date": "2025",
         "image": "Cybersecurity.png",
         "credentialUrl": "https://www.credly.com/badges/02e8f1ed-9edc-4c7e-804a-3493a942545d/linked_in_profile",
-        "skills": ["Tsaron Intanet", "Sadurwa", "Kariyar Bayanai"]
+        "skills": [
+          "Tsaron Intanet",
+          "Sadurwa",
+          "Kariyar Bayanai"
+        ]
       },
       {
         "id": 5,
@@ -428,7 +675,11 @@
         "date": "2025",
         "image": "/HTML5.png",
         "credentialUrl": "https://www.credly.com/badges/c912ef12-018d-4418-b81a-681b8e11844f/linked_in_profile",
-        "skills": ["HTML5", "Tsarin Yanar Gizo", "SEO"]
+        "skills": [
+          "HTML5",
+          "Tsarin Yanar Gizo",
+          "SEO"
+        ]
       },
       {
         "id": 6,
@@ -438,7 +689,11 @@
         "date": "2025",
         "image": "/CSharpFundamentals.png",
         "credentialUrl": "https://freecodecamp.org/certification/fcc680be38e-24e6-4887-bcfd-66b9b7e9f5ab/foundational-c-sharp-with-microsoft",
-        "skills": ["C#", "POO", "Visual Studio"]
+        "skills": [
+          "C#",
+          "POO",
+          "Visual Studio"
+        ]
       },
       {
         "id": 7,
@@ -448,7 +703,11 @@
         "date": "2025",
         "image": "/AmazonEC2.png",
         "credentialUrl": "https://example.com",
-        "skills": ["AWS EC2", "Kwamfuta a Giron Sama", "Turawa"]
+        "skills": [
+          "AWS EC2",
+          "Kwamfuta a Giron Sama",
+          "Turawa"
+        ]
       },
       {
         "id": 8,
@@ -458,7 +717,11 @@
         "date": "2025",
         "image": "/AmazonS3.png",
         "credentialUrl": "https://example.com",
-        "skills": ["AWS S3", "Adana a Giron Sama", "Gudanar da Bayanai"]
+        "skills": [
+          "AWS S3",
+          "Adana a Giron Sama",
+          "Gudanar da Bayanai"
+        ]
       },
       {
         "id": 9,
@@ -468,7 +731,11 @@
         "date": "2025",
         "image": "/Hardware.png",
         "credentialUrl": "https://www.credly.com/badges/dd96cfde-2c4b-4abb-ac61-00f4f7fadba0/linked_in_profile",
-        "skills": ["Kayan Kwamfuta", "Abubuwan Haɗi", "Gine-ginen PC"]
+        "skills": [
+          "Kayan Kwamfuta",
+          "Abubuwan Haɗi",
+          "Gine-ginen PC"
+        ]
       },
       {
         "id": 10,
@@ -478,7 +745,11 @@
         "date": "2025",
         "image": "LearnAThon2025.png",
         "credentialUrl": "https://www.credly.com/badges/83758877-c66b-4ebb-bfff-02477f21b9e7/linked_in_profile",
-        "skills": ["Shirye-shirye", "Tsaron Intanet", "Aiki a Ƙungiyance"]
+        "skills": [
+          "Shirye-shirye",
+          "Tsaron Intanet",
+          "Aiki a Ƙungiyance"
+        ]
       },
       {
         "id": 11,
@@ -488,7 +759,11 @@
         "date": "2025",
         "image": "/modernAI.png",
         "credentialUrl": "https://www.credly.com/badges/0b1c084f-7716-4d22-9d75-507c36dca5ba/public_url",
-        "skills": ["Artificial Intelligence", "Koyon Inji", "Prompt Engineering"]
+        "skills": [
+          "Artificial Intelligence",
+          "Koyon Inji",
+          "Prompt Engineering"
+        ]
       },
       {
         "id": 12,
@@ -498,7 +773,11 @@
         "date": "2025",
         "image": "/cyberThreat.png",
         "credentialUrl": "https://www.credly.com/badges/0de5e155-845f-412a-a52e-e30a3c789212/public_url",
-        "skills": ["Tsaron kwamfuta", "Binciken haɗari", "Amsa ga matsaloli"]
+        "skills": [
+          "Tsaron kwamfuta",
+          "Binciken haɗari",
+          "Amsa ga matsaloli"
+        ]
       },
       {
         "id": 13,
@@ -508,14 +787,22 @@
         "date": "2025",
         "image": "/python2.png",
         "credentialUrl": "https://www.credly.com/badges/783e4289-5b27-49da-980e-7a0779b2efda/linked_in_profile",
-        "skills": ["Python", "OOP", "Warware Matsaloli"]
+        "skills": [
+          "Python",
+          "OOP",
+          "Warware Matsaloli"
+        ]
       }
-    ]
-  }
-,
-
-
-   "services": {
+    ],
+    "search": "Nemo aiki ko fasaha...",
+    "noResults": "Babu sakamako don wannan bincike.",
+    "techUsed": "Fasahar da aka yi amfani da su",
+    "close": "Rufe",
+    "filters": {
+      "all": "Duka"
+    }
+  },
+  "services": {
     "title": "Ayyukana",
     "subtitle": "Cikakkun mafita da suka dace da bukatun ku na dijital",
     "perHour": "awa",
@@ -532,69 +819,108 @@
         "title": "Na Musamman"
       }
     },
-"categories": [
-    {
-      "id": 0,
-      "icon": "💻",
-      "color": "from-blue-500 to-cyan-500",
-      "title": "Haɓaka Software",
-      "description": "Aikace-aikacen yanar gizo, wayar hannu da na baya na al'ada tare da fasahohin zamani",
-      "advantages": [
-        "Aikace-aikacen yanar gizo masu amsawa React/Next.js",
-        "Aikace-aikacen wayar hannu iOS/Android Flutter",
-        "Ingantaccen backend Node.js/Python",
-        "API RESTful masu tsaro",
-        "Bayanan da aka inganta",
-        "Gwaji da ci gaba da turawa",
-        "Kulawa da tallafi"
-      ],
-      "plans": [
-        {
-          "title": "basic",
-          "priceperHour": { "FCFA": 10000, "USD": 17 },
-          "advantagesIndexes": [0, 1, 2]
-        },
-        {
-          "title": "standard",
-          "priceperHour": { "FCFA": 20000, "USD": 33 },
-          "advantagesIndexes": [0, 1, 2, 3, 4]
-        },
-        {
-          "title": "premium",
-          "priceperHour": { "FCFA": 35000, "USD": 58 },
-          "advantagesIndexes": [0, 1, 2, 3, 4, 5, 6]
-        }
-      ],
-      "technologies": [
-        { "icon": "⚛️", "name": "React" },
-        { "icon": "🔗", "name": "Node.js" },
-        { "icon": "📱", "name": "Flutter" },
-        { "icon": "🐍", "name": "Python" }
-      ]
-    }
-  ]
+    "categories": [
+      {
+        "id": 0,
+        "icon": "💻",
+        "color": "from-blue-500 to-cyan-500",
+        "title": "Haɓaka Software",
+        "description": "Aikace-aikacen yanar gizo, wayar hannu da na baya na al'ada tare da fasahohin zamani",
+        "advantages": [
+          "Aikace-aikacen yanar gizo masu amsawa React/Next.js",
+          "Aikace-aikacen wayar hannu iOS/Android Flutter",
+          "Ingantaccen backend Node.js/Python",
+          "API RESTful masu tsaro",
+          "Bayanan da aka inganta",
+          "Gwaji da ci gaba da turawa",
+          "Kulawa da tallafi"
+        ],
+        "plans": [
+          {
+            "title": "basic",
+            "priceperHour": {
+              "FCFA": 10000,
+              "USD": 17
+            },
+            "advantagesIndexes": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "title": "standard",
+            "priceperHour": {
+              "FCFA": 20000,
+              "USD": 33
+            },
+            "advantagesIndexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "title": "premium",
+            "priceperHour": {
+              "FCFA": 35000,
+              "USD": 58
+            },
+            "advantagesIndexes": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          }
+        ],
+        "technologies": [
+          {
+            "icon": "⚛️",
+            "name": "React"
+          },
+          {
+            "icon": "🔗",
+            "name": "Node.js"
+          },
+          {
+            "icon": "📱",
+            "name": "Flutter"
+          },
+          {
+            "icon": "🐍",
+            "name": "Python"
+          }
+        ]
+      }
+    ]
   },
   "hero": {
     "greeting": "Barka dey !",
     "greetingTooltip": "Barka dey na nufin 'Sannu' a cikin harshen Hausa, yaren asalina.",
     "name": "Mahamadou Gremah",
     "typewriterPhrases": [
-      "Mai haɓaka gidan yanar gizo",
-      "Mai haɓaka C# .NET",
-      "Mai haɓaka React & Next.js",
-      "Mai haɓaka Android",
-      "Mai sha'awar   Machine Learning",
-      "Mai sha'awar Tsaron Intanet da bayanai",
-      "Wanda ya kafa kamfanin GremahTech"
+      "Mai Haɓaka Full Stack .NET & FastAPI",
+      "Mai Haɓaka React & Next.js",
+      "Mai Haɓaka Android Kotlin",
+      "Machine Learning & Deep Learning",
+      "Wakilan AI & Sarrafa Kai",
+      "Tsaron AI & Kariyar Yanar Gizo",
+      "Wanda ya kafa GremahTech"
     ],
-    "description": "Ni ɗalibi ne ɗan Najar mai sha'awar kimiyyar kwamfuta. A halin yanzu ina cikin <strong>shekara ta 3</strong> na digiri a Injiniyan Software & Tsarin Bayanai a Jami'ar Monastir. Ni ne kuma wanda ya kafa kuma Shugaba na <strong>GremahTech</strong>, ƙaramin kamfani mai basussuka da ke Nijar wanda ke ba da ayyuka kamar haɓaka SHAFUKAN YANAR GIZO, haɓaka API Restful, haɓaka aikace-aikacen wayar hannu, da sauransu...",
+    "description": "Na kammala karatu a fannin <strong>injiniyan software da tsarin bayanai</strong> a <strong>Faculté des Sciences de Monastir</strong>. Ina gina manhajojin yanar gizo, na waya da APIs masu ƙarfi. Zan ci gaba da <strong>digiri na biyu na bincike a Artificial Intelligence</strong> (2026-2027), tare da mai da hankali kan <strong>tsaron AI</strong> da amfani da AI wajen kariyar yanar gizo. Wanda ya kafa <strong>GremahTech</strong>.",
     "buttons": {
-      "viewWork": "Dubi ayyukanmu na baya-bayan nan",
-      "contact": "Tuntuɓe mu"
+      "viewWork": "Duba ayyukana",
+      "contact": "Tuntuɓe ni"
     },
     "loading": "Ana loading..."
   },
-    "footer": {
+  "footer": {
     "copyright": "© {{year}} GremahTech. Duk haƙƙoƙi suna tsare.",
     "builtWith": "An gina shi da ❤️ ta",
     "connectWith": "Mu haɗu",

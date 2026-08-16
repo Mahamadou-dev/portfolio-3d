@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import Image from 'next/image';
 import { Download } from 'lucide-react';
 import { useI18n } from "../i18n-provider";
+import { currentAge } from "../../lib/profile";
 
 // Types pour les données
 interface PersonalInfo {
@@ -169,7 +170,12 @@ export default function AboutSection() {
   const { t } = useI18n();
 
   const personalInfo: PersonalInfo[] = [
-    { label: t("about.personalInfo.age.label"), value: t("about.personalInfo.age.value"), icon: "🎂" },
+    {
+      label: t("about.personalInfo.age.label"),
+      // L'âge est calculé depuis l'année de naissance : plus rien à mettre à jour.
+      value: t("about.personalInfo.age.value").replace('{age}', String(currentAge())),
+      icon: "🎂",
+    },
     { label: t("about.personalInfo.nationality.label"), value: t("about.personalInfo.nationality.value"), icon: "🇳🇪" },
     { label: t("about.personalInfo.location.label"), value: t("about.personalInfo.location.value"), icon: "📍" },
     { label: t("about.personalInfo.availability.label"), value: t("about.personalInfo.availability.value"), icon: "✅" }

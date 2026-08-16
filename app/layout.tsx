@@ -2,17 +2,23 @@
 'use client';
 
 import { Inter } from 'next/font/google';
+import { usePathname } from 'next/navigation';
 import './globals.css';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import Header from '../components/ui/Header';
 import Footer from '../components/ui/Footer';
-import CombinedParticles from '../components/three/CombinedParticles';
+import AuroraField from '../components/three/AuroraField';
 import { I18nProvider } from '../components/i18n-provider'; // Import conservé
+import VisitorTracker from '../components/analytics/VisitorTracker';
 import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Le tableau de bord a sa propre coquille : ni décor 3D, ni en-tête public.
+  const pathname = usePathname();
+  const isAdmin = pathname?.startsWith('/admin') ?? false;
+
   return (
     <html lang="fr">
       <head>
@@ -31,25 +37,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* ThemeProvider doit envelopper I18nProvider pour que le thème soit disponible dans le fournisseur i18n si nécessaire */}
         <ThemeProvider>
           {/* I18nProvider doit envelopper le Header et le reste du contenu */}
-          <I18nProvider> {/* ⬅️ AJOUTÉ ICI ! */}
-            <div className="relative min-h-screen flex flex-col">
-              
-              {/* Particules en arrière-plan */}
-              <CombinedParticles />
+          <I18nProvider>
+            {isAdmin ? (
+              children
+            ) : (
+              <div className="relative min-h-screen flex flex-col">
+                {/* Décor 3D global (aurore + poussière stellaire) */}
+                <AuroraField />
 
-              {/* Contenu principal */}
-              <div className="relative z-10 flex flex-col min-h-screen">
-                <Header /> {/* ⬅️ Le Header DOIT être enfant de I18nProvider */}
-                
-                <main className="flex-grow w-full overflow-x-hidden">
-                  {children} {/* ⬅️ children est déjà sous I18nProvider */}
-                  <Analytics />
+                {/* Analytique interne : une ligne par page vue dans MongoDB */}
+                <VisitorTracker />
 
-                </main>
-                <Footer />
+                {/* Contenu principal */}
+                <div className="relative z-10 flex flex-col min-h-screen">
+                  <Header />
+
+                  <main className="flex-grow w-full overflow-x-hidden">
+                    {children}
+                    <Analytics />
+                  </main>
+                  <Footer />
+                </div>
               </div>
-            </div>
-          </I18nProvider> {/* ⬅️ FERMETURE ICI ! */}
+            )}
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

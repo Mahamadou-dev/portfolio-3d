@@ -1,36 +1,22 @@
 'use client';
 
-import React, { useEffect, useState, Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import { OrbitControls, useGLTF, Float, Sparkles, Html } from '@react-three/drei';
-import { useTheme } from '../../contexts/ThemeContext';
 import { useI18n } from "../i18n-provider";
+import { trackEvent } from '../analytics/VisitorTracker';
+
+// La scène 3D est chargée côté client uniquement : elle ne bloque ni le SSR
+// ni le premier rendu du texte (LCP).
+const HeroScene = dynamic(() => import('../three/HeroScene'), {
+  ssr: false,
+  loading: () => <div className="w-full h-[22rem] md:h-[30rem]" />,
+});
 
 // Types TypeScript
 interface TypewriterProps {
   phrases: string[];
 }
-
-interface Computer3DProps {
-  isMobile: boolean;
-}
-
-// Loader pour le canvas
-const CanvasLoader = () => {
-  const { t } = useI18n();
-  
-  return (
-    <Html center>
-      <div className="flex justify-center items-center flex-col">
-        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-          {t("hero.loading")}
-        </p>
-      </div>
-    </Html>
-  );
-};
 
 // Composant Typewriter optimisé
 const TypewriterEffect: React.FC<TypewriterProps> = ({ phrases }) => {
@@ -69,88 +55,8 @@ const TypewriterEffect: React.FC<TypewriterProps> = ({ phrases }) => {
   );
 };
 
-// Composant 3D Computer avec votre modèle
-const Computer3D: React.FC<Computer3DProps> = ({ isMobile }) => {
-  const computer = useGLTF('/desktop_pc/scene.gltf');
-  
-  return (
-    <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
-      <primitive
-        object={computer.scene}
-        scale={isMobile ? 0.7 : 0.8}
-        position={isMobile ? [0, -1.5, 0] : [0, -2, 0]}
-        rotation={[-0.01, -0.2, -0.01]}
-      />
-    </Float>
-  );
-};
-
-// Composant ComputersCanvas
-const ComputersCanvas: React.FC = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    setIsMobile(mediaQuery.matches);
-
-    const handleMediaQueryChange = (event: MediaQueryListEvent) => {
-      setIsMobile(event.matches);
-    };
-
-    mediaQuery.addEventListener('change', handleMediaQueryChange);
-
-    return () => {
-      mediaQuery.removeEventListener('change', handleMediaQueryChange);
-    };
-  }, []);
-
-  return (
-    <div className="w-full h-72 md:h-96 relative z-30">
-      <Canvas
-        frameloop="demand"
-        shadows
-        camera={{ position: [12, 4, 8], fov: 35 }}
-        gl={{ preserveDrawingBuffer: true }}
-        className="relative z-30"
-      >
-        <Suspense fallback={<CanvasLoader />}>
-          <ambientLight intensity={0.7} />
-          <spotLight
-            position={[15, 20, 15]}
-            angle={0.2}
-            penumbra={1}
-            intensity={1}
-            castShadow
-          />
-          <pointLight position={[-10, -10, -10]} intensity={0.6} />
-          <pointLight position={[5, 5, 5]} intensity={0.4} color="#3b82f6" />
-          
-          <Computer3D isMobile={isMobile} />
-          
-          <Sparkles 
-            count={30} 
-            scale={8} 
-            size={2} 
-            speed={0.3}
-            color="#4285f4"
-          />
-          
-          <OrbitControls
-            enableZoom={false}
-            maxPolarAngle={Math.PI / 2}
-            minPolarAngle={Math.PI / 3}
-            autoRotate
-            autoRotateSpeed={2}
-          />
-        </Suspense>
-      </Canvas>
-    </div>
-  );
-};
-
 // Composant principal HeroSection
 const HeroSection: React.FC = () => {
-  const { theme } = useTheme();
   const { t } = useI18n();
 
   return (
@@ -229,7 +135,10 @@ const HeroSection: React.FC = () => {
                 className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium text-base hover:shadow-xl transition-all duration-300 font-kanit"
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={ () => { window.location.href = '#portfolio' } }
+                onClick={() => {
+                  trackEvent('cta_voir_projets');
+                  window.location.href = '#portfolio';
+                }}
               >
                 {t("hero.buttons.viewWork")}
               </motion.button>
@@ -237,7 +146,10 @@ const HeroSection: React.FC = () => {
                 className="px-8 py-4 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400 rounded-lg font-medium text-base hover:bg-blue-600 hover:text-white transition-all duration-300 font-kanit"
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={ () => { window.location.href = '#contact' } }
+                onClick={() => {
+                  trackEvent('cta_contact');
+                  window.location.href = '#contact';
+                }}
               >
                 {t("hero.buttons.contact")}
               </motion.button>
@@ -251,7 +163,7 @@ const HeroSection: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
           >
-            <ComputersCanvas />
+            <HeroScene />
           </motion.div>
         </div>
       </div>
