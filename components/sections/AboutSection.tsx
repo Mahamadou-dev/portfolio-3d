@@ -1,10 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Sphere, Float, Text } from '@react-three/drei';
-import { useRef } from 'react';
-import * as THREE from 'three';
 import Image from 'next/image';
 import { Download } from 'lucide-react';
 import { useI18n } from "../i18n-provider";
@@ -15,155 +11,6 @@ interface PersonalInfo {
   label: string;
   value: string;
   icon: string;
-}
-
-// Composant 3D pour la sphère animée avec particules
-function AnimatedSphere() {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const particlesRef = useRef<THREE.Points>(null);
-  
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.1;
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.2;
-    }
-    
-    if (particlesRef.current) {
-      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.1;
-    }
-  });
-
-  const particleCount = 500;
-  const positions = new Float32Array(particleCount * 3);
-  
-  for (let i = 0; i < particleCount; i++) {
-    const i3 = i * 3;
-    const radius = 1.8;
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.random() * Math.PI;
-    
-    positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
-    positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-    positions[i3 + 2] = radius * Math.cos(phi);
-  }
-
-  return (
-    <>
-      <Float speed={3} rotationIntensity={0.5} floatIntensity={0.8}>
-        <Sphere ref={meshRef} args={[1, 32, 32]} scale={1.2}>
-          <meshStandardMaterial
-            color="#0d9488"
-            transparent
-            opacity={0.8}
-            metalness={0.7}
-            roughness={0.2}
-            emissive="#0d9488"
-            emissiveIntensity={0.1}
-          />
-        </Sphere>
-      </Float>
-      
-      <points ref={particlesRef}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={particleCount}
-            array={positions}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          size={0.03}
-          color="#3b82f6"
-          transparent
-          opacity={0.6}
-          sizeAttenuation
-          blending={THREE.AdditiveBlending}
-        />
-      </points>
-    </>
-  );
-}
-
-// Composant 3D pour les éléments orbitaux avec texte
-function OrbitingElements() {
-  const groupRef = useRef<THREE.Group>(null);
-  
-  useFrame((state) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y = state.clock.elapsedTime * 0.3;
-    }
-  });
-
-  return (
-    <group ref={groupRef}>
-      <mesh position={[2, 0, 0]}>
-        <sphereGeometry args={[0.15, 16, 16]} />
-        <meshBasicMaterial color="#3b82f6" />
-      </mesh>
-      
-      <mesh position={[-1.5, 1.5, 0]}>
-        <boxGeometry args={[0.2, 0.2, 0.2]} />
-        <meshBasicMaterial color="#8b5cf6" />
-      </mesh>
-      
-      <mesh position={[0, -2, 1]}>
-        <coneGeometry args={[0.15, 0.3, 8]} />
-        <meshBasicMaterial color="#ec4899" />
-      </mesh>
-      
-      <Text
-        position={[0, 2.5, 0]}
-        fontSize={0.2}
-        color="#3b82f6"
-        anchorX="center"
-        anchorY="middle"
-      >
-        React
-      </Text>
-      
-      <Text
-        position={[2.5, 0, 0]}
-        fontSize={0.2}
-        color="#8b5cf6"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Next.js
-      </Text>
-      
-      <Text
-        position={[-2.5, 0, 0]}
-        fontSize={0.2}
-        color="#ec4899"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Three.js
-      </Text>
-    </group>
-  );
-}
-
-// Composant pour l'avatar 3D
-function Avatar3D() {
-  return (
-    <Canvas camera={{ position: [0, 0, 5] }} className="w-full h-full">
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1.5} />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#0d9488" />
-      <AnimatedSphere />
-      <OrbitingElements />
-      <OrbitControls 
-        enableZoom={false} 
-        enablePan={false} 
-        autoRotate 
-        autoRotateSpeed={1} 
-        maxPolarAngle={Math.PI / 2}
-        minPolarAngle={Math.PI / 3}
-      />
-    </Canvas>
-  );
 }
 
 export default function AboutSection() {
@@ -207,49 +54,65 @@ export default function AboutSection() {
             transition={{ duration: 0.7 }}
             className="relative flex flex-col items-center"
           >
-            <div className="relative w-full flex flex-col lg:flex-row items-center justify-center gap-6">
-              {/* Conteneur 3D */}
-              <div className="w-64 h-64 rounded-full overflow-hidden border-4 border-[#667eea] shadow-xl"> 
-                <Avatar3D />
-              </div>
-              
-              {/* Conteneur Image */}
-              <div className="lg:h-84 lg:w-72 rounded-tl-none rounded-br-none rounded-tr-[100px] rounded-bl-[100px] overflow-hidden border-2 bg-gradient-to-br from-blue-500 to-purple-600 shadow-xl">
+            {/*
+              Le portrait, seul, dans une orbite calme.
+
+              Il y avait ici un troisieme canvas WebGL (une sphere turquoise
+              #0d9488 entouree des mots « React / Next.js / Three.js » en 3D).
+              Trois raisons de l'avoir retire :
+                - la couleur n'apparaissait nulle part ailleurs sur le site, ce
+                  qui cassait la palette bleu/violet/cyan tenue par le hero ;
+                - les noms de technologies faisaient doublon avec toute la
+                  section Competences, juste en dessous ;
+                - c'etait le 3e contexte WebGL de la page (fond + hero + celui-ci),
+                  avec un autoRotate qui tournait en continu sans respecter
+                  prefers-reduced-motion.
+              Le decor est desormais en CSS : meme intention, cout nul, et le
+              regard va au visage plutot qu'a une sphere qui tourne.
+            */}
+            <div className="relative w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center">
+              {/* Deux anneaux contrarotatifs, centres sur le portrait. */}
+              <motion.div
+                className="absolute inset-0 rounded-full border border-blue-400/25"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 26, repeat: Infinity, ease: 'linear' }}
+                aria-hidden="true"
+              />
+              <motion.div
+                className="absolute inset-6 rounded-full border border-violet-400/25"
+                animate={{ rotate: -360 }}
+                transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+                aria-hidden="true"
+              />
+
+              {/* Les jalons sur l'anneau exterieur. Places dans un conteneur
+                  carre, ils decrivent enfin un vrai cercle : auparavant ils
+                  etaient positionnes sur toute la colonne et se dispersaient. */}
+              {[...Array(8)].map((_, i) => (
+                <motion.span
+                  key={i}
+                  className="absolute w-2.5 h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-violet-500"
+                  style={{
+                    left: `calc(50% + ${48 * Math.cos((i * Math.PI) / 4)}% - 5px)`,
+                    top: `calc(50% + ${48 * Math.sin((i * Math.PI) / 4)}% - 5px)`,
+                  }}
+                  animate={{ opacity: [0.35, 1, 0.35] }}
+                  transition={{ duration: 3, repeat: Infinity, delay: i * 0.35 }}
+                  aria-hidden="true"
+                />
+              ))}
+
+              <div className="relative w-52 h-64 sm:w-56 sm:h-72 rounded-tr-[100px] rounded-bl-[100px] overflow-hidden p-[2px] bg-gradient-to-br from-blue-500 via-violet-500 to-cyan-400 shadow-xl">
                 <Image
                   src="/Me4.png"
-                  alt="Mahamadou Gremah"
-                  width={286} 
+                  alt="Portrait de Mahamadou Amadou Habou Gremah"
+                  width={286}
                   height={364}
-                  className="object-cover h-full w-full"
-                  priority 
+                  className="object-cover h-full w-full rounded-tr-[98px] rounded-bl-[98px]"
+                  priority
                 />
               </div>
             </div>
-            
-            {/* Éléments en orbite */}
-            <motion.div 
-              className="absolute top-10 left-1/2 transform -translate-x-1/2 w-80 h-80 rounded-full border border-blue-300/20"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            />
-            <motion.div 
-              className="absolute top-14 left-1/2 transform -translate-x-1/2 w-72 h-72 rounded-full border border-purple-300/30"
-              animate={{ rotate: -360 }}
-              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            />
-            
-            {[...Array(8)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-4 h-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-600"
-                style={{
-                  left: `${50 + 40 * Math.cos((i * Math.PI) / 4)}%`,
-                  top: `${50 + 40 * Math.sin((i * Math.PI) / 4)}%`,
-                }}
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-              />
-            ))}
           </motion.div>
           
           <motion.div
@@ -348,17 +211,24 @@ export default function AboutSection() {
               viewport={{ once: true }}
               transition={{ delay: 1 }}
             >
-              <motion.button
-                className="px-6 py-3 font-medium rounded-lg shadow-lg transition-all duration-300 relative overflow-hidden group bg-gradient-to-r from-blue-600 to-purple-600 text-white flex items-center justify-center text-sm"
-                whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(102, 126, 234, 0.3)" }}
+              {/* C'etait un <a> imbrique dans un <button> : du HTML invalide,
+                  que les navigateurs « reparent » en sortant le lien du bouton.
+                  Resultat, la cible cliquable ne couvrait pas le bouton et le
+                  CV etait inatteignable au clavier. Un seul element suffit. */}
+              <motion.a
+                href="https://flowcv.com/resume/a5spl1e2vu5a"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 font-medium rounded-lg shadow-lg transition-all duration-300 relative overflow-hidden group bg-gradient-to-r from-blue-600 to-violet-600 text-white inline-flex items-center justify-center text-sm font-kanit"
+                whileHover={{ scale: 1.05, boxShadow: '0 10px 20px rgba(102, 126, 234, 0.3)' }}
                 whileTap={{ scale: 0.95 }}
-              ><a href="https://flowcv.com/resume/a5spl1e2vu5a" target='_blank'>
+              >
                 <span className="relative z-10 flex items-center justify-center">
                   <Download className="w-4 h-4 mr-2" />
                   {t("about.download_my_resume_button_text")}
-                </span></a>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-600 to-blue-600"></div>
-              </motion.button>
+                </span>
+                <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-violet-600 to-blue-600" />
+              </motion.a>
             </motion.div>
           </motion.div>
         </div>

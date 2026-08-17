@@ -6,7 +6,6 @@
       "skills": "Skills",
       "education": "Education",
       "portfolio": "Portfolio",
-      "services": "Services",
       "contact": "Contact"
     },
     "themeToggle": "Toggle theme",
@@ -78,7 +77,22 @@
       "cybersecurity": {
         "title": "CYBERSECURITY"
       }
-    }
+    },
+    "levels": {
+      "core": {
+        "label": "Fluent",
+        "hint": "Used regularly in production"
+      },
+      "working": {
+        "label": "Working",
+        "hint": "Used on real projects, with documentation at hand"
+      },
+      "learning": {
+        "label": "Learning",
+        "hint": "Studied in coursework or self-study, not yet in production"
+      }
+    },
+    "levelsNote": "No percentages: they measure nothing. Each technology is grouped by how I actually use it today."
   },
   "contact": {
     "title": "Contact Me",
@@ -137,7 +151,7 @@
   },
   "experience": {
     "title": "My Journey",
-    "subtitle": "Academic and professional journey that shaped my expertise",
+    "subtitle": "From secondary school to a research master's: the steps in order, each with its real status.",
     "type": {
       "education": "Education",
       "experience": "Experience"
@@ -236,11 +250,11 @@
         "institution": "GremahTech",
         "period": "2024 - Present",
         "location": "International projects (Remote)",
-        "description": "A local startup committed to the digital transformation of Niger, providing software solutions, IT support services, and technology training.",
+        "description": "A start-up working on Niger's digital transformation: software development, IT support and technology training.",
         "achievements": [
-          "Projects delivered with 100% client satisfaction rate",
-          "Development of innovative SaaS solutions for startups",
-          "Performance optimization with 300% speed gains"
+          "Marketing sites, REST APIs and mobile apps delivered for clients in Niger and abroad",
+          "SaaS solutions handled end to end: design, development, deployment and maintenance",
+          "Load-time optimisation (caching, bundle splitting, indexed queries)"
         ],
         "technologies": [
           "React",
@@ -259,11 +273,11 @@
         "institution": "ANEST Monastir",
         "period": "2024 - Present",
         "location": "Monastir, Tunisia",
-        "description": "Strategic treasury management and financial supervision for a student association of 200+ members, ensuring transparency and resource optimization.",
+        "description": "Treasury tracking and account auditing for the Monastir branch of ANEST, a student association of more than 200 members.",
         "achievements": [
-          "Implementation of a digital financial management system",
-          "optimization of operational costs",
-          "Quarterly financial reports applauded by members"
+          "Introduced a digital budget-tracking process (income, expenses, supporting documents)",
+          "Expense control and arbitration of the branch's cost items",
+          "Quarterly financial reports presented to the members' assembly"
         ],
         "technologies": [
           "Advanced Excel",
@@ -273,6 +287,11 @@
           "Communication"
         ]
       }
+    },
+    "status": {
+      "done": "Completed",
+      "current": "In progress",
+      "upcoming": "Upcoming"
     }
   },
   "portfolio": {
@@ -801,104 +820,6 @@
     "filters": {
       "all": "All"
     }
-  },
-  "services": {
-    "title": "My Services",
-    "subtitle": "Complete solutions adapted to your digital needs",
-    "perHour": "hour",
-    "choosePlan": "Choose this plan",
-    "flexibilityNote": "💡 Flexibility: All rates are adaptable according to the complexity and duration of your project",
-    "plans": {
-      "basic": {
-        "title": "Basic"
-      },
-      "standard": {
-        "title": "Standard"
-      },
-      "premium": {
-        "title": "Premium"
-      }
-    },
-    "categories": [
-      {
-        "id": 0,
-        "icon": "💻",
-        "color": "from-blue-500 to-cyan-500",
-        "title": "Software Development",
-        "description": "Custom web, mobile and backend applications with modern technologies",
-        "advantages": [
-          "Responsive React/Next.js web applications",
-          "iOS/Android Flutter mobile apps",
-          "Robust Node.js/Python backend",
-          "Secure RESTful APIs",
-          "Optimized databases",
-          "Testing and continuous deployment",
-          "Maintenance and support"
-        ],
-        "plans": [
-          {
-            "title": "basic",
-            "priceperHour": {
-              "FCFA": 10000,
-              "USD": 17
-            },
-            "advantagesIndexes": [
-              0,
-              1,
-              2
-            ]
-          },
-          {
-            "title": "standard",
-            "priceperHour": {
-              "FCFA": 20000,
-              "USD": 33
-            },
-            "advantagesIndexes": [
-              0,
-              1,
-              2,
-              3,
-              4
-            ]
-          },
-          {
-            "title": "premium",
-            "priceperHour": {
-              "FCFA": 35000,
-              "USD": 58
-            },
-            "advantagesIndexes": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6
-            ]
-          }
-        ],
-        "technologies": [
-          {
-            "icon": "⚛️",
-            "name": "React"
-          },
-          {
-            "icon": "🔗",
-            "name": "Node.js"
-          },
-          {
-            "icon": "📱",
-            "name": "Flutter"
-          },
-          {
-            "icon": "🐍",
-            "name": "Python"
-          }
-        ]
-      }
-    ]
   },
   "hero": {
     "greeting": "Hello, I'm",

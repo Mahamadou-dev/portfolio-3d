@@ -13,7 +13,6 @@ const NAV_ITEMS = [
   { key: 'skills', href: '#skills' },
   { key: 'education', href: '#education' },
   { key: 'portfolio', href: '#portfolio' },
-  { key: 'services', href: '#services' },
   { key: 'contact', href: '#contact' }
 ];
 

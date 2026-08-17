@@ -34,7 +34,19 @@ import { FaServer, FaMobile, FaPaintBrush, FaTools, FaBrain, FaTasks, FaChevronD
 import { VscVscode } from 'react-icons/vsc';
 
 // Types et Mappings (corrigés)
-interface Skill { name: string; level: number; color: string; }
+/**
+ * Un palier d'usage, pas une note.
+ *
+ * Les pourcentages qui figuraient ici ("React 90 %", "HTML5 95 %") etaient
+ * auto-attribues et n'avaient aucune unite : 90 % de quoi, mesure comment ?
+ * Un lecteur technique les lit comme une opinion presentee en donnee, ce qui
+ * dessert le profil au lieu de le servir. Trois paliers decrivent un fait
+ * verifiable — comment la technologie est employee aujourd'hui — et personne
+ * ne peut les contester de mauvaise foi.
+ */
+type Tier = 'core' | 'working' | 'learning';
+
+interface Skill { name: string; tier: Tier; color: string; }
 interface SkillCategory { key: string; skills: Skill[]; }
 interface Strength { title: string; icon: JSX.Element; color: string; }
 
@@ -106,104 +118,86 @@ const categoryIcons: { [key: string]: React.ComponentType<any> } = {
 
 const skills: { [key: string]: Skill[] } = {
     frontend: [
-        { name: 'React', level: 90, color: '#61DAFB' }, 
-        { name: 'Next.js', level: 85, color: '#000000' }, 
-        { name: 'TypeScript', level: 85, color: '#3178C6' }, 
-        { name: 'JavaScript', level: 88, color: '#F7DF1E' }, 
-        { name: 'Tailwind CSS', level: 90, color: '#06B6D4' }, 
-        { name: 'HTML5', level: 95, color: '#E34F26' }, 
-        { name: 'CSS3', level: 90, color: '#1572B6' },
+        { name: 'React', tier: 'core', color: '#61DAFB' }, 
+        { name: 'Next.js', tier: 'core', color: '#000000' }, 
+        { name: 'TypeScript', tier: 'core', color: '#3178C6' }, 
+        { name: 'JavaScript', tier: 'core', color: '#F7DF1E' }, 
+        { name: 'Tailwind CSS', tier: 'core', color: '#06B6D4' }, 
+        { name: 'HTML5', tier: 'core', color: '#E34F26' }, 
+        { name: 'CSS3', tier: 'core', color: '#1572B6' },
     ],
     backend: [
-        { name: 'Node.js', level: 80, color: '#339933' }, 
-        { name: 'Python', level: 70, color: '#3776AB' }, 
-        { name: 'C# .NET', level: 85, color: '#512BD4' }, 
-        { name: 'MongoDB', level: 75, color: '#47A248' }, 
-        { name: 'PostgreSQL', level: 70, color: '#336791' }, 
-        { name: 'MySQL', level: 68, color: '#4479A1' }, 
-        { name: 'REST API', level: 85, color: '#FF6B6B' },
+        { name: 'Node.js', tier: 'working', color: '#339933' }, 
+        { name: 'Python', tier: 'working', color: '#3776AB' }, 
+        { name: 'C# .NET', tier: 'core', color: '#512BD4' }, 
+        { name: 'MongoDB', tier: 'working', color: '#47A248' }, 
+        { name: 'PostgreSQL', tier: 'working', color: '#336791' }, 
+        { name: 'MySQL', tier: 'learning', color: '#4479A1' }, 
+        { name: 'REST API', tier: 'core', color: '#FF6B6B' },
     ],
     mobile: [
-        { name: 'React Native', level: 75, color: '#61DAFB' }, 
-        { name: 'Flutter', level: 65, color: '#02569B' }, 
-        { name: 'Android', level: 70, color: '#3DDC84' },
+        { name: 'React Native', tier: 'working', color: '#61DAFB' }, 
+        { name: 'Flutter', tier: 'learning', color: '#02569B' }, 
+        { name: 'Android', tier: 'working', color: '#3DDC84' },
     ],
     design: [
-        { name: 'Figma', level: 80, color: '#F24E1E' }, 
-        { name: 'UI/UX', level: 75, color: '#FF4081' }, 
-        { name: 'Adobe XD', level: 70, color: '#FF61F6' },
+        { name: 'Figma', tier: 'working', color: '#F24E1E' }, 
+        { name: 'UI/UX', tier: 'working', color: '#FF4081' }, 
+        { name: 'Adobe XD', tier: 'working', color: '#FF61F6' },
     ],
     tools: [
-        { name: 'Git', level: 85, color: '#F05032' }, 
-        { name: 'Docker', level: 70, color: '#2496ED' }, 
-        { name: 'VS Code', level: 90, color: '#007ACC' }, 
-        { name: 'Postman', level: 85, color: '#FF6C37' },
+        { name: 'Git', tier: 'core', color: '#F05032' }, 
+        { name: 'Docker', tier: 'working', color: '#2496ED' }, 
+        { name: 'VS Code', tier: 'core', color: '#007ACC' }, 
+        { name: 'Postman', tier: 'core', color: '#FF6C37' },
     ],
     machine_learning: [
-        { name: 'TensorFlow', level: 65, color: '#FF6F00' },
-        { name: 'PyTorch', level: 60, color: '#EE4C2C' },
-        { name: 'Scikit-learn', level: 70, color: '#F7931E' },
-        { name: 'Pandas', level: 75, color: '#150458' },
-        { name: 'NumPy', level: 80, color: '#013243' },
-        { name: 'Keras', level: 60, color: '#D00000' },
+        { name: 'TensorFlow', tier: 'learning', color: '#FF6F00' },
+        { name: 'PyTorch', tier: 'learning', color: '#EE4C2C' },
+        { name: 'Scikit-learn', tier: 'working', color: '#F7931E' },
+        { name: 'Pandas', tier: 'working', color: '#150458' },
+        { name: 'NumPy', tier: 'working', color: '#013243' },
+        { name: 'Keras', tier: 'learning', color: '#D00000' },
     ],
     cybersecurity: [
-        { name: 'Wireshark', level: 70, color: '#1A237E' },
-        { name: 'Kali Linux', level: 65, color: '#00ADEF' },
-        { name: 'Metasploit', level: 60, color: '#FF5722' },
-        { name: 'Burp Suite', level: 75, color: '#FF6F61' },
-        { name: 'OWASP', level: 80, color: '#E535AB' },
+        { name: 'Wireshark', tier: 'working', color: '#1A237E' },
+        { name: 'Kali Linux', tier: 'learning', color: '#00ADEF' },
+        { name: 'Metasploit', tier: 'learning', color: '#FF5722' },
+        { name: 'Burp Suite', tier: 'working', color: '#FF6F61' },
+        { name: 'OWASP', tier: 'working', color: '#E535AB' },
     ],
 };
 
-// Composant Progress Circle (optimisé)
-const ProgressCircle = ({ skill, size = 60 }: { skill: Skill; size?: number }) => {
-    const { theme } = useTheme();
-    const isDarkMode = theme === 'dark';
-    const strokeWidth = 6;
-    const radius = (size - strokeWidth) / 2;
-    const circumference = radius * 2 * Math.PI;
-    const offset = circumference - (skill.level / 100) * circumference;
+/* L'ordre d'affichage des paliers : ce qui est maitrise vient en premier. */
+const TIER_ORDER: Tier[] = ['core', 'working', 'learning'];
+
+/** Un point de couleur par palier : plein, cercle, cercle pointille. */
+const TIER_DOT: Record<Tier, string> = {
+    core: 'bg-emerald-500',
+    working: 'bg-blue-500',
+    learning: 'border border-dashed border-amber-500',
+};
+
+// Une tuile par technologie. L'anneau de progression a disparu avec les
+// pourcentages : il n'y a plus de fraction a representer, donc plus rien a
+// remplir. Reste l'essentiel — le logo, le nom, et le palier porte par la
+// section qui contient la tuile.
+const SkillTile = ({ skill }: { skill: Skill }) => {
     const IconComponent = iconComponents[skill.name] || FaTools;
 
     return (
-        <div className="relative flex flex-col items-center">
-            <svg className="transform -rotate-90" width={size} height={size}>
-                <circle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    stroke={isDarkMode ? 'rgba(75, 85, 99, 0.4)' : 'rgba(229, 231, 235, 0.8)'}
-                    strokeWidth={strokeWidth}
-                    fill="none"
-                />
-                <motion.circle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    stroke={skill.color}
-                    strokeWidth={strokeWidth}
-                    fill="none"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={offset}
-                    strokeLinecap="round"
-                    initial={{ strokeDashoffset: circumference }}
-                    whileInView={{ strokeDashoffset: offset }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
-                    style={{ willChange: 'stroke-dashoffset' }}
-                />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center mb-6">
-                <IconComponent 
-                    size={size * 0.5} 
-                    color={skill.color} 
-                />
-            </div>
-            <span className="mt-2 text-xs font-semibold text-gray-600 dark:text-gray-400">
-                {skill.level}%
+        <motion.div
+            className="flex flex-col items-center gap-2 p-3 rounded-xl border border-gray-300/40 dark:border-gray-600/30 bg-white/40 dark:bg-gray-900/20"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.3 }}
+        >
+            <IconComponent size={26} color={skill.color} aria-hidden="true" />
+            <span className="text-xs font-medium text-center text-gray-700 dark:text-gray-300 font-kanit leading-tight">
+                {skill.name}
             </span>
-        </div>
+        </motion.div>
     );
 };
 
@@ -279,29 +273,36 @@ function SkillCategory({
                 }}
                 className="overflow-hidden"
             >
-                <div className="p-4 pt-2 border-t border-gray-400/20 dark:border-gray-600/20">
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
-                        {category.skills.map((skill, skillIndex) => (
-                            <motion.div
-                                key={skill.name}
-                                className="flex flex-col items-center p-3 rounded-xl transition-all duration-200"
-                                style={{
-                                    border: isDarkMode ? '1px solid rgba(75, 85, 99, 0.2)' : '1px solid rgba(209, 213, 219, 0.5)',
-                                    backgroundColor: isDarkMode ? 'rgba(17, 24, 39, 0.1)' : 'rgba(255, 255, 255, 0.4)',
-                                    willChange: 'transform, opacity'
-                                }}
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                viewport={{ once: true, amount: 0.1 }}
-                                transition={{ duration: 0.4, delay: skillIndex * 0.05 }}
-                            >
-                                <ProgressCircle skill={skill} size={50} />
-                                <span className="mt-2 text-xs font-medium text-center text-gray-700 dark:text-gray-300">
-                                    {skill.name}
-                                </span>
-                            </motion.div>
-                        ))}
-                    </div>
+                <div className="p-4 pt-2 border-t border-gray-400/20 dark:border-gray-600/20 space-y-5">
+                    {TIER_ORDER.map((tier) => {
+                        const tierSkills = category.skills.filter((skill) => skill.tier === tier);
+                        // Une categorie n'a pas forcement les trois paliers :
+                        // on n'affiche pas d'en-tete vide.
+                        if (!tierSkills.length) return null;
+
+                        return (
+                            <div key={tier}>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span
+                                        className={`w-2 h-2 rounded-full ${TIER_DOT[tier]}`}
+                                        aria-hidden="true"
+                                    />
+                                    <h4 className="text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400 font-kanit">
+                                        {t(`skills.levels.${tier}.label`)}
+                                    </h4>
+                                    <span className="text-xs text-gray-500 dark:text-gray-500 font-kanit">
+                                        — {t(`skills.levels.${tier}.hint`)}
+                                    </span>
+                                </div>
+
+                                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                                    {tierSkills.map((skill) => (
+                                        <SkillTile key={skill.name} skill={skill} />
+                                    ))}
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </motion.div>
         </motion.div>
@@ -415,6 +416,19 @@ export default function SkillsSection() {
                     transition={{ duration: 0.5, delay: 0.3 }}
                 >
                     {t('skills.recent_technologies_intro')}
+                </motion.p>
+
+                {/* La legende des paliers. Sans elle, trois groupes non
+                    etiquetes ne veulent rien dire ; avec elle, le classement
+                    devient une declaration assumee plutot qu'un jugement. */}
+                <motion.p
+                    className="text-center text-sm text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-8 font-kanit"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                >
+                    {t('skills.levelsNote')}
                 </motion.p>
                 
                 {/* Technologies */}

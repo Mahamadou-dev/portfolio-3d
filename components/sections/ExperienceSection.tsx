@@ -1,440 +1,343 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../../contexts/ThemeContext';
-import { 
-  FaGraduationCap, 
-  FaBriefcase, 
-  FaCalendarAlt, 
-  FaMapMarkerAlt, 
-  FaTrophy, 
-  FaStar, 
+// components/sections/ExperienceSection.tsx
+//
+// « Mon Parcours » — une frise chronologique, du passe vers le futur.
+//
+// L'ancienne version utilisait des onglets verticaux (MUI Tabs). C'etait le
+// mauvais outil : des onglets sont une metaphore de choix paralleles — cinq
+// options equivalentes entre lesquelles on arbitre — alors qu'un parcours est
+// une sequence orientee. Concretement, le visiteur voyait une entree sur cinq,
+// devait cliquer quatre fois pour reconstituer l'histoire, et l'onglet ouvert
+// par defaut etait le master 2026-2027 : un diplome pas encore commence,
+// presente en premier comme s'il etait acquis.
+//
+// Ici : tout est visible d'un coup, l'axe descend dans l'ordre des annees, et
+// chaque etape porte son statut reel (termine / en cours / a venir). Le futur
+// est montre comme un projet — trait pointille, mention explicite — pas comme
+// un acquis.
+import React, { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  FaGraduationCap,
+  FaBriefcase,
+  FaMapMarkerAlt,
+  FaTrophy,
+  FaStar,
   FaCode,
-  FaAward,
-  FaRocket
+  FaChevronDown,
 } from 'react-icons/fa';
 import { BsDot } from 'react-icons/bs';
-import { Tabs, Tab, Box } from '@mui/material';
-import { useI18n } from "../i18n-provider";
+import { useI18n } from '../i18n-provider';
+
 type TranslationArray = string[];
-// Types TypeScript
-interface Experience {
-  id: number;
+
+type Status = 'done' | 'current' | 'upcoming';
+
+interface Milestone {
+  key: string;
   type: 'education' | 'experience';
-  title: string;
-  institution: string;
-  period: string;
-  location: string;
-  description: string;
-  achievements: string[];
-  technologies: string[];
-  subjects: string[];
+  /** Annee de debut : c'est elle qui donne l'ordre de la frise. */
+  start: number;
+  /** Annee de fin, ou null si l'etape est toujours en cours. */
+  end: number | null;
   logo: string;
-  color: string;
-  gradient: string;
 }
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
+/* ------------------------------------------------------------------ */
+/* Les etapes, dans l'ordre ou elles se sont produites.                */
+/* ------------------------------------------------------------------ */
+//
+// L'ordre n'est plus decide a la main dans le JSX : il decoule de `start`.
+// Ajouter une etape plus tard, c'est ajouter une ligne — elle se placera
+// toute seule au bon endroit de la frise.
+const MILESTONES: Milestone[] = [
+  { key: 'education.preparatoryYear', type: 'education', start: 2022, end: 2023, logo: '📚' },
+  { key: 'education.softwareEngineering', type: 'education', start: 2023, end: 2026, logo: '🎓' },
+  { key: 'work.freelance', type: 'experience', start: 2024, end: null, logo: '🚀' },
+  { key: 'work.anest', type: 'experience', start: 2024, end: null, logo: '⭐' },
+  { key: 'education.masterAI', type: 'education', start: 2026, end: 2027, logo: '🧠' },
+];
+
+/** Deux accents seulement — formation et terrain — au lieu de cinq degrades. */
+const ACCENT: Record<Milestone['type'], { hex: string; gradient: string }> = {
+  education: { hex: '#3b82f6', gradient: 'from-blue-500 to-cyan-500' },
+  experience: { hex: '#a855f7', gradient: 'from-violet-500 to-fuchsia-500' },
+};
+
+const STATUS_STYLE: Record<Status, string> = {
+  done: 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/25',
+  current: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
+  upcoming: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30',
+};
+
+/**
+ * Statut reel d'une etape a la date du jour. Rien n'est ecrit en dur : quand
+ * 2026 arrivera, le master passera de « a venir » a « en cours » sans qu'il y
+ * ait une ligne a modifier — et surtout, il ne pourra jamais etre affiche
+ * comme acquis avant de l'etre.
+ */
+function statusOf(milestone: Milestone, year: number): Status {
+  if (milestone.start > year) return 'upcoming';
+  if (milestone.end === null || milestone.end > year) return 'current';
+  return 'done';
 }
 
-// Composant TabPanel
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-  const { theme } = useTheme();
-  const isDarkMode = theme === 'dark';
+/* ------------------------------------------------------------------ */
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`vertical-tabpanel-${index}`}
-      aria-labelledby={`vertical-tab-${index}`}
-      {...other}
-      className={`transition-colors duration-300 ${
-        isDarkMode ? 'text-light' : 'text-dark'
-      }`}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            {children}
-          </motion.div>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-function a11yProps(index: number) {
-  return {
-    id: `vertical-tab-${index}`,
-    'aria-controls': `vertical-tabpanel-${index}`,
-  };
-}
-
-// Composant principal
 const ExperienceSection: React.FC = () => {
-  const { theme } = useTheme();
   const { t } = useI18n();
-  const [value, setValue] = useState(0);
-  const isDarkMode = theme === 'dark';
+  const year = new Date().getFullYear();
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+  const milestones = useMemo(
+    () => [...MILESTONES].sort((a, b) => a.start - b.start || a.type.localeCompare(b.type)),
+    []
+  );
+
+  // Ouverte par defaut : la derniere etape reellement engagee. Le visiteur
+  // tombe donc sur « ou j'en suis », pas sur une projection.
+  const defaultOpen = useMemo(() => {
+    const engaged = milestones.filter((m) => statusOf(m, year) !== 'upcoming');
+    return engaged.length ? engaged[engaged.length - 1].key : milestones[0].key;
+  }, [milestones, year]);
+
+  const [openKey, setOpenKey] = useState<string>(defaultOpen);
+
+  const tr = (key: string) => t(`experience.${key}`);
+  const trList = (key: string) => {
+    const value = t(`experience.${key}`) as unknown;
+    return (Array.isArray(value) ? value : []) as TranslationArray;
   };
 
-  const experiences: Experience[] = [
-    {
-      id: 0,
-      type: "education",
-      title: t("experience.education.masterAI.title"),
-      institution: t("experience.education.masterAI.institution"),
-      period: t("experience.education.masterAI.period"),
-      location: t("experience.education.masterAI.location"),
-      description: t("experience.education.masterAI.description"),
-      achievements: t("experience.education.masterAI.achievements" as any) as unknown as TranslationArray,
-      technologies: t("experience.education.masterAI.technologies" as any) as unknown as TranslationArray,
-      subjects: t("experience.education.masterAI.subjects" as any) as unknown as TranslationArray,
-      logo: "🧠",
-      color: "#8b5cf6",
-      gradient: "from-violet-500 to-cyan-500"
-    },
-    {
-      id: 1,
-      type: "education",
-      title: t("experience.education.softwareEngineering.title"),
-      institution: t("experience.education.softwareEngineering.institution"),
-      period: t("experience.education.softwareEngineering.period"),
-      location: t("experience.education.softwareEngineering.location"),
-      description: t("experience.education.softwareEngineering.description"),
-      achievements: t("experience.education.softwareEngineering.achievements" as any) as unknown as TranslationArray,
-      technologies: t("experience.education.softwareEngineering.technologies" as any) as unknown as TranslationArray,
-      subjects: t("experience.education.softwareEngineering.subjects" as any) as unknown as TranslationArray,
-      logo: "🎓",
-      color: "#4285f4",
-      gradient: "from-purple-500 to-pink-500"
-    },
-    {
-      id: 2,
-      type: "education",
-      title: t("experience.education.preparatoryYear.title"),
-      institution: t("experience.education.preparatoryYear.institution"),
-      period: t("experience.education.preparatoryYear.period"),
-      location: t("experience.education.preparatoryYear.location"),
-      description: t("experience.education.preparatoryYear.description"),
-      achievements: t("experience.education.preparatoryYear.achievements" as any) as unknown as TranslationArray,
-      technologies: t("experience.education.preparatoryYear.technologies" as any) as unknown as TranslationArray,
-      subjects: t("experience.education.preparatoryYear.subjects" as any) as unknown as TranslationArray,
-      logo: "📚",
-      color: "#34a853",
-      gradient: "from-blue-500 to-purple-500"
-    },
-    {
-      id: 3,
-      type: "experience",
-      title: t("experience.work.freelance.title"),
-      institution: t("experience.work.freelance.institution"),
-      period: t("experience.work.freelance.period"),
-      location: t("experience.work.freelance.location"),
-      description: t("experience.work.freelance.description"),
-      achievements: t("experience.work.freelance.achievements" as any) as unknown as TranslationArray,
-      technologies: t("experience.work.freelance.technologies" as any) as unknown as TranslationArray,
-      subjects: [],
-      logo: "🚀",
-      color: "#9c27b0",
-      gradient: "from-purple-500 to-pink-500"
-    },
-    {
-      id: 4,
-      type: "experience",
-      title: t("experience.work.anest.title"),
-      institution: t("experience.work.anest.institution"),
-      period: t("experience.work.anest.period"),
-      location: t("experience.work.anest.location"),
-      description: t("experience.work.anest.description"),
-      achievements: t("experience.work.anest.achievements" as any) as unknown as TranslationArray,
-      technologies: t("experience.work.anest.technologies" as any) as unknown as TranslationArray,
-      subjects: [],
-      logo: "⭐",
-      color: "#ff6b9d",
-      gradient: "from-blue-500 to-purple-500"
-    }
-  ];
-
   return (
-    <section 
-      className="py-4 px-4 relative bg-light dark:bg-dark transition-colors duration-300"
+    <section
+      className="py-16 px-4 relative transition-colors duration-300"
       id="education"
+      aria-labelledby="experience-title"
     >
-      <div className="container mx-auto max-w-6xl">
-        {/* En-tête de section réduit */}
-        <motion.div 
-          className="text-center mb-8"
+      <div className="container mx-auto max-w-4xl">
+        {/* En-tete */}
+        <motion.div
+          className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <motion.div
-            className="inline-flex items-center justify-center mb-2"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.1, type: 'spring' }}
-          >
-            <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 shadow-md"> 
-              <FaGraduationCap className="text-4xl text-white" /> 
+          <div className="inline-flex items-center justify-center mb-3">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-violet-500 shadow-md">
+              <FaGraduationCap className="text-3xl text-white" />
             </div>
-          </motion.div>
+          </div>
 
-          <motion.h2 
-            className="text-3xl md:text-4xl font-bold mb-2 font-righteous"
-            style={{ 
-              background: 'linear-gradient(135deg, #4285f4 0%, #9c27b0 50%, #34a853 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}
+          <h2
+            id="experience-title"
+            className="text-3xl md:text-4xl font-bold mb-2 font-righteous bg-gradient-to-r from-blue-600 via-violet-600 to-cyan-500 bg-clip-text text-transparent"
           >
-            {t("experience.title")}
-          </motion.h2>
+            {tr('title')}
+          </h2>
 
-          <motion.p 
-            className="text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto font-kanit"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            {t("experience.subtitle")}
-          </motion.p>
+          <p className="text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto font-kanit">
+            {tr('subtitle')}
+          </p>
         </motion.div>
 
-        {/* Contenu principal compact */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          <Box
-            sx={{ 
-              display: 'flex', 
-              flexDirection: { xs: 'column', md: 'row' },
-              gap: 2,
-              minHeight: '500px'
-            }}
-            className={`rounded-2xl shadow-xl overflow-hidden transition-colors duration-300 ${
-              isDarkMode 
-                ? 'bg-darkElevation border-gray-700' 
-                : 'bg-light border-gray-100'
-            }`}
-          >
-            {/* Onglets verticaux compacts */}
-            <Tabs
-              orientation="vertical"
-              variant="scrollable"
-              value={value}
-              onChange={handleChange}
-              aria-label="Expériences professionnelles"
-              sx={{ 
-                borderRight: 3, 
-                borderColor: 'divider',
-                minWidth: { xs: '100%', md: 200 },
-                '& .MuiTab-root': {
-                  alignItems: 'flex-start',
-                  padding: '10px 16px',
-                  fontSize: '0.9rem',
-                  fontWeight: 600,
-                  textTransform: 'none',
-                  minHeight: '60px',
-                  '&:hover': {
-                    backgroundColor: 'rgba(156,39,176,0.1)',
-                  },
-                  '&.Mui-selected': {
-                    color: isDarkMode ? '#9c27b0' : '#4285f4',
-                    backgroundColor: 'rgba(156, 39, 176, 0.08)' ,
-                  }
-                }
-              }}
-              className="font-kanit transition-colors duration-300 bg-transparent"
-            >
-              {experiences.map((exp, index) => (
-                <Tab 
-                  key={exp.id}
-                  label={
-                    <div className="flex flex-col items-start">
-                      <span className="text-sm font-semibold">{exp.period}</span>
-                      <span className={`text-xs mt-1 ${
-                        isDarkMode ? 'text-gray-400' : 'text-gray-500'
-                      }`}>
-                        {exp.institution.length > 25 ? exp.institution.substring(0, 25) + '...' : exp.institution}
-                      </span>
-                    </div>
-                  }
-                  {...a11yProps(index)}
-                />
-              ))}
-            </Tabs>
+        {/* Frise : un axe vertical unique, les etapes s'y accrochent. */}
+        <div className="relative">
+          {/* L'axe. Il s'estompe vers le bas : le futur est moins affirme que
+              le passe, et cela se lit avant meme d'avoir lu un mot. */}
+          <div
+            className="absolute left-[19px] md:left-[23px] top-2 bottom-2 w-px bg-gradient-to-b from-blue-500 via-violet-500 to-transparent"
+            aria-hidden="true"
+          />
 
-            {/* Contenu des onglets compact */}
-            <div className="flex-1 p-2">
-              {experiences.map((exp, index) => (
-                <TabPanel key={exp.id} value={value} index={index}>
-                  {/* Carte d'expérience compacte */}
-                  <motion.div
-                    className="rounded-2xl overflow-hidden border-b shadow-lg"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4 }}
+          <ol className="space-y-4">
+            {milestones.map((milestone, index) => {
+              const status = statusOf(milestone, year);
+              const accent = ACCENT[milestone.type];
+              const isOpen = openKey === milestone.key;
+              const isFuture = status === 'upcoming';
+
+              return (
+                <motion.li
+                  key={milestone.key}
+                  className="relative pl-12 md:pl-16"
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-60px' }}
+                  transition={{ duration: 0.45, delay: index * 0.06 }}
+                >
+                  {/* Le jalon sur l'axe */}
+                  <div
+                    className={`absolute left-0 top-3 w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-lg shadow-md ${
+                      isFuture
+                        ? 'border-2 border-dashed bg-transparent'
+                        : `bg-gradient-to-br ${accent.gradient}`
+                    }`}
+                    style={isFuture ? { borderColor: accent.hex } : undefined}
+                    aria-hidden="true"
                   >
-                    <div className={`h-2 bg-gradient-to-r ${exp.gradient}`} />
+                    <span className={isFuture ? 'opacity-70' : 'text-white'}>{milestone.logo}</span>
+                  </div>
 
-                    <div className={`p-6 transition-colors duration-300 ${
-                      isDarkMode ? 'bg-darkElevation' : 'bg-transparent'
-                    }`}>
-                      {/* En-tête compact */}
-                      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-4">
-                        <div className="flex items-start space-x-3 flex-1">
-                          <motion.div
-                            className={`w-12 h-12 rounded-xl bg-gradient-to-br ${exp.gradient} flex items-center justify-center text-xl shadow-md`}
-                            whileHover={{ scale: 1.05 }}
+                  {/* La carte */}
+                  <div
+                    className={`rounded-2xl overflow-hidden shadow-lg backdrop-blur-sm transition-colors duration-300 bg-light dark:bg-darkElevation ${
+                      isFuture
+                        ? 'border border-dashed border-amber-500/40'
+                        : 'border border-white/10 dark:border-white/5'
+                    }`}
+                  >
+                    {/* En-tete cliquable : tout le resume reste lisible sans
+                        ouvrir quoi que ce soit. Le depliage n'ajoute que le
+                        detail. */}
+                    <button
+                      type="button"
+                      onClick={() => setOpenKey(isOpen ? '' : milestone.key)}
+                      aria-expanded={isOpen}
+                      aria-controls={`milestone-${milestone.key}`}
+                      className="w-full text-left p-5 flex items-start gap-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <span
+                            className="text-xs font-bold font-kanit px-2 py-0.5 rounded-md"
+                            style={{ background: `${accent.hex}1f`, color: accent.hex }}
                           >
-                            <span className="text-white">{exp.logo}</span>
-                          </motion.div>
+                            {tr(`${milestone.key}.period`)}
+                          </span>
 
-                          <div className="flex-1 min-w-0">
-                            <h3 className={`text-xl font-bold mb-1 leading-tight truncate ${
-                              isDarkMode ? 'text-white' : 'text-gray-800'
-                            }`}>
-                              {exp.institution}
-                            </h3>
-                            <p className={`font-semibold text-base bg-gradient-to-r ${exp.gradient} bg-clip-text text-transparent truncate`}>
-                              {exp.title}
-                            </p>
-                          </div>
-                        </div>
+                          <span
+                            className={`text-xs font-medium font-kanit px-2 py-0.5 rounded-md border ${STATUS_STYLE[status]}`}
+                          >
+                            {tr(`status.${status}`)}
+                          </span>
 
-                        <div className={`mt-3 lg:mt-0 px-3 py-1 rounded-lg bg-gradient-to-r ${exp.gradient} text-white font-bold text-xs shadow-md`}>
-                          {exp.period}
-                        </div>
-                      </div>
-
-                      {/* Métadonnées compactes */}
-                      <div className="flex flex-wrap items-center gap-2 mb-4">
-                        <div className={`flex items-center px-2 py-1 rounded-md text-xs ${
-                          isDarkMode ? 'bg-gray-800' : 'bg-gray-50'
-                        }`}>
-                          <FaMapMarkerAlt className="mr-1" style={{ color: exp.color }} />
-                          <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
-                            {exp.location}
+                          <span className="inline-flex items-center text-xs text-gray-500 dark:text-gray-400 font-kanit">
+                            {milestone.type === 'education' ? (
+                              <FaGraduationCap className="mr-1" style={{ color: accent.hex }} />
+                            ) : (
+                              <FaBriefcase className="mr-1" style={{ color: accent.hex }} />
+                            )}
+                            {milestone.type === 'education'
+                              ? tr('type.education')
+                              : tr('type.experience')}
                           </span>
                         </div>
-                        
-                        <div className={`flex items-center px-2 py-1 rounded-md text-xs ${
-                          isDarkMode ? 'bg-gray-800' : 'bg-gray-50'
-                        }`}>
-                          {exp.type === "education" ? 
-                            <FaGraduationCap className="mr-1" style={{ color: exp.color }} /> :
-                            <FaBriefcase className="mr-1" style={{ color: exp.color }} />
-                          }
-                          <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
-                            {exp.type === "education" ? t("experience.type.education") : t("experience.type.experience")}
+
+                        {/* Le titre du role passe avant l'etablissement :
+                            c'est ce qu'un recruteur cherche en premier. */}
+                        <h3 className="text-lg font-bold leading-tight text-gray-900 dark:text-white">
+                          {tr(`${milestone.key}.title`)}
+                        </h3>
+
+                        <p className="text-sm text-gray-600 dark:text-gray-300 font-kanit">
+                          {tr(`${milestone.key}.institution`)}
+                          <span className="mx-1 text-gray-400">·</span>
+                          <span className="inline-flex items-center">
+                            <FaMapMarkerAlt className="mr-1 text-[0.7rem]" />
+                            {tr(`${milestone.key}.location`)}
                           </span>
-                        </div>
+                        </p>
                       </div>
 
-                      {/* Description courte */}
-                      <p className={`text-sm leading-relaxed mb-4 line-clamp-2 ${
-                        isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                      }`}>
-                        {exp.description}
-                      </p>
+                      <FaChevronDown
+                        className={`mt-1 flex-shrink-0 text-gray-400 transition-transform duration-300 ${
+                          isOpen ? 'rotate-180' : ''
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
 
-                      {/* Réalisations compactes */}
-                      <div className="mb-4">
-                        <h4 className={`font-bold mb-3 flex items-center text-base ${
-                          isDarkMode ? 'text-white' : 'text-gray-800'
-                        }`}>
-                          <FaTrophy className="mr-2" style={{ color: exp.color }} />
-                          {t("experience.achievements")}
-                        </h4>
-                        <div className="space-y-2">
-                          {exp.achievements.map((achievement, idx) => (
-                            <div
-                              key={idx}
-                              className={`flex items-center p-2 rounded-lg text-sm ${
-                                isDarkMode 
-                                  ? 'bg-gray-800 border-gray-700' 
-                                  : 'bg-gray-50 border-gray-200'
-                              }`}
-                            >
-                              <FaStar className="mr-2 flex-shrink-0" style={{ color: exp.color }} />
-                              <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
-                                {achievement}
-                              </span>
+                    {/* Le detail. Rendu en permanence et masque en CSS plutot
+                        que demonte : le contenu reste dans le DOM, donc
+                        indexable et accessible a la recherche du navigateur. */}
+                    <div
+                      id={`milestone-${milestone.key}`}
+                      className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+                        isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="px-5 pb-5 pt-0 space-y-4">
+                          <div className={`h-px w-full`} style={{ background: `${accent.hex}25` }} />
+
+                          <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+                            {tr(`${milestone.key}.description`)}
+                          </p>
+
+                          {/* Realisations */}
+                          {trList(`${milestone.key}.achievements`).length > 0 && (
+                            <div>
+                              <h4 className="font-bold mb-2 flex items-center text-sm text-gray-800 dark:text-white font-kanit">
+                                <FaTrophy className="mr-2" style={{ color: accent.hex }} />
+                                {tr('achievements')}
+                              </h4>
+                              <ul className="space-y-1.5">
+                                {trList(`${milestone.key}.achievements`).map((achievement, i) => (
+                                  <li
+                                    key={i}
+                                    className="flex items-start text-sm text-gray-700 dark:text-gray-300"
+                                  >
+                                    <FaStar
+                                      className="mr-2 mt-1 flex-shrink-0 text-[0.7rem]"
+                                      style={{ color: accent.hex }}
+                                    />
+                                    <span>{achievement}</span>
+                                  </li>
+                                ))}
+                              </ul>
                             </div>
-                          ))}
+                          )}
+
+                          {/* Matieres (formation) ou technologies (terrain) */}
+                          {(() => {
+                            const isEducation = milestone.type === 'education';
+                            const items = trList(
+                              `${milestone.key}.${isEducation ? 'subjects' : 'technologies'}`
+                            );
+                            if (!items.length) return null;
+
+                            return (
+                              <div>
+                                <h4 className="font-bold mb-2 flex items-center text-sm text-gray-800 dark:text-white font-kanit">
+                                  {isEducation ? (
+                                    <BsDot className="text-xl mr-1" style={{ color: accent.hex }} />
+                                  ) : (
+                                    <FaCode className="mr-2" style={{ color: accent.hex }} />
+                                  )}
+                                  {isEducation ? tr('subjects') : tr('technologies')}
+                                </h4>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {items.map((item, i) => (
+                                    // Plus de troncature a 25 caracteres : une
+                                    // matiere coupee en plein milieu ne dit
+                                    // rien et donne l'impression d'un bug.
+                                    <span
+                                      key={i}
+                                      className="px-2 py-1 rounded text-xs border font-kanit"
+                                      style={{
+                                        background: `${accent.hex}12`,
+                                        color: accent.hex,
+                                        borderColor: `${accent.hex}30`,
+                                      }}
+                                    >
+                                      {item}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          })()}
                         </div>
                       </div>
-
-                      {/* Technologies ou Matières compactes */}
-                      {exp.type === "education" ? (
-                        <div>
-                          <h4 className={`font-bold mb-2 flex items-center text-base ${
-                            isDarkMode ? 'text-white' : 'text-gray-800'
-                          }`}>
-                            <BsDot className="text-xl mr-1" style={{ color: exp.color }} />
-                            {t("experience.subjects")}
-                          </h4>
-                          <div className="flex flex-wrap gap-1">
-                            {exp.subjects.map((subject, idx) => (
-                              <span
-                                key={idx}
-                                className={`px-2 py-1 rounded text-xs ${
-                                  isDarkMode ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-700'
-                                }`}
-                              >
-                                {subject.length > 40 ? subject.substring(0, 25) + '...' : subject}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      ) : (
-                        <div>
-                          <h4 className={`font-bold mb-2 flex items-center text-base ${
-                            isDarkMode ? 'text-white' : 'text-gray-800'
-                          }`}>
-                            <FaCode className="mr-1" style={{ color: exp.color }} />
-                            {t("experience.technologies")}
-                          </h4>
-                          <div className="flex flex-wrap gap-1">
-                            {exp.technologies.slice(0, 8).map((tech, idx) => (
-                              <span
-                                key={idx}
-                                className="px-2 py-1 rounded text-xs backdrop-blur-sm border"
-                                style={{
-                                  background: `linear-gradient(135deg, ${exp.color}15, ${exp.color}10)`,
-                                  color: exp.color,
-                                  borderColor: `${exp.color}30`
-                                }}
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
-                  </motion.div>
-                </TabPanel>
-              ))}
-            </div>
-          </Box>
-        </motion.div>
+                  </div>
+                </motion.li>
+              );
+            })}
+          </ol>
+        </div>
       </div>
     </section>
   );

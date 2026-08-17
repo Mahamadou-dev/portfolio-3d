@@ -6,7 +6,6 @@
       "skills": "Compétences",
       "education": "Éducation",
       "portfolio": "Portfolio",
-      "services": "Services",
       "contact": "Contact"
     },
     "themeToggle": "Changer de thème",
@@ -78,7 +77,22 @@
       "cybersecurity": {
         "title": "CYBERSÉCURITÉ"
       }
-    }
+    },
+    "levels": {
+      "core": {
+        "label": "Courant",
+        "hint": "Utilisé régulièrement en production"
+      },
+      "working": {
+        "label": "Opérationnel",
+        "hint": "Utilisé sur des projets, avec de la documentation sous la main"
+      },
+      "learning": {
+        "label": "En apprentissage",
+        "hint": "Travaillé en cours ou en autoformation, pas encore en production"
+      }
+    },
+    "levelsNote": "Pas de pourcentages : ils ne mesurent rien. Chaque technologie est classée selon la façon dont je m'en sers aujourd'hui."
   },
   "contact": {
     "title": "Contactez-moi",
@@ -137,7 +151,7 @@
   },
   "experience": {
     "title": "Mon Parcours",
-    "subtitle": "Parcours académique et professionnel qui a façonné mon expertise",
+    "subtitle": "Du baccalauréat au master recherche : les étapes dans l'ordre, avec leur statut réel.",
     "type": {
       "education": "Éducation",
       "experience": "Expérience"
@@ -236,11 +250,11 @@
         "institution": "GremahTech",
         "period": "2024 - Présent",
         "location": "Projets internationaux (Remote)",
-        "description": "Une start-up locale engagée pour la transformation numérique du Niger, fournissant des solutions logicielles, des services d'assistance IT et de la formation technologique.",
+        "description": "Start-up engagée pour la transformation numérique du Niger : développement logiciel, assistance IT et formation technologique.",
         "achievements": [
-          "Projets livrés avec un taux de satisfaction client de 100%",
-          "Développement de solutions SaaS innovantes pour startups",
-          "Optimisation des performances avec des gains de 300% en vitesse"
+          "Sites vitrines, API REST et applications mobiles livrés pour des clients au Niger et à l'international",
+          "Solutions SaaS prises en charge de bout en bout : conception, développement, mise en production et suivi",
+          "Optimisation des temps de chargement (mise en cache, découpage des bundles, requêtes indexées)"
         ],
         "technologies": [
           "React",
@@ -259,11 +273,11 @@
         "institution": "ANEST Monastir",
         "period": "2024 - Présent",
         "location": "Monastir, Tunisie",
-        "description": "Gestion stratégique de la trésorerie et supervision financière pour une association estudiantine de 200+ membres, garantissant transparence et optimisation des ressources.",
+        "description": "Suivi de la trésorerie et contrôle des comptes de la section Monastir de l'ANEST, une association étudiante de plus de 200 membres.",
         "achievements": [
-          "Mise en place d'un système de gestion financière digitalisé",
-          "Optimisation des coûts opérationnels",
-          "Rapports financiers trimestriels applaudis par les membres"
+          "Mise en place d'un suivi budgétaire numérisé (recettes, dépenses, pièces justificatives)",
+          "Contrôle des dépenses et arbitrage des postes de coût de la section",
+          "Rapports financiers trimestriels présentés à l'assemblée des membres"
         ],
         "technologies": [
           "Excel avancé",
@@ -273,6 +287,11 @@
           "Communication"
         ]
       }
+    },
+    "status": {
+      "done": "Terminé",
+      "current": "En cours",
+      "upcoming": "À venir"
     }
   },
   "portfolio": {
@@ -801,104 +820,6 @@
     "filters": {
       "all": "Tous"
     }
-  },
-  "services": {
-    "title": "Mes Services",
-    "subtitle": "Solutions complètes adaptées à vos besoins digitaux",
-    "perHour": "heure",
-    "choosePlan": "Choisir ce plan",
-    "flexibilityNote": "💡 Flexibilité : Tous les tarifs sont adaptables selon la complexité et la durée de votre projet",
-    "plans": {
-      "basic": {
-        "title": "Basique"
-      },
-      "standard": {
-        "title": "Standard"
-      },
-      "premium": {
-        "title": "Premium"
-      }
-    },
-    "categories": [
-      {
-        "id": 0,
-        "icon": "💻",
-        "color": "from-blue-500 to-cyan-500",
-        "title": "Développement Logiciel",
-        "description": "Applications web, mobiles et backend sur mesure avec technologies modernes",
-        "advantages": [
-          "Applications web responsive React/Next.js",
-          "Apps mobiles iOS/Android Flutter",
-          "Backend robuste Node.js/Python",
-          "API RESTful sécurisées",
-          "Bases de données optimisées",
-          "Tests et déploiement continu",
-          "Maintenance et support"
-        ],
-        "plans": [
-          {
-            "title": "basic",
-            "priceperHour": {
-              "FCFA": 10000,
-              "USD": 17
-            },
-            "advantagesIndexes": [
-              0,
-              1,
-              2
-            ]
-          },
-          {
-            "title": "standard",
-            "priceperHour": {
-              "FCFA": 20000,
-              "USD": 33
-            },
-            "advantagesIndexes": [
-              0,
-              1,
-              2,
-              3,
-              4
-            ]
-          },
-          {
-            "title": "premium",
-            "priceperHour": {
-              "FCFA": 35000,
-              "USD": 58
-            },
-            "advantagesIndexes": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6
-            ]
-          }
-        ],
-        "technologies": [
-          {
-            "icon": "⚛️",
-            "name": "React"
-          },
-          {
-            "icon": "🔗",
-            "name": "Node.js"
-          },
-          {
-            "icon": "📱",
-            "name": "Flutter"
-          },
-          {
-            "icon": "🐍",
-            "name": "Python"
-          }
-        ]
-      }
-    ]
   },
   "hero": {
     "greeting": "Barka dey, moi c'est",

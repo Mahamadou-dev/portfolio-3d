@@ -130,8 +130,14 @@
    🎨 Tailwind Theme Bindings
 --------------------------------*/
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
+
+  /* Les familles chargees dans app/layout.tsx via next/font. Sans ces deux
+     lignes, `font-righteous` et `font-kanit` ne generaient aucune regle CSS :
+     tout le site retombait silencieusement sur Inter. */
+  --font-righteous: var(--font-righteous), ui-sans-serif, system-ui, sans-serif;
+  --font-kanit: var(--font-kanit), ui-sans-serif, system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -174,6 +180,33 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* ------------------------------
+   🎛️ Surfaces du parcours & des sections
+--------------------------------
+   Ces cinq utilitaires etaient utilises dans tout le site (ExperienceSection,
+   ContactSection, ServicesSection, Footer) mais n'existaient nulle part : le
+   fichier tailwind.config.js n'est pas charge en Tailwind v4 sans directive
+   `@config`. Resultat, les cartes du parcours n'avaient aucun fond et se
+   confondaient avec le decor 3D. On les definit ici, en s'appuyant sur les
+   couleurs de la scene (AuroraField) pour que fond et contenu appartiennent au
+   meme systeme. */
+:root {
+  --surface-light: #f6f8fc; /* identique au fond clair d'AuroraField */
+  --surface-dark: #05060f;  /* identique au fond sombre d'AuroraField */
+  --surface-dark-elevation: rgba(17, 24, 46, 0.72);
+  --surface-light-elevation: rgba(255, 255, 255, 0.72);
+}
+
+@utility bg-light {
+  background-color: color-mix(in srgb, var(--surface-light) 72%, transparent);
+}
+@utility bg-dark {
+  background-color: color-mix(in srgb, var(--surface-dark) 72%, transparent);
+}
+@utility bg-darkElevation {
+  background-color: var(--surface-dark-elevation);
 }
 
 /* ------------------------------

@@ -6,7 +6,6 @@
       "skills": "Gwaninta",
       "education": "Ilimi",
       "portfolio": "Ayyuka",
-      "services": "Ayyuka na",
       "contact": "Tuntuɓi"
     },
     "themeToggle": "Canza yanayi",
@@ -78,7 +77,22 @@
       "cybersecurity": {
         "title": "TSARON BAYANAI"
       }
-    }
+    },
+    "levels": {
+      "core": {
+        "label": "Ƙwarewa sosai",
+        "hint": "Ina amfani da shi akai-akai a aikin gaske"
+      },
+      "working": {
+        "label": "Ina iya aiki",
+        "hint": "Na yi amfani da shi a ayyuka, tare da takardu a hannu"
+      },
+      "learning": {
+        "label": "Ina koyo",
+        "hint": "Na karanta a makaranta ko da kaina, ba tukuna a aikin gaske ba"
+      }
+    },
+    "levelsNote": "Babu kaso-kaso: ba sa auna komai. An rarraba kowace fasaha bisa yadda nake amfani da ita a yau."
   },
   "contact": {
     "title": "Tuntuɓi ni",
@@ -137,7 +151,7 @@
   },
   "experience": {
     "title": "Tafiyata",
-    "subtitle": "Tafiyar ilimi da ƙwararru wanda ya ƙera gwaninta",
+    "subtitle": "Daga sakandare zuwa digiri na biyu na bincike: matakai bisa tsari, kowanne da matsayinsa na gaskiya.",
     "type": {
       "education": "Ilimi",
       "experience": "Kwarewa"
@@ -236,11 +250,11 @@
         "institution": "GremahTech",
         "period": "2024 - Yanzu",
         "location": "Ayyukan ƙasa da ƙasa (Nesa)",
-        "description": "Karamin kamfani na cikin gida da ya himmatu wajen kawo sauyin zamani na dijital a Nijar, yana samar da manhajojin kwamfuta, ayyukan tallafi na IT, da kuma horarwa a fannin fasaha.",
+        "description": "Kamfani mai tasowa da ke aiki kan sauyin dijital na Nijar: hada software, tallafin IT da horar da fasaha.",
         "achievements": [
-          "Kammala ayyukan da aka bayar tare da kimar gamsuwar abokin ciniki 100%",
-          "Haɓakar mafita na SaaS masu ƙirƙira don farawa",
-          "Ingantaccen aiki tare da ribar saurin 300%"
+          "Shafukan yanar gizo, REST API da aikace-aikacen wayar hannu da aka kai wa abokan ciniki a Nijar da kasashen waje",
+          "Tsarin SaaS da aka gudanar daga farko zuwa karshe: kira, hadawa, sakawa da kulawa",
+          "Rage lokacin lodi (caching, raba bundle, tambayoyi masu index)"
         ],
         "technologies": [
           "React",
@@ -259,11 +273,11 @@
         "institution": "ANEST Monastir",
         "period": "2024 - Yanzu",
         "location": "Monastir, Tunisiya",
-        "description": "Gudanar da asusun kuɗi na dabarun da kulawar kuɗi don ƙungiyar ɗalibai sama da 200, yana tabbatar da gaskiya da ingantaccen amfani da albarkatun.",
+        "description": "Bin diddigin kudade da duba asusun reshen Monastir na ANEST, kungiyar dalibai mai fiye da mambobi 200.",
         "achievements": [
-          "Aiwatar da tsarin sarrafa kuɗi na dijital",
-          "Ingantaccen farashin aiki",
-          "Rahoton kuɗi na kwata-kwata wanda membobin suka yaba"
+          "Kafa tsarin bin diddigin kasafin kudi ta na'ura (kudin shiga, kashewa, takardun shaida)",
+          "Sarrafa kashe kudi da tsara abubuwan da reshen ke kashewa",
+          "Rahotannin kudi na kwata-kwata da aka gabatar wa taron mambobi"
         ],
         "technologies": [
           "Excel na ci gaba",
@@ -273,6 +287,11 @@
           "Sadarwa"
         ]
       }
+    },
+    "status": {
+      "done": "An kammala",
+      "current": "Ana ci gaba",
+      "upcoming": "Mai zuwa"
     }
   },
   "portfolio": {
@@ -801,104 +820,6 @@
     "filters": {
       "all": "Duka"
     }
-  },
-  "services": {
-    "title": "Ayyukana",
-    "subtitle": "Cikakkun mafita da suka dace da bukatun ku na dijital",
-    "perHour": "awa",
-    "choosePlan": "Zaɓi wannan shirin",
-    "flexibilityNote": "💡 Sassauci: Duk farashin yana daidaitawa bisa ga rikitarwa da tsawon lokacin aikin ku",
-    "plans": {
-      "basic": {
-        "title": "Na Asali"
-      },
-      "standard": {
-        "title": "Matsakaici"
-      },
-      "premium": {
-        "title": "Na Musamman"
-      }
-    },
-    "categories": [
-      {
-        "id": 0,
-        "icon": "💻",
-        "color": "from-blue-500 to-cyan-500",
-        "title": "Haɓaka Software",
-        "description": "Aikace-aikacen yanar gizo, wayar hannu da na baya na al'ada tare da fasahohin zamani",
-        "advantages": [
-          "Aikace-aikacen yanar gizo masu amsawa React/Next.js",
-          "Aikace-aikacen wayar hannu iOS/Android Flutter",
-          "Ingantaccen backend Node.js/Python",
-          "API RESTful masu tsaro",
-          "Bayanan da aka inganta",
-          "Gwaji da ci gaba da turawa",
-          "Kulawa da tallafi"
-        ],
-        "plans": [
-          {
-            "title": "basic",
-            "priceperHour": {
-              "FCFA": 10000,
-              "USD": 17
-            },
-            "advantagesIndexes": [
-              0,
-              1,
-              2
-            ]
-          },
-          {
-            "title": "standard",
-            "priceperHour": {
-              "FCFA": 20000,
-              "USD": 33
-            },
-            "advantagesIndexes": [
-              0,
-              1,
-              2,
-              3,
-              4
-            ]
-          },
-          {
-            "title": "premium",
-            "priceperHour": {
-              "FCFA": 35000,
-              "USD": 58
-            },
-            "advantagesIndexes": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6
-            ]
-          }
-        ],
-        "technologies": [
-          {
-            "icon": "⚛️",
-            "name": "React"
-          },
-          {
-            "icon": "🔗",
-            "name": "Node.js"
-          },
-          {
-            "icon": "📱",
-            "name": "Flutter"
-          },
-          {
-            "icon": "🐍",
-            "name": "Python"
-          }
-        ]
-      }
-    ]
   },
   "hero": {
     "greeting": "Barka dey !",
