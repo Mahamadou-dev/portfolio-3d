@@ -8,10 +8,35 @@ import { usePathname } from 'next/navigation';
 
 const SESSION_KEY = 'gremah_sid';
 const NO_TRACK_COOKIE = 'gremah_notrack';
+const NO_TRACK_STORAGE = 'gremah_notrack';
 
-/** Le navigateur du propriétaire porte ce cookie : on ne le compte pas. */
+/**
+ * Deux façons de ne jamais être compté :
+ *  - le cookie posé automatiquement à la connexion sur /admin ;
+ *  - une visite unique sur `https://…/?notrack=1`, qui pose une marque
+ *    permanente dans ce navigateur. Utile sur un téléphone ou une machine
+ *    où l'on ne se connecte jamais au tableau de bord.
+ * Pour redevenir un visiteur ordinaire : `?notrack=0`.
+ */
 function isOwner(): boolean {
-  return typeof document !== 'undefined' && document.cookie.includes(`${NO_TRACK_COOKIE}=1`);
+  if (typeof document === 'undefined') return false;
+  if (document.cookie.includes(`${NO_TRACK_COOKIE}=1`)) return true;
+  try {
+    return localStorage.getItem(NO_TRACK_STORAGE) === '1';
+  } catch {
+    return false;
+  }
+}
+
+/** Applique `?notrack=1` / `?notrack=0` s'il est présent dans l'URL. */
+function applyOptOutParam(): void {
+  try {
+    const value = new URLSearchParams(window.location.search).get('notrack');
+    if (value === '1') localStorage.setItem(NO_TRACK_STORAGE, '1');
+    else if (value === '0') localStorage.removeItem(NO_TRACK_STORAGE);
+  } catch {
+    /* navigation privée : on ignore, le cookie prend le relais */
+  }
 }
 
 /** Identifiant de session anonyme, valable le temps de l'onglet. */
@@ -56,6 +81,7 @@ export default function VisitorTracker() {
   useEffect(() => {
     // Le tableau de bord n'est pas du trafic visiteur, et le propriétaire ne
     // doit pas gonfler ses propres chiffres.
+    applyOptOutParam();
     if (pathname?.startsWith('/admin') || isOwner()) return;
 
     visitId.current = null;

@@ -278,6 +278,64 @@ const PULSE_FRAG = /* glsl */ `
   }
 `;
 
+/* ---- Le neurone lui-meme : coeur lumineux + anneau + halo court ---- */
+
+const NEURON_VERT = /* glsl */ `
+  uniform float uTime;
+  uniform float uSize;
+
+  attribute float aPhase;
+  attribute float aLayer;   // 0 = couche interne, 1 = couche externe
+
+  varying float vActivation;
+  varying float vLayer;
+
+  void main() {
+    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * mvPosition;
+
+    // Chaque neurone s'active a son propre rythme : le reseau respire sans
+    // jamais clignoter a l'unisson.
+    vActivation = 0.55 + 0.45 * sin(uTime * 1.3 + aPhase);
+    vLayer = aLayer;
+
+    // Les couches externes portent des neurones legerement plus petits :
+    // cela cree une profondeur lisible entre les niveaux.
+    float scale = mix(1.0, 0.72, aLayer);
+    gl_PointSize = uSize * scale * (0.85 + vActivation * 0.3) * (6.0 / -mvPosition.z);
+  }
+`;
+
+const NEURON_FRAG = /* glsl */ `
+  precision mediump float;
+
+  uniform vec3 uCore;   // coeur lumineux
+  uniform vec3 uHalo;   // anneau et halo
+
+  varying float vActivation;
+  varying float vLayer;
+
+  void main() {
+    float d = length(gl_PointCoord - 0.5);
+    if (d > 0.5) discard;
+
+    // Trois zones nettes, qui donnent la lecture « noeud numerique »
+    // plutot que « bulle » : un coeur dense, un anneau fin qui le cercle,
+    // et un halo court.
+    float core = smoothstep(0.14, 0.0, d);
+    float ring = smoothstep(0.30, 0.25, d) - smoothstep(0.25, 0.19, d);
+    float halo = smoothstep(0.5, 0.16, d) * 0.20;
+
+    vec3 color = uCore * core + uHalo * (ring * 1.1 + halo);
+    float alpha = (core + ring * 0.85 + halo) * (0.5 + vActivation * 0.5);
+
+    // Les neurones du fond s'estompent legerement : la profondeur se lit.
+    alpha *= mix(1.0, 0.75, vLayer);
+
+    gl_FragColor = vec4(color, alpha);
+  }
+`;
+
 function NeuralNetwork({
   colors,
   nodeCount,
@@ -291,77 +349,137 @@ function NeuralNetwork({
 }) {
   const group = useRef<THREE.Group>(null!);
 
-  const { nodeGeometry, synapseGeometry, pulseGeometry, pulseUniforms } = useMemo(() => {
-    const radius = 2.15;
-    const nodes = fibonacciSphere(nodeCount, radius);
+  const { nodeGeometry, synapseGeometry, pulseGeometry, pulseUniforms, neuronUniforms } =
+    useMemo(() => {
+      // --- Topologie : un perceptron multicouche enroule autour du noyau ---
+      //
+      // Trois couches concentriques. Les connexions vont exclusivement d'une
+      // couche vers la suivante, jamais a l'interieur d'une couche : c'est
+      // ce qui fait lire un reseau feed-forward plutot qu'un simple treillis.
+      // Le noyau central n'est pas touche — les couches commencent au-dela
+      // de son rayon.
+      const LAYERS = [
+        { radius: 1.72, count: Math.round(nodeCount * 0.28) },
+        { radius: 2.15, count: Math.round(nodeCount * 0.38) },
+        { radius: 2.55, count: Math.round(nodeCount * 0.34) },
+      ];
 
-    // Connexion par seuil de distance plutot que « les 2 plus proches » : sur
-    // une repartition de Fibonacci, le seuil produit un maillage geodesique
-    // regulier (chaque neurone a 5 ou 6 voisins a peu pres equidistants).
-    // La regle des 2 plus proches, elle, enchainait les points le long de la
-    // spirale et donnait de longues diagonales qui traversaient la sphere.
-    const spacing = (4 * Math.PI * radius * radius) / nodeCount; // aire par neurone
-    const threshold = Math.sqrt(spacing) * 1.25;
+      const layers = LAYERS.map((layer, index) => ({
+        ...layer,
+        // Chaque couche est tournee differemment : les neurones ne
+        // s'alignent pas radialement d'une couche a l'autre.
+        points: fibonacciSphere(layer.count, layer.radius).map((point) =>
+          point.applyAxisAngle(new THREE.Vector3(0, 1, 0), index * 0.9)
+        ),
+      }));
 
-    const edges: [THREE.Vector3, THREE.Vector3][] = [];
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        if (nodes[i].distanceTo(nodes[j]) <= threshold) {
-          edges.push([nodes[i], nodes[j]]);
+      const allNodes: { point: THREE.Vector3; layer: number }[] = [];
+      layers.forEach((layer, index) =>
+        layer.points.forEach((point) => allNodes.push({ point, layer: index }))
+      );
+
+      // Chaque neurone se projette vers les 3 neurones les plus proches de la
+      // couche suivante : dense sans devenir illisible.
+      const FAN_OUT = 3;
+      const edges: { from: THREE.Vector3; to: THREE.Vector3; weight: number }[] = [];
+
+      for (let l = 0; l < layers.length - 1; l++) {
+        const next = layers[l + 1].points;
+        for (const source of layers[l].points) {
+          next
+            .map((target) => ({ target, distance: source.distanceTo(target) }))
+            .sort((a, b) => a.distance - b.distance)
+            .slice(0, FAN_OUT)
+            .forEach(({ target }, rank) => {
+              // Le « poids » module la luminosite : quelques connexions
+              // ressortent, comme des chemins privilegies du reseau.
+              const weight = rank === 0 ? 0.85 + Math.random() * 0.15 : 0.2 + Math.random() * 0.3;
+              edges.push({ from: source, to: target, weight });
+            });
         }
       }
-    }
 
-    // --- Neurones (points) ---
-    const nodePositions = new Float32Array(nodes.length * 3);
-    nodes.forEach((node, i) => node.toArray(nodePositions, i * 3));
-    const nodeGeo = new THREE.BufferGeometry();
-    nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodePositions, 3));
+      // --- Neurones ---
+      const nodePositions = new Float32Array(allNodes.length * 3);
+      const nodePhase = new Float32Array(allNodes.length);
+      const nodeLayer = new Float32Array(allNodes.length);
 
-    // --- Synapses (segments) ---
-    const linePositions = new Float32Array(edges.length * 6);
-    edges.forEach(([from, to], i) => {
-      from.toArray(linePositions, i * 6);
-      to.toArray(linePositions, i * 6 + 3);
-    });
-    const lineGeo = new THREE.BufferGeometry();
-    lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+      allNodes.forEach((node, i) => {
+        node.point.toArray(nodePositions, i * 3);
+        nodePhase[i] = Math.random() * Math.PI * 2;
+        nodeLayer[i] = node.layer / (layers.length - 1);
+      });
 
-    // --- Influx (un point mobile par synapse) ---
-    const count = edges.length;
-    const from = new Float32Array(count * 3);
-    const to = new Float32Array(count * 3);
-    const offset = new Float32Array(count);
-    const pulseSpeed = new Float32Array(count);
-    const dummy = new Float32Array(count * 3);
+      const nodeGeo = new THREE.BufferGeometry();
+      nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodePositions, 3));
+      nodeGeo.setAttribute('aPhase', new THREE.BufferAttribute(nodePhase, 1));
+      nodeGeo.setAttribute('aLayer', new THREE.BufferAttribute(nodeLayer, 1));
 
-    edges.forEach(([a, b], i) => {
-      a.toArray(from, i * 3);
-      b.toArray(to, i * 3);
-      offset[i] = Math.random();
-      pulseSpeed[i] = 0.6 + Math.random() * 1.6;
-    });
+      // --- Synapses, avec une couleur par sommet pour porter le poids ---
+      const linePositions = new Float32Array(edges.length * 6);
+      const lineColors = new Float32Array(edges.length * 6);
+      const synapseColor = new THREE.Color(colors.synapse);
 
-    const pulseGeo = new THREE.BufferGeometry();
-    // L'attribut position n'est pas utilise (tout vient de aFrom/aTo) mais
-    // three.js exige l'attribut pour dimensionner le draw call.
-    pulseGeo.setAttribute('position', new THREE.BufferAttribute(dummy, 3));
-    pulseGeo.setAttribute('aFrom', new THREE.BufferAttribute(from, 3));
-    pulseGeo.setAttribute('aTo', new THREE.BufferAttribute(to, 3));
-    pulseGeo.setAttribute('aOffset', new THREE.BufferAttribute(offset, 1));
-    pulseGeo.setAttribute('aSpeed', new THREE.BufferAttribute(pulseSpeed, 1));
+      edges.forEach((edge, i) => {
+        edge.from.toArray(linePositions, i * 6);
+        edge.to.toArray(linePositions, i * 6 + 3);
 
-    return {
-      nodeGeometry: nodeGeo,
-      synapseGeometry: lineGeo,
-      pulseGeometry: pulseGeo,
-      pulseUniforms: {
-        uTime: { value: 0 },
-        uSize: { value: 7 },
-        uColor: { value: new THREE.Color(colors.pulse) },
-      },
-    };
-  }, [nodeCount]); // eslint-disable-line react-hooks/exhaustive-deps
+        // Degrade le long de la connexion : plus sombre au depart, plus clair
+        // a l'arrivee, ce qui suggere le sens de propagation meme a l'arret.
+        for (let end = 0; end < 2; end++) {
+          const intensity = edge.weight * (end === 0 ? 0.45 : 1);
+          lineColors[i * 6 + end * 3] = synapseColor.r * intensity;
+          lineColors[i * 6 + end * 3 + 1] = synapseColor.g * intensity;
+          lineColors[i * 6 + end * 3 + 2] = synapseColor.b * intensity;
+        }
+      });
+
+      const lineGeo = new THREE.BufferGeometry();
+      lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+      lineGeo.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
+
+      // --- Influx : seules les connexions bien ponderees en portent un,
+      //     sinon la scene se remplit de points mobiles. ---
+      const active = edges.filter((edge) => edge.weight > 0.5);
+      const from = new Float32Array(active.length * 3);
+      const to = new Float32Array(active.length * 3);
+      const offset = new Float32Array(active.length);
+      const pulseSpeed = new Float32Array(active.length);
+      const dummy = new Float32Array(active.length * 3);
+
+      active.forEach((edge, i) => {
+        edge.from.toArray(from, i * 3);
+        edge.to.toArray(to, i * 3);
+        offset[i] = Math.random();
+        pulseSpeed[i] = 0.7 + Math.random() * 1.4;
+      });
+
+      const pulseGeo = new THREE.BufferGeometry();
+      // L'attribut position n'est pas utilise (tout vient de aFrom/aTo) mais
+      // three.js exige l'attribut pour dimensionner le draw call.
+      pulseGeo.setAttribute('position', new THREE.BufferAttribute(dummy, 3));
+      pulseGeo.setAttribute('aFrom', new THREE.BufferAttribute(from, 3));
+      pulseGeo.setAttribute('aTo', new THREE.BufferAttribute(to, 3));
+      pulseGeo.setAttribute('aOffset', new THREE.BufferAttribute(offset, 1));
+      pulseGeo.setAttribute('aSpeed', new THREE.BufferAttribute(pulseSpeed, 1));
+
+      return {
+        nodeGeometry: nodeGeo,
+        synapseGeometry: lineGeo,
+        pulseGeometry: pulseGeo,
+        pulseUniforms: {
+          uTime: { value: 0 },
+          uSize: { value: 7 },
+          uColor: { value: new THREE.Color(colors.pulse) },
+        },
+        neuronUniforms: {
+          uTime: { value: 0 },
+          uSize: { value: 20 },
+          uCore: { value: new THREE.Color(colors.pulse) },
+          uHalo: { value: new THREE.Color(colors.accent) },
+        },
+      };
+    }, [nodeCount]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Geometries construites a la main : c'est a nous de les liberer.
   useEffect(
@@ -375,6 +493,7 @@ function NeuralNetwork({
 
   useFrame((_, delta) => {
     pulseUniforms.uTime.value += delta;
+    neuronUniforms.uTime.value += delta;
     if (!quiet) {
       group.current.rotation.y += delta * speed;
       group.current.rotation.x = Math.sin(pulseUniforms.uTime.value * 0.15) * 0.12;
@@ -382,21 +501,25 @@ function NeuralNetwork({
   });
 
   pulseUniforms.uColor.value.set(colors.pulse);
+  neuronUniforms.uCore.value.set(colors.pulse);
+  neuronUniforms.uHalo.value.set(colors.accent);
 
   return (
     <group ref={group}>
-      <points geometry={nodeGeometry}>
-        <pointsMaterial
-          size={0.028}
-          color={colors.accent}
+      <points geometry={nodeGeometry} frustumCulled={false}>
+        <shaderMaterial
+          vertexShader={NEURON_VERT}
+          fragmentShader={NEURON_FRAG}
+          uniforms={neuronUniforms}
           transparent
-          opacity={0.85}
-          sizeAttenuation
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
         />
       </points>
 
+      {/* vertexColors : chaque connexion porte son propre poids lumineux. */}
       <lineSegments geometry={synapseGeometry}>
-        <lineBasicMaterial color={colors.synapse} transparent opacity={0.1} />
+        <lineBasicMaterial vertexColors transparent opacity={0.55} />
       </lineSegments>
 
       <points geometry={pulseGeometry} frustumCulled={false}>
@@ -481,7 +604,8 @@ export default function HeroScene() {
   }
 
   const motion = quality.reducedMotion ? 0.12 : 1;
-  const nodeCount = quality.lowPower ? 34 : 64;
+  // Reparti sur les trois couches du reseau (28 % / 38 % / 34 %).
+  const nodeCount = quality.lowPower ? 40 : 72;
 
   return (
     <div className="w-full h-[24rem] md:h-[32rem] relative">

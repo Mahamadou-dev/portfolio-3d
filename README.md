@@ -106,8 +106,25 @@ seule IP et seraient classés robots à tort.
 La case « Visites confirmées seulement » est cochée par défaut dans le
 tableau de bord ; la décocher montre tout le trafic brut.
 
-Tes propres visites ne sont pas comptées : la connexion à `/admin` pose un
-cookie `gremah_notrack` sur ton navigateur, valable un an.
+### Ne pas se compter soi-même
+
+Deux moyens, cumulables :
+
+1. **Se connecter à `/admin`** — pose automatiquement un cookie
+   `gremah_notrack` valable un an sur ce navigateur.
+2. **Visiter `https://gremah.vercel.app/?notrack=1`** une seule fois — pose
+   une marque permanente dans ce navigateur, même sans connexion. Pratique sur
+   un téléphone. Pour redevenir un visiteur ordinaire : `?notrack=0`.
+
+À faire une fois par navigateur et par appareil.
+
+### Limite connue
+
+Le critère « signe de vie » écarte les scanners qui chargent et repartent,
+mais **pas ceux qui exécutent le JavaScript et patientent** — certains restent
+8 à 20 secondes et passent le test. Ils se repèrent à la ville : Ashburn,
+Boardman, Council Bluffs ou Dublin sont des régions de datacenters (AWS
+us-east-1, us-west-2, GCP, AWS eu-west-1), pas des audiences réelles.
 
 ```bash
 pnpm purge:visits                # aperçu, ne supprime rien
