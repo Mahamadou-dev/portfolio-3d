@@ -111,10 +111,12 @@ const CORE_VERT = /* glsl */ `
   }
 
   void main() {
-    // Trois frequences : houle lente, fremissement, micro-detail.
-    float slow   = snoise(normal * 1.3 + uTime * 0.16);
-    float medium = snoise(normal * 2.9 - uTime * 0.30) * 0.40;
-    float fine   = snoise(normal * 6.1 + uTime * 0.55) * 0.14;
+    // Trois frequences. La plus basse est volontairement discrete : quand elle
+    // dominait, la silhouette devenait grumeleuse et le noyau ressemblait a
+    // une pate. L'essentiel du relief vient maintenant du detail fin.
+    float slow   = snoise(normal * 1.9 + uTime * 0.16) * 0.55;
+    float medium = snoise(normal * 4.2 - uTime * 0.30) * 0.30;
+    float fine   = snoise(normal * 8.5 + uTime * 0.55) * 0.15;
     float displacement = (slow + medium + fine) * uAmplitude;
 
     vec3 displaced = position + normal * displacement;
@@ -163,11 +165,15 @@ const CORE_FRAG = /* glsl */ `
     color = mix(color, color * iridescence * 1.5, fresnel * 0.7);
     color += uRim * fresnel * 1.9;
 
-    // Veines d'energie : des bandes fines qui parcourent la surface, comme
-    // des influx sous la peau du noyau.
-    float veins = sin(vLocalPos.y * 14.0 - uTime * 2.2 + vDisplacement * 9.0);
-    veins = pow(max(veins, 0.0), 12.0);
-    color += uAccent * veins * 0.55;
+    // Veines d'energie. Elles suivent une direction oblique et sont modulees
+    // par le relief : sur le seul axe Y elles dessinaient des anneaux de
+    // niveau reguliers, ce qui donnait au noyau un aspect de dessin anime.
+    float axis = dot(normalize(vLocalPos), normalize(vec3(0.35, 1.0, 0.5)));
+    float veins = sin(axis * 22.0 - uTime * 1.8 + vDisplacement * 16.0);
+    veins = pow(max(veins, 0.0), 30.0);
+    // Les veines ne s'allument que sur les faces vues de biais : le centre
+    // reste lisse, l'energie court sur les flancs.
+    color += uAccent * veins * (0.18 + fresnel * 0.5);
 
     // Respiration lente, tres legere.
     color *= 0.92 + 0.08 * sin(uTime * 0.7);
@@ -243,10 +249,14 @@ const PULSE_VERT = /* glsl */ `
 
     vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
     gl_Position = projectionMatrix * mvPosition;
-    gl_PointSize = uSize * (9.0 / -mvPosition.z);
+
+    // Taille volontairement petite : un influx doit se lire comme une etincelle
+    // nette qui file, pas comme une boule. Le bloom fera le halo, pas la
+    // geometrie.
+    gl_PointSize = uSize * (6.0 / -mvPosition.z);
 
     // L'influx s'allume au depart, s'eteint a l'arrivee : on lit le sens.
-    vGlow = sin(t * 3.14159);
+    vGlow = pow(sin(t * 3.14159), 1.6);
   }
 `;
 
@@ -257,9 +267,14 @@ const PULSE_FRAG = /* glsl */ `
 
   void main() {
     float d = length(gl_PointCoord - 0.5);
-    float mask = smoothstep(0.5, 0.0, d);
+
+    // Coeur dense + halo court : le point garde un contour franc.
+    float core = smoothstep(0.22, 0.0, d);
+    float halo = smoothstep(0.5, 0.12, d) * 0.35;
+    float mask = core + halo;
     if (mask <= 0.01) discard;
-    gl_FragColor = vec4(uColor, mask * vGlow);
+
+    gl_FragColor = vec4(uColor, mask * vGlow * 0.85);
   }
 `;
 
@@ -280,25 +295,22 @@ function NeuralNetwork({
     const radius = 2.15;
     const nodes = fibonacciSphere(nodeCount, radius);
 
-    // Chaque neurone se relie a ses deux plus proches voisins : on obtient un
-    // maillage connexe et lisible, jamais une pelote.
+    // Connexion par seuil de distance plutot que « les 2 plus proches » : sur
+    // une repartition de Fibonacci, le seuil produit un maillage geodesique
+    // regulier (chaque neurone a 5 ou 6 voisins a peu pres equidistants).
+    // La regle des 2 plus proches, elle, enchainait les points le long de la
+    // spirale et donnait de longues diagonales qui traversaient la sphere.
+    const spacing = (4 * Math.PI * radius * radius) / nodeCount; // aire par neurone
+    const threshold = Math.sqrt(spacing) * 1.25;
+
     const edges: [THREE.Vector3, THREE.Vector3][] = [];
-    const seen = new Set<string>();
-
-    nodes.forEach((node, i) => {
-      const neighbours = nodes
-        .map((other, j) => ({ j, distance: node.distanceTo(other) }))
-        .filter((entry) => entry.j !== i)
-        .sort((a, b) => a.distance - b.distance)
-        .slice(0, 2);
-
-      for (const neighbour of neighbours) {
-        const key = i < neighbour.j ? `${i}-${neighbour.j}` : `${neighbour.j}-${i}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        edges.push([node, nodes[neighbour.j]]);
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        if (nodes[i].distanceTo(nodes[j]) <= threshold) {
+          edges.push([nodes[i], nodes[j]]);
+        }
       }
-    });
+    }
 
     // --- Neurones (points) ---
     const nodePositions = new Float32Array(nodes.length * 3);
@@ -345,7 +357,7 @@ function NeuralNetwork({
       pulseGeometry: pulseGeo,
       pulseUniforms: {
         uTime: { value: 0 },
-        uSize: { value: 26 },
+        uSize: { value: 7 },
         uColor: { value: new THREE.Color(colors.pulse) },
       },
     };
@@ -375,16 +387,16 @@ function NeuralNetwork({
     <group ref={group}>
       <points geometry={nodeGeometry}>
         <pointsMaterial
-          size={0.055}
+          size={0.028}
           color={colors.accent}
           transparent
-          opacity={0.95}
+          opacity={0.85}
           sizeAttenuation
         />
       </points>
 
       <lineSegments geometry={synapseGeometry}>
-        <lineBasicMaterial color={colors.synapse} transparent opacity={0.16} />
+        <lineBasicMaterial color={colors.synapse} transparent opacity={0.1} />
       </lineSegments>
 
       <points geometry={pulseGeometry} frustumCulled={false}>
@@ -405,35 +417,37 @@ function NeuralNetwork({
 /* 3. La coque de securite — cristal filaire + anneau de balayage      */
 /* ================================================================== */
 
-function SecurityShell({ colors, speed }: { colors: Palette; speed: number }) {
-  const shell = useRef<THREE.Mesh>(null!);
+function SecurityScanner({ colors }: { colors: Palette }) {
   const scanner = useRef<THREE.Group>(null!);
+  const material = useRef<THREE.MeshBasicMaterial>(null!);
 
+  // La coque filaire en icosaedre a ete retiree : ses longues aretes
+  // traversaient le reseau de neurones et les deux treillis se lisaient comme
+  // une seule cage confuse. L'anneau de balayage suffit a porter l'idee de
+  // securite, et il reste lisible.
   useFrame((state, delta) => {
-    shell.current.rotation.y -= delta * speed;
-    shell.current.rotation.x += delta * speed * 0.4;
-
-    // L'anneau balaie le noyau de haut en bas, comme un scan de sécurité.
     const t = state.clock.elapsedTime;
-    scanner.current.position.y = Math.sin(t * 0.55) * 1.6;
-    scanner.current.rotation.y += delta * 0.7;
-    const squeeze = Math.cos(Math.asin(THREE.MathUtils.clamp(scanner.current.position.y / 2.2, -1, 1)));
-    scanner.current.scale.setScalar(0.6 + squeeze * 0.55);
+
+    // Va-et-vient vertical autour du noyau.
+    const y = Math.sin(t * 0.5) * 1.5;
+    scanner.current.position.y = y;
+    scanner.current.rotation.y += delta * 0.5;
+
+    // Le rayon epouse la silhouette du noyau : l'anneau semble le raser.
+    const grip = Math.cos(Math.asin(THREE.MathUtils.clamp(y / 2.0, -1, 1)));
+    scanner.current.scale.setScalar(0.35 + grip * 0.75);
+
+    // Il s'efface aux extremites de la course : pas de disque flottant isole.
+    material.current.opacity = 0.15 + grip * 0.4;
   });
 
   return (
-    <>
-      <Icosahedron ref={shell} args={[2.75, 1]}>
-        <meshBasicMaterial color={colors.shell} wireframe transparent opacity={0.14} />
-      </Icosahedron>
-
-      <group ref={scanner}>
-        <mesh rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[2.3, 0.008, 6, 96]} />
-          <meshBasicMaterial color={colors.accent} transparent opacity={0.55} />
-        </mesh>
-      </group>
-    </>
+    <group ref={scanner}>
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[1.75, 0.005, 6, 128]} />
+        <meshBasicMaterial ref={material} color={colors.accent} transparent opacity={0.4} />
+      </mesh>
+    </group>
   );
 }
 
@@ -482,7 +496,7 @@ export default function HeroScene() {
             rotationIntensity={0.3 * motion}
             floatIntensity={0.45 * motion}
           >
-            <Core colors={colors} amplitude={0.2 * motion + 0.05} />
+            <Core colors={colors} amplitude={0.16 * motion + 0.03} />
           </Float>
 
           <NeuralNetwork
@@ -492,7 +506,7 @@ export default function HeroScene() {
             quiet={quality.reducedMotion}
           />
 
-          <SecurityShell colors={colors} speed={0.06 * motion} />
+          <SecurityScanner colors={colors} />
 
           <ParallaxRig strength={quality.reducedMotion ? 0 : 0.55} />
 
@@ -500,20 +514,23 @@ export default function HeroScene() {
               coupe entierement sur machine modeste : elle coute cher. */}
           {!quality.lowPower && (
             <EffectComposer>
+              {/* Seuil haut et intensite moderee : seuls les influx et les
+                  aretes vives fleurissent. Plus bas, tout diffusait et la
+                  scene perdait ses contours. */}
               <Bloom
-                intensity={isDark ? 1.15 : 0.4}
-                luminanceThreshold={0.28}
-                luminanceSmoothing={0.9}
+                intensity={isDark ? 0.55 : 0.25}
+                luminanceThreshold={0.5}
+                luminanceSmoothing={0.85}
                 mipmapBlur
               />
               <ChromaticAberration
                 blendFunction={BlendFunction.NORMAL}
-                offset={new THREE.Vector2(0.0007, 0.0009)}
+                offset={new THREE.Vector2(0.0004, 0.0005)}
                 radialModulation={false}
                 modulationOffset={0}
               />
-              <Noise premultiply blendFunction={BlendFunction.OVERLAY} opacity={0.18} />
-              <Vignette eskil={false} offset={0.22} darkness={0.6} />
+              <Noise premultiply blendFunction={BlendFunction.OVERLAY} opacity={0.07} />
+              <Vignette eskil={false} offset={0.25} darkness={0.5} />
             </EffectComposer>
           )}
         </Suspense>

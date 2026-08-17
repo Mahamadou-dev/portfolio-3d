@@ -133,16 +133,17 @@ const AURORA_FRAG = /* glsl */ `
     veil *= smoothstep(1.15, 0.1, length(p) * 0.85);
 
     // Filaments : les lignes de niveau du champ deforme, tres fines. C'est ce
-    // qui donne la lecture "energie" plutot que "brouillard".
-    float filament = abs(sin(field * 9.0 + uTime * 0.35));
-    filament = pow(1.0 - filament, 22.0);
+    // qui donne la lecture "energie" plutot que "brouillard". Ils restent
+    // discrets — c'est un fond, il ne doit pas concurrencer le hero.
+    float filament = abs(sin(field * 7.0 + uTime * 0.35));
+    filament = pow(1.0 - filament, 34.0);
 
     // Halo doux qui suit le curseur : discret mais rend la page vivante.
     float halo = exp(-length(p - uMouse * 0.5) * 2.6) * 0.35;
 
     vec3 finalColor = uBackground
-      + (color * veil + color * halo) * uIntensity
-      + uColorC * filament * uIntensity * 0.5;
+      + (color * veil * 0.8 + color * halo) * uIntensity
+      + uColorC * filament * uIntensity * 0.3;
 
     // Grain leger : casse le banding des degrades sur grands aplats.
     float grain = (hash(uv * uResolution + uTime) - 0.5) * 0.014;
