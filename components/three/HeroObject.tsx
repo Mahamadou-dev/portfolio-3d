@@ -488,10 +488,7 @@ export default function HeroObject() {
 
   return (
     <div
-      className="h-[22rem] w-full sm:h-[26rem] lg:h-[32rem]"
-      // Purement decoratif : la scene porte la meme information que le
-      // titre a cote. La masquer evite qu'un lecteur d'ecran annonce un
-      // canvas vide.
+      className="relative z-[9999] h-[22rem] w-full sm:h-[26rem] lg:h-[32rem]"
       aria-hidden="true"
     >
       <Canvas

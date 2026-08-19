@@ -125,7 +125,7 @@ export default function HeroSection() {
           // images a s'initialiser, un mouvement d'entree la ferait
           // apparaitre en saccade.
           transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
-          className="relative"
+          className="relative z-[9999]"
         >
           <HeroObject />
         </motion.div>
