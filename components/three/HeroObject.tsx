@@ -45,16 +45,13 @@ import { useSceneQuality } from './useSceneQuality';
 /* ================================================================== */
 
 /**
- * 4 -> 6 -> 6 -> 3.
+ * 5 -> 8 -> 8 -> 6 -> 3.
  *
- * Ce ne sont pas des dimensions au hasard : c'est la plus petite
- * architecture qui se lise encore comme « profonde » (deux couches
- * cachees), avec un goulot en sortie qui rend le sens de la propagation
- * evident. Au-dela, les liaisons se croisent trop et la figure devient un
- * treillis illisible — c'est exactement ce qui arrivait a l'ancienne
- * version, qui alignait 72 neurones.
+ * Architecture plus profonde et plus dense que la version precedente.
+ * Cinq couches donnent une vraie impression de « deep learning » tout
+ * en restant lisible grace a l'orientation trois quarts.
  */
-const LAYERS = [4, 6, 6, 3];
+const LAYERS = [5, 8, 8, 6, 3];
 
 const SPACING_X = 1.5;
 const SPACING_Y = 0.66;
@@ -177,12 +174,12 @@ function makeFinish(dark: boolean): Finish {
  */
 function Studio({ finish }: { finish: Finish }) {
   return (
-    <Environment frames={1} resolution={256}>
+    <Environment frames={1} resolution={512}>
       {/* Un fond gris moyen, jamais noir : un environnement noir donne des
           metaux ternes, sans rien a reflechir. */}
       <mesh scale={40}>
         <sphereGeometry args={[1, 32, 32]} />
-        <meshBasicMaterial color="#3d4046" side={THREE.BackSide} />
+        <meshBasicMaterial color="#4a5060" side={THREE.BackSide} />
       </mesh>
 
       {/* Source principale : haute, a gauche, a 45°. Elle dessine la forme. */}
@@ -217,6 +214,16 @@ function Studio({ finish }: { finish: Finish }) {
         position={[0, 0, -6]}
         scale={[10, 3, 1]}
       />
+
+      {/* Rim light bleuté : contour lumineux qui sculpte la silhouette du
+          reseau et renforce la lecture des spheres contre le fond. */}
+      <Lightformer
+        form="rect"
+        intensity={3}
+        color="#a0c4ff"
+        position={[0, 3, -5]}
+        scale={[8, 4, 1]}
+      />
     </Environment>
   );
 }
@@ -226,24 +233,38 @@ function Studio({ finish }: { finish: Finish }) {
 /* ================================================================== */
 
 /**
- * Noeuds et liaisons, en rendu instancie.
+ * Noeuds, liaisons et particules voyageuses, en rendu instancie.
  *
- * 19 noeuds et 78 liaisons, soit 97 objets : dessines un par un, ce serait
- * 97 appels de rendu par image. Deux `InstancedMesh` les ramenent a deux.
- * C'est ce qui permet de garder des liaisons en vraie geometrie — des
- * cylindres qui recoivent la lumiere et projettent une ombre — la ou
- * l'ancienne version utilisait des `lineSegments`, plates et insensibles a
- * l'eclairage.
+ * Trois `InstancedMesh` :
+ *   1. Les noeuds (spheres en metal poli avec clearcoat)
+ *   2. Les liaisons (cylindres metalliques)
+ *   3. Les particules (petites spheres emissives qui voyagent sur les aretes)
+ *
+ * Les materiaux `meshPhysicalMaterial` ajoutent clearcoat et reflectivite
+ * pour un rendu « produit » nettement plus riche que `meshStandardMaterial`.
  */
 function Network({ finish, still }: { finish: Finish; still: boolean }) {
   const nodesRef = useRef<THREE.InstancedMesh>(null!);
   const edgesRef = useRef<THREE.InstancedMesh>(null!);
+  const particlesRef = useRef<THREE.InstancedMesh>(null!);
   const clock = useRef(0);
 
   const { nodes, edges } = useMemo(buildNetwork, []);
 
-  // Les matrices de transformation ne changent jamais : on les calcule une
-  // fois pour toutes. Seules les couleurs seront mises a jour par image.
+  // Systeme de particules : petites spheres lumineuses qui voyagent
+  // sur les aretes actives, comme des influx nerveux.
+  const NUM_PARTICLES = 25;
+  const particleState = useRef(
+    Array.from({ length: NUM_PARTICLES }, (_, i) => ({
+      edgeIdx: i % edges.length,
+      t: Math.random(),
+      speed: 0.3 + Math.random() * 0.4,
+    }))
+  );
+
+  // Les matrices de transformation des noeuds/aretes ne changent jamais :
+  // on les calcule une fois pour toutes. Seules les couleurs sont mises
+  // a jour par image.
   useEffect(() => {
     const matrix = new THREE.Matrix4();
 
@@ -272,6 +293,13 @@ function Network({ finish, still }: { finish: Finish; still: boolean }) {
       edgesRef.current.setMatrixAt(i, matrix);
     });
     edgesRef.current.instanceMatrix.needsUpdate = true;
+
+    // Initialiser les matrices particules a l'origine (invisible au depart).
+    for (let i = 0; i < NUM_PARTICLES; i++) {
+      matrix.makeScale(0, 0, 0);
+      particlesRef.current.setMatrixAt(i, matrix);
+    }
+    particlesRef.current.instanceMatrix.needsUpdate = true;
   }, [nodes, edges]);
 
   // La propagation avant.
@@ -283,6 +311,11 @@ function Network({ finish, still }: { finish: Finish; still: boolean }) {
   const color = useMemo(() => new THREE.Color(), []);
   const PERIOD = 9; // secondes pour un cycle complet, pause comprise
   const WIDTH = 0.85; // largeur du front, en couches
+
+  // Objets reutilises pour les particules (evite les allocations par frame)
+  const pMatrix = useMemo(() => new THREE.Matrix4(), []);
+  const pPos = useMemo(() => new THREE.Vector3(), []);
+  const pColor = useMemo(() => new THREE.Color(), []);
 
   useFrame((_, delta) => {
     if (!still) clock.current += delta;
@@ -297,8 +330,12 @@ function Network({ finish, still }: { finish: Finish; still: boolean }) {
       return Math.exp(-d * d);
     };
 
+    // Mise a jour couleur + emissiveIntensity des noeuds via setColorAt.
+    // Le glow emissif est gere par le materiau (emissiveIntensity fixe),
+    // la couleur d'instance passe de idle a active selon l'activation.
     nodes.forEach((node, i) => {
-      color.lerpColors(finish.nodeIdle, finish.nodeActive, activation(node.layer));
+      const act = activation(node.layer);
+      color.lerpColors(finish.nodeIdle, finish.nodeActive, act);
       nodesRef.current.setColorAt(i, color);
     });
     if (nodesRef.current.instanceColor) nodesRef.current.instanceColor.needsUpdate = true;
@@ -310,6 +347,34 @@ function Network({ finish, still }: { finish: Finish; still: boolean }) {
       edgesRef.current.setColorAt(i, color);
     });
     if (edgesRef.current.instanceColor) edgesRef.current.instanceColor.needsUpdate = true;
+
+    // Particules voyageuses : chaque particule se deplace de from vers to
+    // sur son arete assignee, a une vitesse propre. Quand elle arrive en
+    // bout d'arete, elle est reassignee aleatoirement.
+    particleState.current.forEach((p, i) => {
+      p.t += delta * p.speed;
+      if (p.t > 1) {
+        p.t = 0;
+        p.edgeIdx = Math.floor(Math.random() * edges.length);
+      }
+      const edge = edges[p.edgeIdx];
+      const act = activation(edge.depth) * edge.weight;
+      if (act < 0.1) {
+        // Arete inactive : masquer la particule
+        pMatrix.makeScale(0, 0, 0);
+      } else {
+        pPos.lerpVectors(edge.from, edge.to, p.t);
+        const s = 0.04 * act;
+        pMatrix.makeTranslation(pPos.x, pPos.y, pPos.z);
+        pMatrix.scale(new THREE.Vector3(s, s, s));
+      }
+      particlesRef.current.setMatrixAt(i, pMatrix);
+      // Couleur : edgeActive melange vers blanc pour un eclat lumineux
+      pColor.lerpColors(finish.edgeActive, new THREE.Color('#ffffff'), 0.4);
+      particlesRef.current.setColorAt(i, pColor);
+    });
+    particlesRef.current.instanceMatrix.needsUpdate = true;
+    if (particlesRef.current.instanceColor) particlesRef.current.instanceColor.needsUpdate = true;
   });
 
   return (
@@ -321,10 +386,19 @@ function Network({ finish, still }: { finish: Finish; still: boolean }) {
         receiveShadow
       >
         <sphereGeometry args={[NODE_RADIUS, 28, 28]} />
-        {/* Rugosite basse : les noeuds sont polis et attrapent nettement
-            la boite a lumiere. C'est le reflet qui les rend spheriques a
-            l'oeil — sans lui, ce sont des disques. */}
-        <meshStandardMaterial metalness={1} roughness={0.16} envMapIntensity={1.3} />
+        {/* meshPhysicalMaterial : clearcoat + metalness eleve pour un rendu
+            « sphere polie » tres franc. Le glow emissif s'active via la
+            couleur d'instance qui passe vers nodeActive. */}
+        <meshPhysicalMaterial
+          metalness={1}
+          roughness={0.08}
+          clearcoat={1}
+          clearcoatRoughness={0.05}
+          reflectivity={1}
+          envMapIntensity={2.5}
+          emissive={finish.nodeActive}
+          emissiveIntensity={0.15}
+        />
       </instancedMesh>
 
       <instancedMesh ref={edgesRef} args={[undefined, undefined, edges.length]} castShadow>
@@ -332,7 +406,23 @@ function Network({ finish, still }: { finish: Finish; still: boolean }) {
             personne ne verra jamais la facettisation, et on economise
             les trois quarts des sommets. */}
         <cylinderGeometry args={[EDGE_RADIUS, EDGE_RADIUS, 1, 8]} />
-        <meshStandardMaterial metalness={1} roughness={0.38} envMapIntensity={1} />
+        <meshPhysicalMaterial
+          metalness={0.95}
+          roughness={0.15}
+          envMapIntensity={1.8}
+        />
+      </instancedMesh>
+
+      {/* Particules : petites spheres entierement emissives, sans reflexion,
+          pour simuler des influx nerveux qui filent le long des synapses. */}
+      <instancedMesh ref={particlesRef} args={[undefined, undefined, NUM_PARTICLES]}>
+        <sphereGeometry args={[1, 8, 8]} />
+        <meshPhysicalMaterial
+          emissive={finish.edgeActive}
+          emissiveIntensity={3}
+          metalness={0}
+          roughness={0}
+        />
       </instancedMesh>
     </>
   );
@@ -341,7 +431,7 @@ function Network({ finish, still }: { finish: Finish; still: boolean }) {
 /**
  * Le balancement et la parallaxe.
  *
- * Le reseau oscille lentement autour de la verticale (periode 24 s) et
+ * Le reseau oscille lentement autour de la verticale (periode 35 s) et
  * s'incline vers le curseur, avec un amortissement fort. La camera ne
  * bouge jamais : c'est l'objet qui pivote. Deplacer la camera, comme le
  * faisait l'ancienne version, deforme la perspective et donne le mal de
@@ -367,12 +457,14 @@ function Rig({
   useFrame((_, delta) => {
     if (!still) time.current += delta;
 
-    const sway = Math.sin(time.current * 0.26) * 0.12;
+    // Oscillation plus lente et plus douce (0.18 rad/s, amplitude 0.08)
+    const sway = Math.sin(time.current * 0.18) * 0.08;
     const targetYaw = BASE_YAW + sway + pointer.x * strength;
     const targetPitch = -pointer.y * strength * 0.6;
 
-    group.current.rotation.y += (targetYaw - group.current.rotation.y) * 0.05;
-    group.current.rotation.x += (targetPitch - group.current.rotation.x) * 0.05;
+    // Amortissement legerement plus fort (0.04 au lieu de 0.05)
+    group.current.rotation.y += (targetYaw - group.current.rotation.y) * 0.04;
+    group.current.rotation.x += (targetPitch - group.current.rotation.x) * 0.04;
   });
 
   return <group ref={group}>{children}</group>;
@@ -419,13 +511,13 @@ export default function HeroObject() {
         <Suspense fallback={null}>
           <Studio finish={finish} />
 
-          {/* Une seule lumiere directe, la pour projeter l'ombre : tout
-              l'eclairage visible vient de l'environnement. */}
+          {/* Lumiere directe renforcee pour des ombres plus nettes
+              et une definition accrue sur les materiaux physiques. */}
           <directionalLight
             position={[-5, 6, 4]}
-            intensity={1.2}
+            intensity={1.8}
             castShadow
-            shadow-mapSize={[1024, 1024]}
+            shadow-mapSize={[2048, 2048]}
             shadow-camera-near={1}
             shadow-camera-far={22}
             shadow-camera-left={-5}

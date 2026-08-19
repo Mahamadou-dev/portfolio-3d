@@ -1,8 +1,9 @@
 'use client';
 
 // app/admin/page.tsx
-// Tableau de bord analytique : tout est calcule par /api/admin/analytics.
+// Tableau de bord analytique + aperçu du contenu du site.
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import {
   Area,
   AreaChart,
@@ -248,6 +249,40 @@ export default function AdminAnalyticsPage() {
           </p>
         </div>
       )}
+
+      {/* Raccourcis rapides */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Link
+          href="/admin/content"
+          className={`${card} flex items-center gap-4 transition-shadow hover:shadow-md`}
+        >
+          <span className="text-3xl">✏️</span>
+          <div>
+            <p className="font-semibold">Contenu du site</p>
+            <p className="text-xs text-gray-500">Textes, coordonnées, descriptions…</p>
+          </div>
+        </Link>
+        <Link
+          href="/admin/projects"
+          className={`${card} flex items-center gap-4 transition-shadow hover:shadow-md`}
+        >
+          <span className="text-3xl">🗂️</span>
+          <div>
+            <p className="font-semibold">Projets</p>
+            <p className="text-xs text-gray-500">Ajouter, modifier, publier</p>
+          </div>
+        </Link>
+        <Link
+          href="/admin/certifications"
+          className={`${card} flex items-center gap-4 transition-shadow hover:shadow-md`}
+        >
+          <span className="text-3xl">🎓</span>
+          <div>
+            <p className="font-semibold">Certifications</p>
+            <p className="text-xs text-gray-500">Gérer vos diplômes et badges</p>
+          </div>
+        </Link>
+      </div>
 
       {loading && !data ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
