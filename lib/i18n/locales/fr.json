@@ -92,7 +92,23 @@
         "hint": "Travaillé en cours ou en autoformation, pas encore en production"
       }
     },
-    "levelsNote": "Pas de pourcentages : ils ne mesurent rien. Chaque technologie est classée selon la façon dont je m'en sers aujourd'hui."
+    "levelsNote": "Pas de pourcentages : ils ne mesurent rien. Chaque technologie est classée selon la façon dont je m'en sers aujourd'hui.",
+    "lead": "Un axe de recherche en intelligence artificielle, adossé à une pratique d'ingénierie logicielle.",
+    "domains": {
+      "ai": {
+        "title": "Intelligence artificielle",
+        "role": "L'axe de mon master recherche et la direction que je poursuis : apprentissage automatique, apprentissage profond, et la sécurité des modèles eux-mêmes."
+      },
+      "security": {
+        "title": "Sécurité des systèmes",
+        "role": "Le second versant du même sujet : comprendre l'attaque pour concevoir des modèles et des systèmes qui y résistent."
+      },
+      "engineering": {
+        "title": "Ingénierie logicielle",
+        "role": "Le socle : ce qui permet de passer d'un modèle à un système qui fonctionne, se déploie et se maintient."
+      }
+    },
+    "strengthsTitle": "Méthode de travail"
   },
   "contact": {
     "title": "Contactez-moi",

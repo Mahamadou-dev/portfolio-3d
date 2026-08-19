@@ -92,7 +92,23 @@
         "hint": "Na karanta a makaranta ko da kaina, ba tukuna a aikin gaske ba"
       }
     },
-    "levelsNote": "Babu kaso-kaso: ba sa auna komai. An rarraba kowace fasaha bisa yadda nake amfani da ita a yau."
+    "levelsNote": "Babu kaso-kaso: ba sa auna komai. An rarraba kowace fasaha bisa yadda nake amfani da ita a yau.",
+    "lead": "Bincike a fannin basirar wucin gadi, tare da tushen aikin injiniyan manhaja.",
+    "domains": {
+      "ai": {
+        "title": "Basirar wucin gadi",
+        "role": "Wannan shi ne fannin da nake bincike a kansa: koyon na'ura, koyo mai zurfi, da tsaron samfuran kansu."
+      },
+      "security": {
+        "title": "Tsaron tsarin bayanai",
+        "role": "Bangare na biyu na wannan fanni: fahimtar hare-hare domin gina samfura da tsarin da za su iya jure musu."
+      },
+      "engineering": {
+        "title": "Injiniyan manhaja",
+        "role": "Tushen aikin: abin da ke mai da samfuri ya zama tsarin da ke aiki, ake iya turawa kuma ake iya kulawa."
+      }
+    },
+    "strengthsTitle": "Yadda nake aiki"
   },
   "contact": {
     "title": "Tuntuɓi ni",

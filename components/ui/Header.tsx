@@ -6,9 +6,11 @@
 //
 // Ce qui a change
 // ---------------
-//   - Le logo etait affiche en 96 px de haut (`h-24`) dans une barre de
-//     64 px : il debordait de l'en-tete et poussait la navigation. Il fait
-//     maintenant 32 px et tient dans la barre.
+//   - Le logo de GremahTech occupait la tete de page, affiche en 96 px de
+//     haut (`h-24`) dans une barre de 64 px : il debordait de l'en-tete et
+//     poussait la navigation. Il est remplace par la signature « Gremah. »
+//     — sur un site qui porte un parcours academique, la marque en tete
+//     doit etre le nom de la personne, pas celui de son entreprise.
 //   - Les feuilles de style etaient injectees par un `<style jsx global>`
 //     de 40 lignes, avec `backdrop-filter: blur(20px) saturate(180%)` et
 //     son repli `@supports`. Deux classes utilitaires suffisent.
@@ -99,13 +101,23 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-5 sm:px-8">
+        {/* La signature.
+            Le logo de GremahTech occupait cette place : c'est la marque
+            d'une entreprise, pas celle d'un chercheur. Sur un site qui
+            porte un parcours academique, le nom doit etre le nom — et un
+            mot compose reste lisible a toutes les tailles, la ou une image
+            de 500 px se retrouvait ecrasee dans 32 pixels de haut.
+            Compose en capitale unique et interlettrage serre, il tient le
+            role d'un logotype sans en etre un. */}
         <a
           href="#home"
           onClick={(e) => handleNavClick('#home', e)}
-          className="flex shrink-0 items-center"
-          aria-label="Accueil"
+          className="shrink-0 text-[1.375rem] font-semibold tracking-[-0.04em] text-ink transition-colors hover:text-accent sm:text-2xl"
         >
-          <img src="/logo2.png" alt="" className="h-8 w-auto object-contain" />
+          Gremah
+          {/* Le point final : une ponctuation, pas un ornement. Il ferme le
+              mot et l'installe comme une signature. */}
+          <span className="text-accent">.</span>
         </a>
 
         {/* Navigation bureau */}

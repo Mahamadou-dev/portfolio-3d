@@ -57,7 +57,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           content="Portfolio de Mahamadou Amadou Habou Gremah : ingénieur logiciel diplômé de la Faculté des Sciences de Monastir, orienté intelligence artificielle et sécurité des systèmes d'IA, fondateur de GremahTech."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/Me4.png" />
+        {/* L'icone d'onglet est le portrait, recadre carre sur le visage.
+            `Me4.png` servait directement d'icone : c'est un portrait
+            d'identite de 500x548 px, donc non carre et cadre en buste. Le
+            navigateur le reduisait a 16 px, ou l'on ne distinguait plus
+            qu'une tache grise. Les trois tailles ci-dessous sont
+            pre-recadrees sur la tete (voir public/icon-*.png). */}
+        <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+        <link rel="apple-touch-icon" href="/icon-180.png" />
 
         {/* Le theme, applique AVANT le premier rendu.
             ThemeContext ne pose la classe `dark` que dans un `useEffect`,
@@ -89,6 +97,55 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <meta property="og:image" content="/Me4.png" />
         <meta name="twitter:card" content="summary_large_image" />
+
+        {/* Donnees structurees schema.org.
+            Sur un profil academique, c'est ce qui permet a un moteur de
+            recherche de relier une personne a son etablissement, a son
+            domaine et a ses profils externes — au lieu de n'indexer qu'une
+            suite de mots. C'est la meme brique que celle utilisee par les
+            pages de laboratoire et les annuaires de chercheurs, et elle
+            restera valable du master au doctorat : il n'y aura qu'a
+            completer `affiliation` et `knowsAbout`. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Person',
+              name: 'Mahamadou Amadou Habou Gremah',
+              alternateName: 'Mahamadou Gremah',
+              jobTitle: 'Ingénieur logiciel — Intelligence artificielle',
+              description:
+                "Ingénieur logiciel diplômé de la Faculté des Sciences de Monastir, orienté intelligence artificielle et sécurité des systèmes d'IA.",
+              image: 'https://gremah.vercel.app/icon-512.png',
+              nationality: { '@type': 'Country', name: 'Niger' },
+              address: {
+                '@type': 'PostalAddress',
+                addressLocality: 'Monastir',
+                addressCountry: 'TN',
+              },
+              alumniOf: {
+                '@type': 'CollegeOrUniversity',
+                name: 'Faculté des Sciences de Monastir',
+              },
+              knowsAbout: [
+                'Intelligence artificielle',
+                'Apprentissage automatique',
+                'Apprentissage profond',
+                "Sécurité des systèmes d'IA",
+                'Cybersécurité',
+                'Génie logiciel',
+              ],
+              knowsLanguage: ['fr', 'en', 'ha'],
+              founder: { '@type': 'Organization', name: 'GremahTech' },
+              sameAs: [
+                'https://github.com/Mahamadou-dev',
+                'https://www.linkedin.com/in/mahamadou-amadou-habou-gremah-54766632b',
+                'https://gremah-tech.vercel.app',
+              ],
+            }),
+          }}
+        />
       </head>
 
       <body className="min-h-screen antialiased">

@@ -92,7 +92,23 @@
         "hint": "Studied in coursework or self-study, not yet in production"
       }
     },
-    "levelsNote": "No percentages: they measure nothing. Each technology is grouped by how I actually use it today."
+    "levelsNote": "No percentages: they measure nothing. Each technology is grouped by how I actually use it today.",
+    "lead": "A research focus in artificial intelligence, grounded in software engineering practice.",
+    "domains": {
+      "ai": {
+        "title": "Artificial intelligence",
+        "role": "The focus of my research master's and the direction I am pursuing: machine learning, deep learning, and the security of the models themselves."
+      },
+      "security": {
+        "title": "Systems security",
+        "role": "The other side of the same subject: understanding attacks in order to build models and systems that withstand them."
+      },
+      "engineering": {
+        "title": "Software engineering",
+        "role": "The foundation: what turns a model into a system that runs, ships and can be maintained."
+      }
+    },
+    "strengthsTitle": "Way of working"
   },
   "contact": {
     "title": "Contact Me",
