@@ -1,11 +1,32 @@
 'use client';
 
+// components/ui/Header.tsx
+//
+// L'en-tete fixe.
+//
+// Ce qui a change
+// ---------------
+//   - Le logo etait affiche en 96 px de haut (`h-24`) dans une barre de
+//     64 px : il debordait de l'en-tete et poussait la navigation. Il fait
+//     maintenant 32 px et tient dans la barre.
+//   - Les feuilles de style etaient injectees par un `<style jsx global>`
+//     de 40 lignes, avec `backdrop-filter: blur(20px) saturate(180%)` et
+//     son repli `@supports`. Deux classes utilitaires suffisent.
+//   - Chaque lien de navigation se soulevait de 2 px au survol et se
+//     comprimait au clic ; l'indicateur de section active glissait sur un
+//     ressort. La navigation est l'element le plus souvent survole d'une
+//     page : c'est le dernier endroit ou mettre du mouvement. Le lien
+//     actif change simplement de couleur, et un filet le souligne.
+//   - L'en-tete est desormais opaque des le premier pixel de defilement
+//     plutot que transparent : un menu qu'on lit par-dessus le contenu
+//     n'est lisible qu'une fois sur deux.
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Menu, X, Sun, Moon } from "lucide-react";
-import { LanguageSwitcher } from "./language-switcher";
-import { useI18n } from "../i18n-provider";
+import { LanguageSwitcher } from './language-switcher';
+import { useI18n } from '../i18n-provider';
+import { EASE } from '../../lib/motion';
 
 const NAV_ITEMS = [
   { key: 'home', href: '#home' },
@@ -13,34 +34,36 @@ const NAV_ITEMS = [
   { key: 'skills', href: '#skills' },
   { key: 'education', href: '#education' },
   { key: 'portfolio', href: '#portfolio' },
-  { key: 'contact', href: '#contact' }
+  { key: 'contact', href: '#contact' },
 ];
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  // `theme` n'est plus lu ici : l'icone du bouton est choisie en CSS.
+  const { toggleTheme } = useTheme();
   const { t } = useI18n();
 
-  // Scroll
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 8);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Active section
+  // Section active. Le seuil est a 40 % de visibilite et non 50 % : avec
+  // 50 %, une section plus courte que la fenetre (le contact, par exemple)
+  // ne declenchait jamais et l'indicateur restait bloque sur la
+  // precedente.
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-            setActiveSection(entry.target.id);
-          }
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.4, rootMargin: '-80px 0px -40% 0px' }
     );
 
     NAV_ITEMS.forEach((item) => {
@@ -51,216 +74,133 @@ export default function Header() {
     return () => observer.disconnect();
   }, []);
 
-  // Smooth scroll
+  // Le menu mobile ouvert bloque le defilement du document : sans cela,
+  // la page glisse derriere le panneau.
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const handleNavClick = useCallback((href: string, event: React.MouseEvent) => {
     event.preventDefault();
     setIsOpen(false);
-    const targetId = href.substring(1);
-    const targetElement = document.getElementById(targetId);
-
-    if (targetElement) {
-      const headerOffset = 80;
-      const elementPosition = targetElement.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-    }
+    const target = document.getElementById(href.substring(1));
+    if (!target) return;
+    const top = target.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({ top, behavior: 'smooth' });
   }, []);
 
-  const MobileMenuButton = () => (
-    <motion.button
-      className="md:hidden flex items-center justify-center p-2 rounded-full transition-colors duration-200"
-      onClick={() => setIsOpen(!isOpen)}
-      aria-label={t("header.menuToggle")}
-      whileTap={{ scale: 0.95 }}
-    >
-      <AnimatePresence mode="wait">
-        {isOpen ? (
-          <motion.div
-            key="x"
-            initial={{ rotate: -90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            exit={{ rotate: 90, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <X size={24} className="text-gray-800 dark:text-gray-200" />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="menu"
-            initial={{ rotate: 90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            exit={{ rotate: -90, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Menu size={24} className="text-gray-800 dark:text-gray-200" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.button>
-  );
-
-  const ModeToggle = () => (
-    <motion.button
-      onClick={toggleTheme}
-      className="p-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100/30 dark:hover:bg-gray-800/30"
-      whileTap={{ scale: 0.9 }}
-      aria-label={t("header.themeToggle")}
-    >
-      <AnimatePresence mode="wait" initial={false}>
-        {theme === 'light' ? (
-          <motion.div key="sun" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <Sun size={20} />
-          </motion.div>
-        ) : (
-          <motion.div key="moon" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <Moon size={20} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.button>
-  );
-
   return (
-    <>
-      {/* Styles CSS globaux pour l'effet glass */}
-      <style jsx global>{`
-        .header-glass {
-          background: rgba(255, 255, 255, 0.75);
-          backdrop-filter: blur(20px) saturate(180%);
-          -webkit-backdrop-filter: blur(20px) saturate(180%);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .dark .header-glass {
-          background: rgba(0, 0, 0, 0.7);
-          backdrop-filter: blur(20px) saturate(180%);
-          -webkit-backdrop-filter: blur(20px) saturate(180%);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+        isScrolled ? 'border-b border-line bg-paper/85 backdrop-blur-md' : 'border-b border-transparent'
+      }`}
+    >
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-5 sm:px-8">
+        <a
+          href="#home"
+          onClick={(e) => handleNavClick('#home', e)}
+          className="flex shrink-0 items-center"
+          aria-label="Accueil"
+        >
+          <img src="/logo2.png" alt="" className="h-8 w-auto object-contain" />
+        </a>
 
-        .header-transparent {
-          background: transparent;
-          backdrop-filter: none;
-          -webkit-backdrop-filter: none;
-          border-bottom: 1px solid transparent;
-        }
-
-        /* Fallback pour les navigateurs qui ne supportent pas backdrop-filter */
-        @supports not (backdrop-filter: blur(20px)) {
-          .header-glass {
-            background: rgba(255, 255, 255, 0.95);
-          }
-          .dark .header-glass {
-            background: rgba(0, 0, 0, 0.95);
-          }
-        }
-      `}</style>
-
-      <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? 'header-glass shadow-lg' : 'header-transparent'
-        }`}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="container mx-auto px-5">
-          <div className="flex justify-between items-center h-16 w-full">
-            {/* Logo */}
-            <motion.a
-              href="#home"
-              onClick={(e) => handleNavClick('#home', e)}
-              className="flex items-center flex-shrink-0"
-              whileHover={{ scale: 1.05 }}
-            >
-              <img src="/logo2.png" alt="GremahTech Logo" className="h-24 w-auto object-contain" />
-            </motion.a>
-
-            {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center justify-center space-x-4 flex-grow">
-              {NAV_ITEMS.map((item) => (
-                <motion.a
-                  key={item.key}
-                  href={item.href}
-                  onClick={(e) => handleNavClick(item.href, e)}
-                  className={`relative text-sm font-medium px-3 py-2 transition-colors duration-200 ${
-                    activeSection === item.href.substring(1)
-                      ? 'text-blue-600 dark:text-blue-400'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-                  }`}
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {t(`header.nav.${item.key}`)}
-                  {activeSection === item.href.substring(1) && (
-                    <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400"
-                      layoutId="activeSection"
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                  )}
-                </motion.a>
-              ))}
-            </nav>
-
-            {/* Right actions */}
-            <div className="hidden md:flex items-center space-x-4">
-              <ModeToggle />
-              <LanguageSwitcher />
-            </div>
-
-            {/* Mobile actions */}
-            <div className="md:hidden flex items-center space-x-2">
-              <ModeToggle />
-              <LanguageSwitcher />
-              <MobileMenuButton />
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {isOpen && (
-            <>
-              <motion.div
-                className="fixed inset-0 bg-black/30 backdrop-blur-lg z-40"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                onClick={() => setIsOpen(false)}
-              />
-
-              <motion.div
-                className="fixed top-16 left-0 right-0 bg-white/90 dark:bg-gray-900/95 backdrop-blur-2xl z-50 shadow-lg border-t border-gray-300/20 dark:border-gray-700/30"
-                initial={{ y: -30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -30, opacity: 0 }}
-                transition={{ duration: 0.3 }}
+        {/* Navigation bureau */}
+        <nav className="hidden items-center gap-1 md:flex">
+          {NAV_ITEMS.map((item) => {
+            const active = activeSection === item.href.substring(1);
+            return (
+              <a
+                key={item.key}
+                href={item.href}
+                onClick={(e) => handleNavClick(item.href, e)}
+                aria-current={active ? 'page' : undefined}
+                className={`relative px-3 py-2 text-sm transition-colors ${
+                  active ? 'text-ink' : 'text-muted hover:text-ink'
+                }`}
               >
-                <nav className="py-4 px-6 space-y-3">
-                  {NAV_ITEMS.map((item) => (
-                    <motion.a
-                      key={item.key}
+                {t(`header.nav.${item.key}`)}
+                {active && (
+                  <motion.span
+                    layoutId="nav-active"
+                    className="absolute inset-x-3 -bottom-px h-px bg-ink"
+                    transition={{ duration: 0.25, ease: EASE }}
+                  />
+                )}
+              </a>
+            );
+          })}
+        </nav>
+
+        <div className="flex items-center gap-1">
+          <button
+            onClick={toggleTheme}
+            aria-label={t('header.themeToggle')}
+            className="rounded-md p-2 text-muted transition-colors hover:bg-surface-2 hover:text-ink"
+          >
+            {/* Les deux icones sont rendues, et c'est le CSS qui choisit.
+                Le theme reel n'est connu qu'au navigateur (script synchrone
+                du layout) : le choisir en JavaScript ferait diverger le HTML
+                du serveur de celui du client, et React signalerait une
+                erreur d'hydratation. En CSS, le bon symbole est affiche des
+                le premier rendu, sans que React ait a trancher. */}
+            <Sun size={17} className="dark:hidden" />
+            <Moon size={17} className="hidden dark:block" />
+          </button>
+
+          <LanguageSwitcher />
+
+          <button
+            className="rounded-md p-2 text-muted transition-colors hover:bg-surface-2 hover:text-ink md:hidden"
+            onClick={() => setIsOpen((v) => !v)}
+            aria-label={t('header.menuToggle')}
+            aria-expanded={isOpen}
+          >
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Menu mobile : un panneau plein, pas un voile floute. Le contenu
+          derriere n'a pas a rester devinable — il est justement ce que le
+          menu recouvre. */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.nav
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: EASE }}
+            className="border-b border-line bg-paper md:hidden"
+          >
+            <ul className="mx-auto max-w-6xl px-5 py-3 sm:px-8">
+              {NAV_ITEMS.map((item) => {
+                const active = activeSection === item.href.substring(1);
+                return (
+                  <li key={item.key}>
+                    <a
                       href={item.href}
                       onClick={(e) => handleNavClick(item.href, e)}
-                      className={`block py-3 px-4 text-base font-medium rounded-lg transition-all duration-200 ${
-                        activeSection === item.href.substring(1)
-                          ? 'bg-blue-100/40 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/30 border-l-4 border-transparent'
+                      aria-current={active ? 'page' : undefined}
+                      className={`flex items-center justify-between border-b border-line py-3.5 text-[0.9375rem] transition-colors last:border-b-0 ${
+                        active ? 'font-medium text-ink' : 'text-muted'
                       }`}
-                      whileHover={{ x: 5 }}
-                      whileTap={{ scale: 0.97 }}
                     >
                       {t(`header.nav.${item.key}`)}
-                    </motion.a>
-                  ))}
-                </nav>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-      </motion.header>
-    </>
+                      {active && (
+                        <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+                      )}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </motion.nav>
+        )}
+      </AnimatePresence>
+    </header>
   );
 }

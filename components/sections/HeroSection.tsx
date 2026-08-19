@@ -1,174 +1,149 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+// components/sections/HeroSection.tsx
+//
+// L'ouverture du site.
+//
+// Trois choses ont disparu par rapport a la version precedente, et c'est
+// l'essentiel de la refonte :
+//
+//   1. La machine a ecrire. Un titre qui se tape lettre par lettre puis
+//      s'efface est une animation en boucle infinie placee sur le contenu
+//      le plus important de la page. Tant qu'elle tourne, le visiteur ne
+//      peut pas lire une phrase stable, et il ne voit jamais qu'une
+//      specialite sur sept. Les sept sont maintenant affichees ensemble :
+//      c'est plus d'information, en moins de temps, sans mouvement.
+//   2. Les trois degrades de texte. Le nom, le sous-titre et les boutons
+//      etaient tous en bleu-violet-cyan. Le nom est desormais en encre
+//      pleine — c'est le seul element de la page qui n'a besoin d'aucun
+//      artifice pour ressortir : il est en 60 px.
+//   3. Les entrees laterales decalees jusqu'a une seconde. Tout monte de
+//      12 px, en 400 ms, et c'est fini.
+import React from 'react';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import { useI18n } from "../i18n-provider";
+import { ArrowDown, ArrowUpRight } from 'lucide-react';
+import { useI18n } from '../i18n-provider';
 import { trackEvent } from '../analytics/VisitorTracker';
+import { EASE, stagger, reveal } from '../../lib/motion';
 
-// La scène 3D est chargée côté client uniquement : elle ne bloque ni le SSR
-// ni le premier rendu du texte (LCP).
-const HeroScene = dynamic(() => import('../three/HeroScene'), {
+// La scene 3D est chargee cote client uniquement : elle ne bloque ni le
+// rendu serveur ni l'affichage du texte (qui porte le LCP).
+const HeroObject = dynamic(() => import('../three/HeroObject'), {
   ssr: false,
-  loading: () => <div className="w-full h-[24rem] md:h-[32rem]" />,
+  loading: () => <div className="h-[22rem] w-full sm:h-[26rem] lg:h-[32rem]" />,
 });
 
-// Types TypeScript
-interface TypewriterProps {
-  phrases: string[];
-}
-
-// Composant Typewriter optimisé
-const TypewriterEffect: React.FC<TypewriterProps> = ({ phrases }) => {
-  const [text, setText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [loopNum, setLoopNum] = useState(0);
-
-  useEffect(() => {
-    const currentPhrase = phrases[loopNum % phrases.length];
-    
-    const timer = setTimeout(() => {
-      if (isDeleting) {
-        setText(currentPhrase.substring(0, text.length - 1));
-      } else {
-        setText(currentPhrase.substring(0, text.length + 1));
-      }
-
-      if (!isDeleting && text === currentPhrase) {
-        setTimeout(() => setIsDeleting(true), 1000);
-      } else if (isDeleting && text === '') {
-        setIsDeleting(false);
-        setLoopNum(loopNum + 1);
-      }
-    }, isDeleting ? 50 : 100);
-
-    return () => clearTimeout(timer);
-  }, [text, isDeleting, loopNum, phrases]);
-
-  return (
-    <h2 className="text-2xl md:text-4xl font-bold mb-4 min-h-[3rem] flex items-center justify-center">
-      <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-        {text}
-      </span>
-      <span className="inline-block w-1 h-8 ml-1 bg-blue-600 animate-pulse" />
-    </h2>
-  );
-};
-
-// Composant principal HeroSection
-const HeroSection: React.FC = () => {
+export default function HeroSection() {
   const { t } = useI18n();
 
+  // Les specialites : la meme donnee que l'ancienne machine a ecrire,
+  // rendue d'un coup. La cle i18n est inchangee.
+  const specialities = (() => {
+    const value = t('hero.typewriterPhrases') as unknown;
+    return Array.isArray(value) ? (value as string[]) : [String(value)];
+  })();
+
   return (
-    <section id="home" className="min-h-[85vh] flex items-center justify-center relative overflow-hidden py-32 my-8">
-      <div className="container mx-auto max-w-7xl px-12 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Contenu texte */}
-          <motion.div
-            className="text-center lg:text-left relative z-20"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
+    <section
+      id="home"
+      className="relative flex min-h-[92vh] items-center px-5 pb-20 pt-28 sm:px-8 md:pt-32"
+    >
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+        {/* ---------------------------------------------------------- */}
+        {/* Colonne texte                                              */}
+        {/* ---------------------------------------------------------- */}
+        <motion.div initial="hidden" animate="show" variants={stagger}>
+          {/* La salutation en haoussa. Elle etait en vert vif, seule
+              occurrence de cette couleur sur tout le site. En gris, avec
+              son infobulle conservee, elle redevient ce qu'elle est : une
+              note personnelle, pas une alerte. */}
+          <motion.p variants={reveal} className="mb-5">
+            <span
+              className="eyebrow cursor-help border-b border-dotted border-line-strong pb-0.5"
+              title={t('hero.greetingTooltip')}
+            >
+              {t('hero.greeting')}
+            </span>
+          </motion.p>
+
+          <motion.h1
+            variants={reveal}
+            className="text-[2.5rem] font-semibold leading-[1.05] tracking-[-0.03em] sm:text-6xl"
           >
-            {/* Salutation */}
-            <motion.div
-              className="mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <span 
-                className="text-lg text-green-600 dark:text-green-400 cursor-help font-kanit"
-                title={t("hero.greetingTooltip")}
-              >
-                {t("hero.greeting")}
-              </span>
-            </motion.div>
+            {t('hero.name')}
+          </motion.h1>
 
-            {/* Nom */}
-            <motion.h1
-              className="text-4xl md:text-5xl font-bold mb-6 font-righteous"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
-                {t("hero.name")}
-              </span>
-            </motion.h1>
-
-                          {/* Typewriter */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-              >
-                <TypewriterEffect phrases={
-                  (() => {
-                    const phrases = t("hero.typewriterPhrases");
-                    return Array.isArray(phrases) ? phrases : [phrases];
-                  })()
-                } />
-              </motion.div>
-
-            {/* Description */}
-            <motion.div
-              className="mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-            >
-              <p 
-                className="text-base text-gray-600 dark:text-gray-300 leading-relaxed font-kanit"
-                dangerouslySetInnerHTML={{ __html: t("hero.description") }}
-              />
-            </motion.div>
-
-            {/* Boutons */}
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1 }}
-            >
-              <motion.button
-                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium text-base hover:shadow-xl transition-all duration-300 font-kanit"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  trackEvent('cta_voir_projets');
-                  window.location.href = '#portfolio';
-                }}
-              >
-                {t("hero.buttons.viewWork")}
-              </motion.button>
-              <motion.button
-                className="px-8 py-4 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400 rounded-lg font-medium text-base hover:bg-blue-600 hover:text-white transition-all duration-300 font-kanit"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  trackEvent('cta_contact');
-                  window.location.href = '#contact';
-                }}
-              >
-                {t("hero.buttons.contact")}
-              </motion.button>
-            </motion.div>
-          </motion.div>
-
-          {/* Modèle 3D */}
-          <motion.div
-            className="flex justify-center items-center relative z-30"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
+          {/* Les specialites, en liste. Un point separateur plutot qu'une
+              virgule : l'oeil balaie une enumeration technique plus vite
+              quand les items sont visuellement equivalents. */}
+          <motion.ul
+            variants={reveal}
+            className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-[0.9375rem] text-body"
           >
-            <HeroScene />
+            {specialities.map((label, i) => (
+              <li key={label} className="flex items-center gap-3">
+                {i > 0 && (
+                  <span className="h-1 w-1 rounded-full bg-line-strong" aria-hidden="true" />
+                )}
+                <span>{label}</span>
+              </li>
+            ))}
+          </motion.ul>
+
+          {/* La description contient des <strong> dans les fichiers de
+              traduction : le HTML est donc injecte tel quel. La source
+              est un fichier du depot, jamais une saisie utilisateur. */}
+          <motion.p
+            variants={reveal}
+            className="mt-7 max-w-xl text-[1.0625rem] leading-relaxed text-muted [&_strong]:font-medium [&_strong]:text-ink"
+            dangerouslySetInnerHTML={{ __html: t('hero.description') }}
+          />
+
+          <motion.div variants={reveal} className="mt-9 flex flex-wrap items-center gap-3">
+            <a
+              href="#portfolio"
+              onClick={() => trackEvent('cta_voir_projets')}
+              className="btn btn-primary"
+            >
+              {t('hero.buttons.viewWork')}
+              <ArrowUpRight size={17} strokeWidth={2} />
+            </a>
+            <a href="#contact" onClick={() => trackEvent('cta_contact')} className="btn btn-ghost">
+              {t('hero.buttons.contact')}
+            </a>
           </motion.div>
-        </div>
+        </motion.div>
+
+        {/* ---------------------------------------------------------- */}
+        {/* Colonne 3D                                                 */}
+        {/* ---------------------------------------------------------- */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          // Un fondu long et sans deplacement : la scene 3D met quelques
+          // images a s'initialiser, un mouvement d'entree la ferait
+          // apparaitre en saccade.
+          transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
+          className="relative"
+        >
+          <HeroObject />
+        </motion.div>
       </div>
+
+      {/* L'invite a defiler. Immobile : une fleche qui rebondit en
+          permanence est le reflexe de page d'accueil dont on cherche
+          justement a se defaire. Le mot suffit. */}
+      <motion.a
+        href="#about"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 1, ease: EASE }}
+        className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 items-center gap-2 text-muted transition-colors hover:text-ink md:flex"
+      >
+        <ArrowDown size={14} />
+        <span className="eyebrow">Parcours</span>
+      </motion.a>
     </section>
   );
-};
-
-export default HeroSection;
+}

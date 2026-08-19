@@ -1,367 +1,405 @@
-@import "tailwindcss"; 
-@import "tw-animate-css";
+@import "tailwindcss";
 
-/* ------------------------------
-   🌙 Variantes & Thèmes
---------------------------------*/
+/* ==================================================================
+   SYSTEME DE DESIGN — « Atelier »
+   ------------------------------------------------------------------
+   Refonte complete. L'ancienne feuille empilait un degrade « Gemini »
+   (bleu -> violet -> cyan) applique a peu pres partout — titres, boutons,
+   bordures, barre de defilement — et une dizaine d'animations infinies
+   (float, glow, rotate, shimmer, pulse). Deux consequences :
+     - plus rien ne ressortait, puisque tout brillait ;
+     - le mouvement permanent tirait l'oeil hors du texte.
+
+   Le systeme ci-dessous repose sur trois regles tenues partout :
+     1. UNE couleur d'accent. Le reste est une echelle de gris chaude.
+        La couleur signale une action ou un etat, jamais une decoration.
+     2. La hierarchie vient de la taille, du poids et de l'espace —
+        pas de la couleur ni des effets.
+     3. Le mouvement sert la comprehension : une revelation a l'entree,
+        une reponse au survol. Aucune animation en boucle dans l'interface.
+   ================================================================== */
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* 🎨 Couleurs principales (Light mode – Gemini style) */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* --- Fonds et surfaces -------------------------------------------
+     Un blanc casse legerement chaud plutot qu'un #fff pur : moins
+     eblouissant en lecture longue, et les surfaces blanches posees
+     dessus se detachent alors reellement. */
+  --paper:        #fbfbf9;
+  --surface:      #ffffff;
+  --surface-2:    #f4f4f1;
+  --surface-sunk: #eeeeea;
 
-  --card: var(--background);
-  --card-foreground: var(--foreground);
-  --popover: var(--background);
-  --popover-foreground: var(--foreground);
-    /* ✨ Gradients Gemini */
-  --gemini-blue: oklch(0.55 0.23 250);
-  --gemini-violet: oklch(0.68 0.28 300);
-  --gemini-cyan: oklch(0.80 0.22 190);
-  --gemini-gradient: linear-gradient(
-    135deg,
-    var(--gemini-blue),
-    var(--gemini-violet),
-    var(--gemini-cyan)
-  );
-  /* Bleu profond Gemini */
-  --primary: linear-gradient(
-    135deg,
-    var(--gemini-blue),
-    var(--gemini-violet),
-    var(--gemini-cyan)
-  );
-  --primary-foreground: oklch(0.98 0 0);
+  /* --- Texte -------------------------------------------------------- */
+  --ink:          #17181c;  /* titres */
+  --ink-body:     #33363d;  /* texte courant */
+  --ink-muted:    #6b6f78;  /* legendes, meta */
+  --ink-faint:    #9a9ea6;  /* mentions tertiaires */
 
-  /* Cyan clair */
-  --secondary: oklch(0.82 0.2 190);
-  --secondary-foreground: var(--primary);
+  /* --- Traits ------------------------------------------------------- */
+  --line:         #e3e3de;
+  --line-strong:  #cfcfc8;
 
-  --muted: var(--secondary);
-  --muted-foreground: oklch(0.56 0.05 200);
+  /* --- Accent unique -----------------------------------------------
+     Un bleu d'encre, desature : il se lit comme un choix typographique
+     et non comme un neon. */
+  --accent:       #2c5bb8;
+  --accent-hover: #23499a;
+  --accent-ink:   #ffffff;
+  --accent-soft:  rgba(44, 91, 184, 0.09);
+  --accent-line:  rgba(44, 91, 184, 0.28);
 
-  --accent: var(--secondary);
-  --accent-foreground: var(--primary);
+  /* --- Etats (volontairement sourds) -------------------------------- */
+  --ok:      #2f6b4f;
+  --ok-soft: rgba(47, 107, 79, 0.10);
+  --warn:      #8a6420;
+  --warn-soft: rgba(138, 100, 32, 0.10);
+  --danger:      #9b3232;
+  --danger-soft: rgba(155, 50, 50, 0.10);
 
-  /* Rouge d’avertissement */
-  --destructive: oklch(0.62 0.25 27.325);
-  --destructive-foreground: var(--destructive);
+  /* --- Elevation ----------------------------------------------------
+     Des ombres courtes et peu opaques. Les grandes ombres colorees de
+     l'ancienne version faisaient flotter les cartes au-dessus du fond
+     comme des vignettes de jeu. */
+  --shadow-1: 0 1px 2px rgba(23, 24, 28, 0.05);
+  --shadow-2: 0 1px 2px rgba(23, 24, 28, 0.05), 0 4px 12px rgba(23, 24, 28, 0.05);
+  --shadow-3: 0 1px 2px rgba(23, 24, 28, 0.06), 0 12px 32px rgba(23, 24, 28, 0.08);
 
-  /* Bordures et inputs */
-  --border: oklch(0.85 0.02 250);
-  --input: var(--border);
-  --ring: oklch(0.70 0.1 260);
+  /* --- Geometrie ---------------------------------------------------- */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
 
-  /* 📊 Chart colors */
-  --chart-1: oklch(0.65 0.22 260);
-  --chart-2: oklch(0.58 0.20 200);
-  --chart-3: oklch(0.72 0.24 300);
-  --chart-4: oklch(0.82 0.18 84.429);
-  --chart-5: oklch(0.76 0.19 70.08);
+  /* --- Rythme du mouvement ------------------------------------------
+     Une seule courbe pour tout le site. Les durees restent sous 500 ms :
+     au-dela, une interface parait lente plutot que posee. */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --t-fast: 140ms;
+  --t-base: 240ms;
+  --t-slow: 420ms;
 
-  --radius: 0.625rem;
-
-  /* 🧭 Sidebar */
-  --sidebar: oklch(0.98 0 0);
-  --sidebar-foreground: var(--foreground);
-  --sidebar-primary: var(--primary);
-  --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: var(--secondary);
-  --sidebar-accent-foreground: var(--primary);
-  --sidebar-border: var(--border);
-  --sidebar-ring: var(--ring);
-
-
+  color-scheme: light;
 }
 
 .dark {
-  --background: oklch(0.15 0 0);
-  --foreground: oklch(0.98 0 0);
+  --paper:        #0c0d10;
+  --surface:      #131519;
+  --surface-2:    #191b21;
+  --surface-sunk: #08090b;
 
-  --card: var(--background);
-  --card-foreground: var(--foreground);
-  --popover: var(--background);
-  --popover-foreground: var(--foreground);
-  --geminicolors: linear-gradient(135deg, #4285f4, #9c27b0, #00bcd4);
-  --primary: linear-gradient(135deg, #4285f4, #9c27b0, #00bcd4);
-  --primary-foreground: oklch(0.20 0 0);
+  --ink:          #f2f3f5;
+  --ink-body:     #c9ccd3;
+  --ink-muted:    #8e939d;
+  --ink-faint:    #676c76;
 
-  --secondary: oklch(0.35 0.15 190);
-  --secondary-foreground: var(--foreground);
+  --line:         #23262d;
+  --line-strong:  #343841;
 
-  --muted: var(--secondary);
-  --muted-foreground: oklch(0.68 0.05 200);
+  /* Le meme bleu, eclairci pour rester lisible sur fond sombre. */
+  --accent:       #7ba1e8;
+  --accent-hover: #9ab8f0;
+  --accent-ink:   #0c0d10;
+  --accent-soft:  rgba(123, 161, 232, 0.12);
+  --accent-line:  rgba(123, 161, 232, 0.30);
 
-  --accent: var(--secondary);
-  --accent-foreground: var(--foreground);
+  --ok:      #6fb894;
+  --ok-soft: rgba(111, 184, 148, 0.12);
+  --warn:      #d2a75d;
+  --warn-soft: rgba(210, 167, 93, 0.12);
+  --danger:      #d98080;
+  --danger-soft: rgba(217, 128, 128, 0.12);
 
-  --destructive: oklch(0.42 0.18 25.723);
-  --destructive-foreground: oklch(0.65 0.23 25.331);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 14px rgba(0, 0, 0, 0.35);
+  --shadow-3: 0 1px 2px rgba(0, 0, 0, 0.45), 0 16px 40px rgba(0, 0, 0, 0.45);
 
-  --border: var(--secondary);
-  --input: var(--border);
-  --ring: oklch(0.48 0.1 260);
-
-  /* 📊 Charts (Dark) */
-  --chart-1: oklch(0.55 0.24 260);
-  --chart-2: oklch(0.70 0.18 190);
-  --chart-3: oklch(0.74 0.22 300);
-  --chart-4: oklch(0.62 0.26 303.9);
-  --chart-5: oklch(0.65 0.24 16.439);
-
-  /* 🧭 Sidebar */
-  --sidebar: oklch(0.20 0 0);
-  --sidebar-foreground: var(--foreground);
-  --sidebar-primary: var(--chart-1);
-  --sidebar-primary-foreground: var(--foreground);
-  --sidebar-accent: var(--secondary);
-  --sidebar-accent-foreground: var(--foreground);
-  --sidebar-border: var(--secondary);
-  --sidebar-ring: var(--ring);
-
-  /* ✨ Gradients Gemini */
-  --gemini-blue: oklch(0.65 0.25 260);
-  --gemini-violet: oklch(0.72 0.28 300);
-  --gemini-cyan: oklch(0.78 0.22 190);
+  color-scheme: dark;
 }
 
-/* ------------------------------
-   🎨 Tailwind Theme Bindings
---------------------------------*/
+/* ------------------------------------------------------------------
+   Liaison Tailwind
+   ------------------------------------------------------------------ */
 @theme inline {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
 
-  /* Les familles chargees dans app/layout.tsx via next/font. Sans ces deux
-     lignes, `font-righteous` et `font-kanit` ne generaient aucune regle CSS :
-     tout le site retombait silencieusement sur Inter. */
-  --font-righteous: var(--font-righteous), ui-sans-serif, system-ui, sans-serif;
-  --font-kanit: var(--font-kanit), ui-sans-serif, system-ui, sans-serif;
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-sunk: var(--surface-sunk);
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
+  --color-ink: var(--ink);
+  --color-body: var(--ink-body);
+  --color-muted: var(--ink-muted);
+  --color-faint: var(--ink-faint);
 
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
   --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-line: var(--accent-line);
 
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
 
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --shadow-e1: var(--shadow-1);
+  --shadow-e2: var(--shadow-2);
+  --shadow-e3: var(--shadow-3);
 }
 
-/* ------------------------------
-   🎛️ Surfaces du parcours & des sections
---------------------------------
-   Ces cinq utilitaires etaient utilises dans tout le site (ExperienceSection,
-   ContactSection, ServicesSection, Footer) mais n'existaient nulle part : le
-   fichier tailwind.config.js n'est pas charge en Tailwind v4 sans directive
-   `@config`. Resultat, les cartes du parcours n'avaient aucun fond et se
-   confondaient avec le decor 3D. On les definit ici, en s'appuyant sur les
-   couleurs de la scene (AuroraField) pour que fond et contenu appartiennent au
-   meme systeme. */
-:root {
-  --surface-light: #f6f8fc; /* identique au fond clair d'AuroraField */
-  --surface-dark: #05060f;  /* identique au fond sombre d'AuroraField */
-  --surface-dark-elevation: rgba(17, 24, 46, 0.72);
-  --surface-light-elevation: rgba(255, 255, 255, 0.72);
-}
-
-@utility bg-light {
-  background-color: color-mix(in srgb, var(--surface-light) 72%, transparent);
-}
-@utility bg-dark {
-  background-color: color-mix(in srgb, var(--surface-dark) 72%, transparent);
-}
-@utility bg-darkElevation {
-  background-color: var(--surface-dark-elevation);
-}
-
-/* ------------------------------
-   🧩 Base Styles
---------------------------------*/
+/* ------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------ */
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--line);
   }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
 
-/* ------------------------------
-   🎬 Animations
---------------------------------*/
-/* Float, Glow, Rotate */
-@keyframes float {0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-@keyframes glow {0%,100%{box-shadow:0 0 20px oklch(0.7 0.28 300 / 0.3)}50%{box-shadow:0 0 30px oklch(0.7 0.28 300 / 0.6)}}
-@keyframes rotate {from{transform:rotate(0)}to{transform:rotate(360deg)}}
-
-.animate-float {animation: float 3s ease-in-out infinite;}
-.animate-glow {animation: glow 2s ease-in-out infinite;}
-.animate-rotate {animation: rotate 20s linear infinite;}
-
-/* Variantes fluides */
-@keyframes float-slow {0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(5deg)}}
-@keyframes float-medium {0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-15px) rotate(3deg)}}
-@keyframes gradient {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-
-.animate-float-slow {animation: float-slow 8s ease-in-out infinite;}
-.animate-float-medium {animation: float-medium 6s ease-in-out infinite;}
-.animate-pulse-slow {animation: pulse 4s cubic-bezier(0.4,0,0.6,1) infinite;}
-.animate-spin-slow {animation: spin 8s linear infinite;}
-.animate-gradient {background-size:200% 200%;animation:gradient 5s ease infinite;}
-
-/* ------------------------------
-   🖼️ Utilities & Effects
---------------------------------*/
-.bg-gradient-geo,
-.bg-gradient-gemini { background: var(--gemini-gradient); }
-
-.gradient-text,
-.text-gradient { 
-  background: var(--gemini-gradient); 
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-
-.btn-primary {
-  background: var(--gemini-gradient);
-  color: var(--primary-foreground);
-  padding: 12px 24px;
-  border-radius: 9999px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-/* Glassmorphism */
-.glass, .glass-effect {
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  background-color: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.125);
-  transform: translateZ(0);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-}
-.dark .glass, .dark .glass-effect {
-  background-color: rgba(0,0,0,0.2);
-  border: 1px solid rgba(255,255,255,0.05);
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {width:8px;}
-::-webkit-scrollbar-track {background:var(--muted);}
-::-webkit-scrollbar-thumb {
-  background: var(--gemini-gradient);
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    to bottom,
-    color-mix(in oklab, var(--primary) 80%, transparent),
-    color-mix(in oklab, var(--secondary) 80%, transparent)
-  );
-}
-
-/* Divers */
-.card-3d {transform-style: preserve-3d;transition:transform 0.3s ease;}
-.card-3d:hover {transform: rotateX(5deg) rotateY(5deg) translateZ(10px);}
-
-.parallax {transform:translateZ(0);will-change:transform;}
-.hover-glow:hover {box-shadow:0 0 20px oklch(0.7 0.28 300 / 0.4);transition:box-shadow 0.3s ease;}
-.focus-gemini:focus {outline:2px solid oklch(0.7 0.28 300);outline-offset:2px;}
-
-.backdrop-blur-sm {backdrop-filter: blur(4px);}
-.backdrop-blur-md {backdrop-filter: blur(8px);}
-.backdrop-blur-lg {backdrop-filter: blur(16px);}
-/* Ajoutez ceci à votre globals.css */
-.theme-transition * {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Optimisations de performance pour Three.js */
-canvas {
-  display: block;
-  outline: none;
-}
-
-/* Amélioration du scroll */
-html {
-  scroll-behavior: smooth;
-}
-
-
-/* ------------------------------
-   📱 Responsive & Accessibility
---------------------------------*/
-/* Support du mode réduit de mouvement */
-@media (prefers-reduced-motion: reduce) {
-  .theme-transition * {
-    transition: none;
-  }
-  
   html {
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
+    /* L'en-tete est fixe : sans cette marge, une ancre place le titre de
+       section juste dessous, cache. */
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink-body);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    color: var(--ink);
+    font-weight: 600;
+    /* Un interlettrage negatif : c'est ce qui donne aux gros titres leur
+       densite, sans changer de fonte. */
+    letter-spacing: -0.022em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* Un anneau de focus unique, visible sur les deux themes. Il ne
+     s'affiche qu'au clavier : le survol de souris n'a pas a le declencher. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--r-sm);
+  }
+
+  ::selection {
+    background: var(--accent-soft);
+    color: var(--ink);
+  }
+
+  canvas { display: block; outline: none; }
+}
+
+/* ------------------------------------------------------------------
+   Utilitaires du systeme
+   ------------------------------------------------------------------ */
+
+/* La surface de reference : une carte. Un fond plein, un trait, une ombre
+   courte. Pas de verre depoli — le flou de fond coutait cher a la carte
+   graphique sur toute la page et rendait le texte moins net. */
+@utility card {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  transition: border-color var(--t-base) var(--ease),
+              box-shadow var(--t-base) var(--ease),
+              transform var(--t-base) var(--ease);
+}
+
+/* Variante interactive : le survol resserre le trait et souleve de 2 px.
+   Deux pixels suffisent a signaler « cliquable » ; six donnaient
+   l'impression que la page bougeait sous le curseur. */
+@utility card-interactive {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  transition: border-color var(--t-base) var(--ease),
+              box-shadow var(--t-base) var(--ease),
+              transform var(--t-base) var(--ease);
+
+  &:hover {
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-2);
+    transform: translateY(-2px);
   }
 }
-@keyframes fade-in-up {from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-.animate-fade-in-up {animation: fade-in-up 0.8s ease-out forwards;}
 
-@keyframes shimmer {0%{background-position:-200% 0}100%{background-position:200% 0}}
-.text-shimmer {
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);
-  background-size:200% 100%;
-  animation:shimmer 3s infinite;
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+/* L'oeil de la section : petit, en capitales espacees, en monospace.
+   Il donne le repere de lecture que portaient les anciens titres en
+   degrade, sans leur bruit. */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
 }
 
-@media (max-width: 640px) {
-  .responsive-text {font-size: clamp(1.5rem, 5vw, 2.5rem);}
+/* Etiquette de statut / de technologie. */
+@utility chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+  line-height: 1.25;
+  white-space: nowrap;
 }
 
+/* Bouton principal : aplat d'accent. Un aplat se lit instantanement comme
+   « l'action de cette page » ; un degrade se lit comme un ornement. */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease),
+              border-color var(--t-fast) var(--ease),
+              color var(--t-fast) var(--ease);
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+@utility btn-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+
+  &:hover:not(:disabled) { background: var(--accent-hover); }
+}
+
+@utility btn-ghost {
+  background: transparent;
+  border-color: var(--line-strong);
+  color: var(--ink);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-2);
+    border-color: var(--ink-faint);
+  }
+}
+
+/* Champ de formulaire. */
+@utility field {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  transition: border-color var(--t-fast) var(--ease),
+              box-shadow var(--t-fast) var(--ease);
+
+  &::placeholder { color: var(--ink-faint); }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+}
+
+/* Filet horizontal qui s'estompe : separateur sans poids visuel. */
+@utility rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line), transparent);
+}
+
+/* ------------------------------------------------------------------
+   Fond de page
+   ------------------------------------------------------------------
+   Deux voiles tres larges et tres pales poses en haut de page, plus un
+   grain fin. Rien ne bouge : le decor anime est reserve a la scene 3D du
+   hero, ou il a un sens. */
+.page-ground {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 78% -8%, var(--accent-soft), transparent 70%),
+    radial-gradient(48rem 36rem at 8% 4%, rgba(120, 120, 130, 0.06), transparent 70%);
+}
+
+/* Grain : casse le banding des grands aplats et donne une texture de
+   papier. En SVG inline, donc aucune requete reseau. */
+.page-ground::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+.dark .page-ground::after {
+  mix-blend-mode: screen;
+  opacity: 0.16;
+}
+
+/* ------------------------------------------------------------------
+   Barre de defilement
+   ------------------------------------------------------------------ */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border: 3px solid var(--paper);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
+
+/* ------------------------------------------------------------------
+   Accessibilite
+   ------------------------------------------------------------------
+   Une seule regle, sans exception : quand le systeme demande moins de
+   mouvement, il n'en reste aucun. Les revelations a l'entree sont pilotees
+   par Framer Motion, qui lit la meme preference (voir lib/motion.ts). */
 @media (prefers-reduced-motion: reduce) {
-  *,*::before,*::after {
-    animation-duration:0.01ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:0.01ms !important;
-    scroll-behavior:auto !important;
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

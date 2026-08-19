@@ -1,110 +1,103 @@
-"use client"
-import { Globe } from "lucide-react"
+'use client';
 
-import { useI18n, type Locale } from "../i18n-provider"
-import { useState } from "react"
+// components/ui/language-switcher.tsx
+//
+// Le selecteur de langue.
+//
+// Le fichier contenait, avant le composant lui-meme, une copie complete
+// d'un bouton shadcn/ui (`cva` avec sept variantes, `Slot` de Radix) dont
+// une seule variante etait utilisee — et dont toutes les couleurs
+// (`bg-primary`, `bg-accent`, `border-border`) venaient de l'ancien
+// systeme de tokens. Ce bouton n'etait importe nulle part ailleurs. Il
+// laisse place a un bouton simple, et le composant perd deux dependances.
+//
+// Le bouton portait aussi la classe `animate-glow` : une pulsation
+// lumineuse infinie sur le selecteur de langue de l'en-tete, c'est-a-dire
+// un clignotement permanent dans le champ de vision, en haut de chaque
+// page.
+import { useEffect, useRef, useState } from 'react';
+import { Globe, Check } from 'lucide-react';
+import { useI18n, type Locale } from '../i18n-provider';
 
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
-
-import { cn } from "../../lib/utils"
-
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-  {
-    variants: {
-      variant: {
-        default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
-        outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
-        secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-        ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-9",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-)
-
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean
-}
-
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
-    return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
-    )
-  }
-)
-
-Button.displayName = "Button"
-
-export { Button, buttonVariants }
-const languages = {
-  en: { name: "English", flag: "🇺🇸" },
-  fr: { name: "Français", flag: "🇫🇷" },
-  ha: { name: "Hausa", flag: "🇳🇪" },
-}
+const languages: Record<Locale, { name: string; code: string }> = {
+  en: { name: 'English', code: 'EN' },
+  fr: { name: 'Français', code: 'FR' },
+  ha: { name: 'Hausa', code: 'HA' },
+};
 
 export function LanguageSwitcher() {
-  const { locale, setLocale } = useI18n()
+  const { locale, setLocale } = useI18n();
+  const [isOpen, setIsOpen] = useState(false);
+  const container = useRef<HTMLDivElement>(null);
 
-  const [isOpen, setIsOpen] = useState(false)
+  // Fermeture au clic exterieur et a la touche Echap. Sans cela, le menu
+  // restait ouvert jusqu'a ce qu'on reclique sur le bouton — y compris
+  // pendant qu'on faisait defiler la page.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const onPointerDown = (e: MouseEvent) => {
+      if (!container.current?.contains(e.target as Node)) setIsOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isOpen]);
 
   return (
-    <div className="relative">
-      <Button 
-        variant="ghost" 
-        size="icon" 
-        className="animate-glow"
-        onClick={() => setIsOpen(!isOpen)}
+    <div className="relative" ref={container}>
+      <button
+        type="button"
+        onClick={() => setIsOpen((v) => !v)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-label="Changer de langue"
+        className="flex items-center gap-1.5 rounded-md px-2 py-2 text-muted transition-colors hover:bg-surface-2 hover:text-ink"
       >
-        <Globe className="h-[1.2rem] w-[1.2rem]" />
-        <span className="sr-only">Switch language</span>
-      </Button>
-      
+        <Globe size={17} aria-hidden="true" />
+        {/* Le code de langue est affiche a cote du globe : un globe seul
+            n'indique pas quelle langue est active. */}
+        <span className="font-mono text-xs">{languages[locale]?.code ?? 'FR'}</span>
+      </button>
+
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-background border border-border rounded-md shadow-lg z-50">
-          {Object.entries(languages).map(([code, { name, flag }]) => (
-            <button
-              key={code}
-              onClick={() => {
-                setLocale(code as Locale)
-                setIsOpen(false)
-              }}
-              className={`w-full text-left px-4 py-2 hover:bg-accent cursor-pointer ${
-                locale === code ? "bg-primary/10 text-primary" : ""
-              }`}
-            >
-              <span className="mr-2">{flag}</span>
-              {name}
-            </button>
-          ))}
-        </div>
+        <ul
+          role="listbox"
+          className="absolute right-0 z-50 mt-2 w-44 overflow-hidden rounded-md border border-line bg-surface py-1 shadow-e3"
+        >
+          {(Object.keys(languages) as Locale[]).map((code) => {
+            const active = locale === code;
+            return (
+              <li key={code} role="option" aria-selected={active}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLocale(code);
+                    setIsOpen(false);
+                  }}
+                  className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors hover:bg-surface-2 ${
+                    active ? 'font-medium text-ink' : 'text-muted'
+                  }`}
+                >
+                  <span>{languages[code].name}</span>
+                  {active ? (
+                    <Check size={14} className="text-accent" aria-hidden="true" />
+                  ) : (
+                    <span className="font-mono text-xs text-faint">{languages[code].code}</span>
+                  )}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
       )}
     </div>
-  )
+  );
 }

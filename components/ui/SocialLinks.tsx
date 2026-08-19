@@ -1,63 +1,51 @@
-// src/components/SocialLinks.jsx
 'use client';
 
-import { motion } from 'framer-motion';
-import { FaGithub, FaLinkedin, FaFacebook, FaYoutube, FaWhatsapp } from 'react-icons/fa';
+// components/ui/SocialLinks.tsx
+//
+// Les icones grossissaient de 20 % et montaient de 2 px au survol, avec
+// une couleur de marque differente par plateforme (bleu LinkedIn, vert
+// WhatsApp...). Six couleurs pour six liens de 24 px, dans un pied de page.
+// Ici : une seule couleur, la teinte du texte secondaire, qui passe a
+// l'encre pleine au survol. Le lien reste evidemment reconnaissable a sa
+// forme — c'est a cela que servent ces logos.
+import { FaGithub, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 import { AiOutlineMail } from 'react-icons/ai';
-import { FaXTwitter } from 'react-icons/fa6'; // Twitter a changé de nom pour X
 
 const socialPlatforms = [
-  {
-    name: 'GitHub',
-    url: 'https://github.com/Mahamadou-dev',
-    icon: <FaGithub />, // Remplacement de '🐱'
-    color: 'hover:text-gray-800 dark:hover:text-white'
-  },
+  { name: 'GitHub', url: 'https://github.com/Mahamadou-dev', Icon: FaGithub },
   {
     name: 'LinkedIn',
-    url: 'https://www.linkedin.com/in/mahamadou-amadou-habou-gremah-54766632b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
-    icon: <FaLinkedin />, // Remplacement de '💼'
-    color: 'hover:text-blue-600'
+    url: 'https://www.linkedin.com/in/mahamadou-amadou-habou-gremah-54766632b',
+    Icon: FaLinkedin,
   },
-  {
-    name: 'Twitter (X)',
-    url: 'https://twitter.com',
-    icon: <FaXTwitter />, // Remplacement de '🐦'
-    color: 'hover:text-gray-800 dark:hover:text-white'
-  },
+  { name: 'X', url: 'https://twitter.com', Icon: FaXTwitter },
   {
     name: 'WhatsApp',
     url: 'https://wa.me/22788778095?text=Bonjour,%20j%27aimerais%20en%20savoir%20plus%20sur%20vos%20services%20GremahTech.',
-    icon: <FaWhatsapp />,
-    color: 'hover:text-green-500'
+    Icon: FaWhatsapp,
   },
-  {
-    name: 'Email',
-    url: 'mailto:mahamadou8877@gmail.com',
-    icon: <AiOutlineMail />, // Remplacement de '✉️'
-    color: 'hover:text-gray-600 dark:hover:text-gray-400'
-  }
+  { name: 'Email', url: 'mailto:mahamadou8877@gmail.com', Icon: AiOutlineMail },
 ];
 
 export default function SocialLinks({ className = '' }: { className?: string }) {
   return (
-    <div className={`flex space-x-4 ${className}`}>
-      {socialPlatforms.map((platform, index) => (
-        <motion.a
-          key={platform.name}
-          href={platform.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`text-2xl transition-colors duration-300 ${platform.color}`}
-          aria-label={platform.name}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: index * 0.1 }}
-          whileHover={{ scale: 1.2, y: -2 }}
-        >
-          {platform.icon}
-        </motion.a>
+    <ul className={`flex flex-wrap items-center gap-1 ${className}`}>
+      {socialPlatforms.map(({ name, url, Icon }) => (
+        <li key={name}>
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={name}
+            // La cible fait 36 px avec son remplissage : en dessous de
+            // 32 px, un lien devient difficile a atteindre au doigt.
+            className="flex h-9 w-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-surface-2 hover:text-ink"
+          >
+            <Icon size={17} aria-hidden="true" />
+          </a>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

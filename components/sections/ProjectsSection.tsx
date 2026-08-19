@@ -1,131 +1,142 @@
 'use client';
 
 // components/sections/ProjectsSection.tsx
-// Vitrine projets + certifications. Le contenu vient de l'API (MongoDB) avec
-// repli automatique sur les fichiers i18n : rien a recompiler pour ajouter
-// une entree depuis le tableau de bord.
+//
+// Vitrine projets + certifications. Le contenu vient de l'API (MongoDB)
+// avec repli automatique sur les fichiers i18n : rien a recompiler pour
+// ajouter une entree depuis le tableau de bord. Cette mecanique est
+// inchangee — c'est la presentation qui est refaite.
+//
+// Ce qui a change
+// ---------------
+//   - Le survol inclinait chaque carte en 3D (`rotateX` / `rotateY` suivant
+//     le curseur) et projetait une ombre bleue de 60 px. Une grille ou
+//     chaque vignette pivote au passage de la souris est un menu de jeu ;
+//     elle rend aussi le texte flou pendant la transformation. Le survol
+//     souleve maintenant la carte de 2 px et resserre son trait.
+//   - Le fond en verre depoli (`backdrop-blur-xl`) sur toutes les cartes,
+//     les onglets et le champ de recherche : douze zones de flou empilees
+//     coutaient cher a la carte graphique pour un effet que la refonte
+//     n'utilise plus. Les cartes sont des surfaces opaques.
+//   - L'image des projets etait recadree en 176 px de haut et zoomait de
+//     10 % au survol. Elle garde desormais son ratio 16/10 et ne bouge
+//     plus : c'est une capture d'ecran de travail, pas une jaquette.
 import React, { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { BsGithub } from 'react-icons/bs';
-import { HiExternalLink } from 'react-icons/hi';
-import { AiFillStar } from 'react-icons/ai';
-import { FaCodeBranch, FaSearch } from 'react-icons/fa';
+import { Github, ExternalLink, Search, Star, GitFork, X } from 'lucide-react';
 
 import { useI18n } from '../i18n-provider';
 import { useProjects, useCertifications, pickLocale } from '../../hooks/useContent';
 import { getTech } from '../../lib/tech-icons';
 import { trackEvent } from '../analytics/VisitorTracker';
+import { Section, SectionHeader } from '../ui/Section';
+import { revealAt, reveal, viewport, EASE } from '../../lib/motion';
 import type { ProjectDoc, CertificationDoc } from '../../lib/db/types';
 
 /* ------------------------------------------------------------------ */
-/* Primitives visuelles                                                */
+/* Primitives                                                          */
 /* ------------------------------------------------------------------ */
-
-/** Carte en verre depoli, socle visuel commun a toute la section. */
-const glass =
-  'rounded-2xl border border-white/10 dark:border-white/10 bg-white/70 dark:bg-white/[0.04] ' +
-  'backdrop-blur-xl shadow-[0_8px_40px_-12px_rgba(0,0,0,0.25)]';
 
 function TechChip({ tech }: { tech: { title: string; icon: string; color: string } }) {
   const meta = getTech(tech.icon, tech.title, tech.color);
   const { Icon } = meta;
   return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-full border border-black/5 dark:border-white/10
-                 bg-black/[0.03] dark:bg-white/[0.06] px-2.5 py-1 text-[11px] font-medium
-                 text-gray-700 dark:text-gray-200"
-    >
-      <Icon className="text-[13px]" />
+    <span className="chip">
+      <Icon className="text-[13px] shrink-0" aria-hidden="true" />
       {tech.title || meta.label}
     </span>
   );
 }
 
-/** Carte projet : le survol incline legerement la carte (effet parallaxe). */
 function ProjectCard({
   project,
   locale,
+  index,
   onOpen,
 }: {
   project: ProjectDoc;
   locale: string;
+  index: number;
   onOpen: () => void;
 }) {
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width - 0.5;
-    const py = (e.clientY - rect.top) / rect.height - 0.5;
-    // Amplitude volontairement faible : on veut du relief, pas du vertige.
-    setTilt({ x: -py * 6, y: px * 8 });
-  };
-
   return (
     <motion.article
       layout
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      onMouseMove={handleMove}
-      onMouseLeave={() => setTilt({ x: 0, y: 0 })}
-      style={{ transform: `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}
-      className={`${glass} group relative flex flex-col overflow-hidden transition-shadow duration-300
-                  hover:shadow-[0_20px_60px_-15px_rgba(59,130,246,0.45)]`}
+      initial="hidden"
+      whileInView="show"
+      viewport={viewport}
+      variants={revealAt(index)}
+      // `relative` sert d'ancre a la zone cliquable etendue du titre.
+      className="card-interactive group relative flex flex-col overflow-hidden"
     >
-      {project.featured && (
-        <span className="absolute left-4 top-4 z-10 rounded-full bg-gradient-to-r from-blue-600 to-violet-600
-                         px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
-          ★
-        </span>
-      )}
-
-      <div className="relative h-44 overflow-hidden">
+      {/* L'image, en ratio fixe. Le fond gris derriere elle evite le trou
+          blanc pendant le chargement paresseux. */}
+      <div className="relative aspect-[16/10] overflow-hidden border-b border-line bg-surface-2">
         <img
           src={project.image || '/logo2.png'}
-          alt={project.title}
+          alt=""
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="h-full w-full object-cover"
         />
-        {/* Voile degrade : garantit la lisibilite du titre quelle que soit l'image. */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-        <h3 className="absolute bottom-3 left-4 right-4 truncate text-lg font-semibold text-white">
-          {project.title}
-        </h3>
+        {project.featured && (
+          <span className="absolute left-3 top-3 rounded-sm bg-paper/90 px-2 py-1 text-[10px] font-medium uppercase tracking-wider text-ink">
+            Selection
+          </span>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col gap-4 p-5">
-        <p className="line-clamp-3 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-          {pickLocale(project.description, locale)}
-        </p>
+        <div>
+          {/* Le titre est un bouton : c'est lui la cible principale de la
+              carte. Avant, l'ouverture du detail passait par une fleche
+              « → » de 12 px dans un coin — une cible que personne ne
+              trouve, et qui n'annonce rien a un lecteur d'ecran. */}
+          <h3 className="text-base font-semibold leading-snug">
+            <button
+              type="button"
+              onClick={onOpen}
+              className="text-left transition-colors hover:text-accent"
+            >
+              {project.title}
+              {/* Etend la zone cliquable a toute la carte sans imbriquer
+                  les liens GitHub / demo dans le bouton. */}
+              <span className="absolute inset-0" aria-hidden="true" />
+            </button>
+          </h3>
+
+          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
+            {pickLocale(project.description, locale)}
+          </p>
+        </div>
 
         <div className="flex flex-wrap gap-1.5">
-          {project.technologies.slice(0, 5).map((tech, i) => (
+          {project.technologies.slice(0, 4).map((tech, i) => (
             <TechChip key={i} tech={tech} />
           ))}
-          {project.technologies.length > 5 && (
-            <span className="self-center text-[11px] text-gray-500">
-              +{project.technologies.length - 5}
+          {project.technologies.length > 4 && (
+            <span className="chip border-transparent bg-transparent text-faint">
+              +{project.technologies.length - 4}
             </span>
           )}
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-3 pt-2">
-          <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+        <div className="mt-auto flex items-center justify-between gap-3 border-t border-line pt-4">
+          <div className="flex items-center gap-4 text-xs text-faint">
             {project.stars > 0 && (
-              <span className="flex items-center gap-1">
-                <AiFillStar className="text-yellow-500" /> {project.stars}
+              <span className="flex items-center gap-1.5">
+                <Star size={13} aria-hidden="true" /> {project.stars}
               </span>
             )}
             {project.forks > 0 && (
-              <span className="flex items-center gap-1">
-                <FaCodeBranch /> {project.forks}
+              <span className="flex items-center gap-1.5">
+                <GitFork size={13} aria-hidden="true" /> {project.forks}
               </span>
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* `relative z-10` : ces liens passent au-dessus de la zone
+              cliquable du titre, sinon ils seraient inatteignables. */}
+          <div className="relative z-10 flex items-center gap-1">
             {project.github && (
               <a
                 href={project.github}
@@ -133,10 +144,9 @@ function ProjectCard({
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('projet_github', project.slug)}
                 aria-label={`Code source de ${project.title}`}
-                className="rounded-lg border border-black/10 dark:border-white/15 p-2 text-gray-700
-                           transition-colors hover:bg-black/5 dark:text-gray-200 dark:hover:bg-white/10"
+                className="rounded-md p-2 text-muted transition-colors hover:bg-surface-2 hover:text-ink"
               >
-                <BsGithub />
+                <Github size={16} />
               </a>
             )}
             {project.liveUrl && (
@@ -146,19 +156,11 @@ function ProjectCard({
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('projet_demo', project.slug)}
                 aria-label={`Démo de ${project.title}`}
-                className="rounded-lg bg-gradient-to-r from-blue-600 to-violet-600 p-2 text-white
-                           transition-transform hover:scale-105"
+                className="rounded-md p-2 text-muted transition-colors hover:bg-surface-2 hover:text-ink"
               >
-                <HiExternalLink />
+                <ExternalLink size={16} />
               </a>
             )}
-            <button
-              onClick={onOpen}
-              className="rounded-lg px-3 py-2 text-xs font-medium text-blue-600 transition-colors
-                         hover:bg-blue-600/10 dark:text-blue-400"
-            >
-              →
-            </button>
           </div>
         </div>
       </div>
@@ -169,61 +171,60 @@ function ProjectCard({
 function CertificationCard({
   certification,
   locale,
+  index,
 }: {
   certification: CertificationDoc;
   locale: string;
+  index: number;
 }) {
   return (
     <motion.article
       layout
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -6 }}
-      className={`${glass} group flex flex-col overflow-hidden`}
+      initial="hidden"
+      whileInView="show"
+      viewport={viewport}
+      variants={revealAt(index)}
+      className="card-interactive flex flex-col overflow-hidden"
     >
       <a
         href={certification.credentialUrl || '#'}
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => trackEvent('certif_ouverte', certification.slug)}
-        className="relative block h-40 overflow-hidden"
+        className="block"
       >
-        <img
-          src={certification.image || '/logo2.png'}
-          alt={certification.title}
-          loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        <span className="absolute right-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-[11px] text-white">
-          {certification.date}
-        </span>
+        {/* `object-contain` : un badge de certification est un logo, pas
+            une photo. L'ancien `object-cover` en rognait les bords. */}
+        <div className="aspect-[16/10] border-b border-line bg-surface-2 p-4">
+          <img
+            src={certification.image || '/logo2.png'}
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-contain"
+          />
+        </div>
+
+        <div className="flex flex-1 flex-col gap-3 p-5">
+          <div className="flex items-baseline justify-between gap-3">
+            <p className="eyebrow">{certification.issuer}</p>
+            <span className="eyebrow text-faint">{certification.date}</span>
+          </div>
+
+          <h3 className="text-[0.9375rem] font-semibold leading-snug">{certification.title}</h3>
+
+          <p className="line-clamp-2 text-sm leading-relaxed text-muted">
+            {pickLocale(certification.description, locale)}
+          </p>
+
+          <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
+            {certification.skills.slice(0, 3).map((skill, i) => (
+              <span key={i} className="chip">
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
       </a>
-
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        <div>
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-            {certification.title}
-          </h3>
-          <p className="text-xs text-emerald-600 dark:text-emerald-400">{certification.issuer}</p>
-        </div>
-
-        <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-300">
-          {pickLocale(certification.description, locale)}
-        </p>
-
-        <div className="mt-auto flex flex-wrap gap-1.5">
-          {certification.skills.slice(0, 4).map((skill, i) => (
-            <span
-              key={i}
-              className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] text-emerald-700 dark:text-emerald-300"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
-      </div>
     </motion.article>
   );
 }
@@ -232,7 +233,7 @@ function CertificationCard({
 /* Section                                                             */
 /* ------------------------------------------------------------------ */
 
-const ProjectsSection: React.FC = () => {
+export default function ProjectsSection() {
   const { t, locale } = useI18n();
   const [tab, setTab] = useState<'projects' | 'certifications'>('projects');
   const [category, setCategory] = useState('all');
@@ -242,8 +243,8 @@ const ProjectsSection: React.FC = () => {
   const { items: projects, loading: loadingProjects } = useProjects();
   const { items: certifications, loading: loadingCerts } = useCertifications();
 
-  // Les categories sont deduites du contenu : ajouter une categorie dans le
-  // tableau de bord la fait apparaitre ici automatiquement.
+  // Les categories sont deduites du contenu : ajouter une categorie dans
+  // le tableau de bord la fait apparaitre ici automatiquement.
   const categories = useMemo(() => {
     const set = new Set(projects.map((p) => p.category).filter(Boolean));
     return ['all', ...Array.from(set).sort()];
@@ -254,14 +255,10 @@ const ProjectsSection: React.FC = () => {
     return projects.filter((p) => {
       if (category !== 'all' && p.category !== category) return false;
       if (!q) return true;
-      const haystack = [
-        p.title,
-        pickLocale(p.description, locale),
-        ...p.technologies.map((tech) => tech.title),
-      ]
+      return [p.title, pickLocale(p.description, locale), ...p.technologies.map((x) => x.title)]
         .join(' ')
-        .toLowerCase();
-      return haystack.includes(q);
+        .toLowerCase()
+        .includes(q);
     });
   }, [projects, category, query, locale]);
 
@@ -277,179 +274,178 @@ const ProjectsSection: React.FC = () => {
   const isEmpty = tab === 'projects' ? visibleProjects.length === 0 : visibleCerts.length === 0;
 
   return (
-    <section id="portfolio" className="relative scroll-mt-24 px-4 py-20">
-      <div className="container mx-auto max-w-screen-xl">
-        {/* En-tete */}
-        <motion.div
-          className="mb-10 text-center"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2
-            className="mb-3 text-3xl font-bold md:text-4xl"
-            style={{
-              backgroundImage: 'linear-gradient(120deg,#3b82f6,#8b5cf6 45%,#06b6d4)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            {t('portfolio.title')}
-          </h2>
-          <p className="mx-auto max-w-2xl text-sm text-gray-600 dark:text-gray-400">
-            {t('portfolio.subtitle')}
-          </p>
-        </motion.div>
+    <Section id="portfolio">
+      <SectionHeader
+        index="04"
+        eyebrow={t('portfolio.title')}
+        title={t('portfolio.subtitle')}
+      />
 
-        {/* Barre de controle : onglets + recherche + filtres */}
-        <div className="mb-8 flex flex-col gap-4">
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <div className={`${glass} inline-flex rounded-full p-1`}>
-              {(['projects', 'certifications'] as const).map((key) => (
-                <button
-                  key={key}
-                  onClick={() => {
-                    setTab(key);
-                    setCategory('all');
-                    trackEvent('portfolio_onglet', key);
-                  }}
-                  className={`relative rounded-full px-5 py-2 text-sm font-medium transition-colors ${
-                    tab === key
-                      ? 'text-white'
-                      : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
-                  }`}
-                >
-                  {tab === key && (
-                    <motion.span
-                      layoutId="portfolio-tab"
-                      className="absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-blue-600 to-violet-600"
-                      transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                    />
-                  )}
-                  {t(`portfolio.tabs.${key}`)}{' '}
-                  <span className="opacity-70">
-                    ({key === 'projects' ? projects.length : certifications.length})
-                  </span>
-                </button>
-              ))}
-            </div>
-
-            <div className={`${glass} flex items-center gap-2 rounded-full px-4 py-2`}>
-              <FaSearch className="text-xs text-gray-400" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={t('portfolio.search')}
-                aria-label={t('portfolio.search')}
-                className="w-40 bg-transparent text-sm outline-none placeholder:text-gray-400 sm:w-56"
-              />
-            </div>
-          </div>
-
-          {tab === 'projects' && categories.length > 2 && (
-            <div className="flex flex-wrap justify-center gap-2">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setCategory(cat)}
-                  className={`rounded-full border px-3.5 py-1.5 text-xs font-medium capitalize transition-colors ${
-                    category === cat
-                      ? 'border-blue-500 bg-blue-500/15 text-blue-600 dark:text-blue-300'
-                      : 'border-black/10 text-gray-600 hover:border-blue-400 dark:border-white/10 dark:text-gray-400'
-                  }`}
-                >
-                  {cat === 'all' ? t('portfolio.filters.all') : cat}
-                </button>
-              ))}
-            </div>
-          )}
+      {/* --- Barre de controle -------------------------------------
+          Les onglets etaient deux pilules dans un bloc en verre depoli,
+          avec une pastille en degrade qui glissait sur ressort. Ici, deux
+          onglets soulignes : la convention universelle, qui indique en
+          plus la position dans un ensemble. */}
+      <div className="mb-8 flex flex-col gap-5 border-b border-line pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div role="tablist" className="flex gap-6">
+          {(['projects', 'certifications'] as const).map((key) => {
+            const active = tab === key;
+            return (
+              <button
+                key={key}
+                role="tab"
+                aria-selected={active}
+                onClick={() => {
+                  setTab(key);
+                  setCategory('all');
+                  trackEvent('portfolio_onglet', key);
+                }}
+                className={`relative -mb-[21px] pb-5 text-sm font-medium transition-colors ${
+                  active ? 'text-ink' : 'text-faint hover:text-muted'
+                }`}
+              >
+                {t(`portfolio.tabs.${key}`)}
+                <span className="ml-1.5 font-mono text-xs text-faint">
+                  {key === 'projects' ? projects.length : certifications.length}
+                </span>
+                {active && (
+                  <motion.span
+                    layoutId="portfolio-tab"
+                    className="absolute inset-x-0 bottom-0 h-px bg-ink"
+                    transition={{ duration: 0.25, ease: EASE }}
+                  />
+                )}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Grille */}
-        {loading ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className={`${glass} h-80 animate-pulse`} />
-            ))}
-          </div>
-        ) : isEmpty ? (
-          <p className="py-16 text-center text-gray-500 dark:text-gray-400">
-            {t('portfolio.noResults')}
-          </p>
-        ) : (
-          <motion.div layout className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <AnimatePresence mode="popLayout">
-              {tab === 'projects'
-                ? visibleProjects.map((project) => (
-                    <ProjectCard
-                      key={project.slug}
-                      project={project}
-                      locale={locale}
-                      onOpen={() => {
-                        setDetail(project);
-                        trackEvent('projet_detail', project.slug);
-                      }}
-                    />
-                  ))
-                : visibleCerts.map((certification) => (
-                    <CertificationCard
-                      key={certification.slug}
-                      certification={certification}
-                      locale={locale}
-                    />
-                  ))}
-            </AnimatePresence>
-          </motion.div>
-        )}
+        <label className="flex items-center gap-2.5 rounded-md border border-line bg-surface px-3 py-2 transition-colors focus-within:border-accent sm:w-64">
+          <Search size={14} className="shrink-0 text-faint" aria-hidden="true" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t('portfolio.search')}
+            aria-label={t('portfolio.search')}
+            className="w-full bg-transparent text-sm outline-none placeholder:text-faint"
+          />
+        </label>
       </div>
 
-      {/* Fiche detaillee */}
+      {/* --- Filtres par categorie --------------------------------- */}
+      {tab === 'projects' && categories.length > 2 && (
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={viewport}
+          variants={reveal}
+          className="mb-8 flex flex-wrap gap-2"
+        >
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setCategory(cat)}
+              className={`rounded-md border px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
+                category === cat
+                  ? 'border-ink bg-ink text-paper'
+                  : 'border-line text-muted hover:border-line-strong hover:text-ink'
+              }`}
+            >
+              {cat === 'all' ? t('portfolio.filters.all') : cat}
+            </button>
+          ))}
+        </motion.div>
+      )}
+
+      {/* --- Grille ------------------------------------------------ */}
+      {loading ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="card h-80 animate-pulse" />
+          ))}
+        </div>
+      ) : isEmpty ? (
+        <p className="border-y border-line py-20 text-center text-sm text-muted">
+          {t('portfolio.noResults')}
+        </p>
+      ) : (
+        <motion.div layout className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <AnimatePresence mode="popLayout">
+            {tab === 'projects'
+              ? visibleProjects.map((project, i) => (
+                  <ProjectCard
+                    key={project.slug}
+                    project={project}
+                    locale={locale}
+                    index={i}
+                    onOpen={() => {
+                      setDetail(project);
+                      trackEvent('projet_detail', project.slug);
+                    }}
+                  />
+                ))
+              : visibleCerts.map((certification, i) => (
+                  <CertificationCard
+                    key={certification.slug}
+                    certification={certification}
+                    locale={locale}
+                    index={i}
+                  />
+                ))}
+          </AnimatePresence>
+        </motion.div>
+      )}
+
+      {/* --- Fiche detaillee --------------------------------------- */}
       <AnimatePresence>
         {detail && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={() => setDetail(null)}
             role="dialog"
             aria-modal="true"
             aria-label={detail.title}
           >
             <motion.div
-              className={`${glass} max-h-[85vh] w-full max-w-2xl overflow-y-auto bg-white dark:bg-gray-950`}
-              initial={{ scale: 0.94, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.94, y: 20 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-line bg-surface shadow-e3"
+              // 8 px et 220 ms, sans ressort : une fiche modale doit
+              // apparaitre, pas rebondir.
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.22, ease: EASE }}
               onClick={(e) => e.stopPropagation()}
             >
-              <img
-                src={detail.image || '/logo2.png'}
-                alt={detail.title}
-                className="h-56 w-full object-cover"
-              />
-              <div className="space-y-5 p-6">
+              <div className="aspect-[16/9] border-b border-line bg-surface-2">
+                <img
+                  src={detail.image || '/logo2.png'}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
+              </div>
+
+              <div className="space-y-6 p-6">
                 <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{detail.title}</h3>
+                  <h3 className="text-xl font-semibold">{detail.title}</h3>
                   <button
                     onClick={() => setDetail(null)}
                     aria-label={t('portfolio.close')}
-                    className="rounded-lg px-3 py-1 text-gray-500 hover:bg-black/5 dark:hover:bg-white/10"
+                    className="-m-1 rounded-md p-1.5 text-muted transition-colors hover:bg-surface-2 hover:text-ink"
                   >
-                    ✕
+                    <X size={18} />
                   </button>
                 </div>
 
-                <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+                <p className="text-[0.9375rem] leading-relaxed text-muted">
                   {pickLocale(detail.description, locale)}
                 </p>
 
                 <div>
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                    {t('portfolio.techUsed')}
-                  </p>
+                  <h4 className="eyebrow mb-2.5">{t('portfolio.techUsed')}</h4>
                   <div className="flex flex-wrap gap-1.5">
                     {detail.technologies.map((tech, i) => (
                       <TechChip key={i} tech={tech} />
@@ -457,16 +453,15 @@ const ProjectsSection: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-3 border-t border-line pt-5">
                   {detail.github && (
                     <a
                       href={detail.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex flex-1 items-center justify-center gap-2 rounded-lg border
-                                 border-black/10 px-4 py-2.5 text-sm dark:border-white/15"
+                      className="btn btn-ghost flex-1"
                     >
-                      <BsGithub /> {t('portfolio.buttons.github')}
+                      <Github size={16} /> {t('portfolio.buttons.github')}
                     </a>
                   )}
                   {detail.liveUrl && (
@@ -474,10 +469,9 @@ const ProjectsSection: React.FC = () => {
                       href={detail.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex flex-1 items-center justify-center gap-2 rounded-lg
-                                 bg-gradient-to-r from-blue-600 to-violet-600 px-4 py-2.5 text-sm text-white"
+                      className="btn btn-primary flex-1"
                     >
-                      <HiExternalLink /> {t('portfolio.buttons.visit')}
+                      <ExternalLink size={16} /> {t('portfolio.buttons.visit')}
                     </a>
                   )}
                 </div>
@@ -486,8 +480,6 @@ const ProjectsSection: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </Section>
   );
-};
-
-export default ProjectsSection;
+}
