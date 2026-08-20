@@ -12,14 +12,17 @@ import {
   SiHtml5, SiCss3, SiFigma, SiKubernetes, SiOpenai, SiPandas, SiNumpy,
   SiScikitlearn, SiJupyter, SiElectron, SiVite, SiSwiper, SiStripe,
   SiCloudflare, SiNginx, SiRust, SiGo, SiSharp, SiDotnet, SiFramer, SiRender,
+  SiPytorch, SiKeras, SiWireshark, SiKalilinux, SiMetasploit,
+  SiBurpsuite, SiOwasp, SiAdobexd,
 } from 'react-icons/si';
 import { FaJava, FaAws, FaDatabase, FaCode, FaBrain, FaMobileAlt } from 'react-icons/fa';
-import { VscAzure } from 'react-icons/vsc';
+import { VscAzure, VscVscode } from 'react-icons/vsc';
+import { TbApi } from 'react-icons/tb';
 
 export interface TechMeta {
   label: string;
   color: string;
-  Icon: React.ComponentType<{ className?: string }>;
+  Icon: React.ComponentType<{ className?: string; color?: string }>;
 }
 
 /** Cles normalisees (slug) -> metadonnees. */
@@ -113,6 +116,18 @@ export const TECH_REGISTRY: Record<string, TechMeta> = {
   'sql-server': { label: 'SQL Server', color: '#CC2927', Icon: FaDatabase },
   javaswing: { label: 'Java Swing', color: '#E76F00', Icon: FaJava },
   'jakarta-ee': { label: 'Jakarta EE', color: '#E76F00', Icon: FaJava },
+  // Cles utilisees par la section Competences (voir lib/content/fallback.ts).
+  pytorch: { label: 'PyTorch', color: '#EE4C2C', Icon: SiPytorch },
+  keras: { label: 'Keras', color: '#D00000', Icon: SiKeras },
+  scikitlearn: { label: 'Scikit-learn', color: '#F7931E', Icon: SiScikitlearn },
+  wireshark: { label: 'Wireshark', color: '#1A237E', Icon: SiWireshark },
+  kalilinux: { label: 'Kali Linux', color: '#00ADEF', Icon: SiKalilinux },
+  metasploit: { label: 'Metasploit', color: '#FF5722', Icon: SiMetasploit },
+  burpsuite: { label: 'Burp Suite', color: '#FF6F61', Icon: SiBurpsuite },
+  owasp: { label: 'OWASP', color: '#E535AB', Icon: SiOwasp },
+  adobexd: { label: 'Adobe XD', color: '#FF61F6', Icon: SiAdobexd },
+  vscode: { label: 'VS Code', color: '#007ACC', Icon: VscVscode },
+  restapi: { label: 'REST API', color: '#FF6B6B', Icon: TbApi },
 };
 
 /** Pastille de repli : initiale coloree, toujours lisible. */

@@ -7,6 +7,22 @@ export interface I18nContextType {
   locale: Locale
   setLocale: (locale: Locale) => void
   t: (key: string) => string
+  /**
+   * Lecture d'une valeur de type liste.
+   *
+   * `t` ne renvoie que des chaines : toute autre valeur retombe sur la cle
+   * elle-meme. C'est un bon garde-fou — il rend visible une cle manquante
+   * au lieu d'afficher « [object Object] » — mais il rend du meme coup les
+   * tableaux du fichier de traductions inatteignables.
+   *
+   * Or il y en a, et ils portent du contenu reel : les specialites du
+   * hero (`hero.typewriterPhrases`), et pour chaque etape du parcours ses
+   * realisations, ses matieres et ses technologies. Sans cet accesseur,
+   * le hero affichait la chaine « hero.typewriterPhrases » a la place de
+   * la liste, et les etapes du parcours s'ouvraient sur des sections
+   * vides.
+   */
+  tList: (key: string) => string[]
 }
 
 // Traductions statiques (fichiers JSON compilés)
@@ -46,15 +62,29 @@ function applyOverrides(
   return merged
 }
 
-// Lecture d'une valeur par dot notation dans un objet imbriqué
-const getNestedValue = (obj: Record<string, unknown>, path: string): string => {
-  const result = path.split(".").reduce<unknown>((current, key) => {
+// Lecture brute d'une valeur par dot notation dans un objet imbriqué
+const getNestedRaw = (obj: Record<string, unknown>, path: string): unknown =>
+  path.split(".").reduce<unknown>((current, key) => {
     if (current && typeof current === 'object') {
       return (current as Record<string, unknown>)[key]
     }
     return undefined
   }, obj)
+
+// Valeur texte. Une clé absente, ou qui pointe sur autre chose qu'une
+// chaîne, se signale en affichant son propre chemin : c'est visible en
+// relecture, contrairement à une chaîne vide.
+const getNestedValue = (obj: Record<string, unknown>, path: string): string => {
+  const result = getNestedRaw(obj, path)
   return typeof result === 'string' ? result : path
+}
+
+// Valeur liste. Une clé absente donne une liste vide plutôt que le chemin :
+// afficher « experience.work.anest.achievements » comme une puce de liste
+// serait pire que de n'afficher aucune puce.
+const getNestedList = (obj: Record<string, unknown>, path: string): string[] => {
+  const result = getNestedRaw(obj, path)
+  return Array.isArray(result) ? result.filter((item): item is string => typeof item === 'string') : []
 }
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined)
@@ -105,10 +135,16 @@ export function I18nProvider({ children }: I18nProviderProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locale, overrides])
 
+  const tList = useCallback((key: string): string[] => {
+    return getNestedList(merged, key)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locale, overrides])
+
   const value: I18nContextType = {
     locale,
     setLocale: handleSetLocale,
     t,
+    tList,
   }
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>

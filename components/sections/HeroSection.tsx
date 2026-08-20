@@ -31,18 +31,19 @@ import { EASE, stagger, reveal } from '../../lib/motion';
 // rendu serveur ni l'affichage du texte (qui porte le LCP).
 const HeroObject = dynamic(() => import('../three/HeroObject'), {
   ssr: false,
-  loading: () => <div className="h-[22rem] w-full sm:h-[26rem] lg:h-[32rem]" />,
+  loading: () => <div className="h-[19rem] w-full sm:h-[22rem] lg:h-[26rem]" />,
 });
 
 export default function HeroSection() {
-  const { t } = useI18n();
+  const { t, tList } = useI18n();
 
   // Les specialites : la meme donnee que l'ancienne machine a ecrire,
   // rendue d'un coup. La cle i18n est inchangee.
-  const specialities = (() => {
-    const value = t('hero.typewriterPhrases') as unknown;
-    return Array.isArray(value) ? (value as string[]) : [String(value)];
-  })();
+  //
+  // `tList` et non `t` : `t` ne renvoie que des chaines et retombe sur la
+  // cle pour tout le reste. Cette liste s'affichait donc litteralement
+  // « hero.typewriterPhrases » a la place des sept specialites.
+  const specialities = tList('hero.typewriterPhrases');
 
   return (
     <section

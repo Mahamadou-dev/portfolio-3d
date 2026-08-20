@@ -2,117 +2,117 @@
 
 // components/three/HeroObject.tsx
 //
-// « Le reseau » — un perceptron multicouche, rendu comme un objet reel.
+// « Le classifieur » — un reseau de neurones en train de reconnaitre un
+// chiffre, montre pendant qu'il calcule.
 //
-// Le sujet
-// --------
-// C'est la figure canonique de l'apprentissage profond : des couches de
-// neurones, des poids qui les relient, une propagation avant qui traverse
-// le reseau de l'entree vers la sortie. N'importe qui la reconnait — un
-// recruteur, un jury de master, un directeur de these — et elle restera
-// juste tout au long du parcours qu'elle annonce.
+// Ce que la scene affiche vraiment
+// --------------------------------
+// Toutes les valeurs lumineuses de cette scene sortent d'un vrai calcul,
+// fait dans ./ann.ts : une image 10x10 entre a gauche, traverse deux
+// couches cachees, et dix neurones de sortie donnent une probabilite par
+// chiffre. Celui qui gagne s'allume. Le reseau predit correctement les dix
+// chiffres, a environ 99,8 % de confiance — ce n'est pas une animation qui
+// evoque un reseau, c'est un reseau qu'on regarde travailler.
 //
-// Le traitement
-// -------------
-// Le meme schema existait dans l'ancienne version du site, mais rendu en
-// blending additif : des points lumineux et des influx qui filaient sur
-// les synapses, sous une chaine de bloom et d'aberration chromatique. Le
-// sujet etait bon, le traitement disait « jeu video ».
+// Pourquoi la version precedente etait ratee
+// ------------------------------------------
+// Deux erreurs, l'une de rendu, l'autre de conception :
 //
-// Ici, le reseau est un objet manufacture : des noeuds en metal poli, des
-// liaisons en fil metallique fin, poses sur un sol qui recoit leur ombre,
-// eclaires par un studio a trois sources. Aucun shader maison, aucun
-// post-traitement. La lumiere fait tout le travail.
+//   1. Les liaisons avaient un rayon de 0,0075 unite a une distance ou
+//      l'echelle est d'environ 100 pixels par unite. Elles mesuraient donc
+//      MOINS D'UN PIXEL de large : l'echantillonnage les transformait en
+//      pointilles sales et scintillants. C'est la cause directe du
+//      « moche ». Elles font maintenant 2 a 3 pixels.
+//   2. L'activation etait rendue en changeant la couleur de base d'un
+//      materiau entierement metallique (`metalness = 1`). Sur un metal, la
+//      couleur de base ne fait que teinter la reflexion : le signal etait
+//      quasiment invisible. Les neurones sont desormais en materiau mixte
+//      (metalness 0,3), ou la couleur se lit franchement, et le mode sombre
+//      ajoute une couche additive qui, elle, brille reellement.
 //
-// Deux decisions de mise en scene meritent d'etre expliquees :
-//
-//   1. Le reseau est PLAN. Un nuage de neurones sur une sphere fait joli
-//      mais ne se lit pas : on n'y distingue ni couche, ni sens de
-//      propagation. Un schema plan, vu de trois quarts, garde la lecture
-//      du diagramme tout en donnant de la profondeur.
-//   2. Il OSCILLE, il ne tourne pas. Une rotation complete presenterait
-//      periodiquement le plan par la tranche, ou le reseau disparait. Un
-//      balancement de +/- 7 degres suffit a faire vivre les reflets.
+// La propagation
+// --------------
+// Un front d'onde traverse les couches de gauche a droite. Un element ne
+// s'allume que lorsque le front l'a atteint, et garde ensuite sa valeur :
+// on voit donc l'information se construire couche apres couche, puis la
+// decision tomber. Toutes les 5,2 secondes, le chiffre suivant entre.
 import { Suspense, useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { ContactShadows, Environment, Lightformer } from '@react-three/drei';
+import { Bloom, EffectComposer, DepthOfField, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useSceneQuality } from './useSceneQuality';
+import {
+  DIGITS,
+  GRID,
+  H1_SIZE,
+  H2_SIZE,
+  OUTPUT_SIZE,
+  allWires,
+  buildModel,
+  strongestWires,
+  type Activation,
+  type Wire,
+} from './ann';
 
 /* ================================================================== */
-/* Topologie                                                           */
+/* Geometrie de la scene                                               */
 /* ================================================================== */
 
+/** Abscisse de chaque etage. */
+const X_INPUT = -2.05;
+const X_H1 = -0.45;
+const X_H2 = 0.75;
+const X_OUT = 1.95;
+
+/** Le pas de la grille d'entree, et la taille d'une tuile. */
+const CELL = 0.14;
+const TILE = 0.108;
+
+const NODE_RADIUS = 0.1;
 /**
- * 5 -> 8 -> 8 -> 6 -> 3.
+ * Rayon des liaisons.
  *
- * Architecture plus profonde et plus dense que la version precedente.
- * Cinq couches donnent une vraie impression de « deep learning » tout
- * en restant lisible grace a l'orientation trois quarts.
+ * Cette constante merite d'etre calculee, pas devinee. Avec la camera a
+ * z = 9,4 et un champ de 31 degres, la hauteur visible vaut 5,21 unites ;
+ * sur un canvas de 512 px, l'echelle est donc d'environ 98 pixels par
+ * unite. Une liaison de rayon r mesure 2r a l'ecran :
+ *
+ *   r = 0,0075  ->  1,5 px de diametre  (la version precedente : sous le
+ *                                        pixel une fois l'epaisseur
+ *                                        modulee par le poids, d'ou les
+ *                                        pointilles scintillants)
+ *   r = 0,014   ->  2,7 px              (la liaison la plus fine reste a
+ *                                        1,7 px, donc franche)
  */
-const LAYERS = [5, 8, 8, 6, 3];
+const WIRE_RADIUS = 0.014;
 
-const SPACING_X = 1.5;
-const SPACING_Y = 0.66;
-const NODE_RADIUS = 0.125;
-const EDGE_RADIUS = 0.0075;
+/** Recentre l'ensemble : les etages ne sont pas symetriques autour de 0. */
+const CENTER_X = 0.35;
 
-interface Node {
+interface Placed {
   position: THREE.Vector3;
-  layer: number;
 }
 
-interface Edge {
-  from: THREE.Vector3;
-  to: THREE.Vector3;
-  /** Position de l'arete dans la profondeur du reseau (entre deux couches). */
-  depth: number;
-  /** Le poids de la connexion : il module l'epaisseur du fil. */
-  weight: number;
+function columnPositions(x: number, count: number, spacing: number): THREE.Vector3[] {
+  return Array.from(
+    { length: count },
+    (_, i) => new THREE.Vector3(x, ((count - 1) / 2 - i) * spacing, 0)
+  );
 }
 
-function buildNetwork() {
-  const nodes: Node[] = [];
-  const layerNodes: Node[][] = [];
-
-  LAYERS.forEach((count, layer) => {
-    const column: Node[] = [];
-    for (let i = 0; i < count; i++) {
-      const node: Node = {
-        position: new THREE.Vector3(
-          (layer - (LAYERS.length - 1) / 2) * SPACING_X,
-          (i - (count - 1) / 2) * SPACING_Y,
-          0
-        ),
-        layer,
-      };
-      column.push(node);
-      nodes.push(node);
-    }
-    layerNodes.push(column);
-  });
-
-  // Reseau entierement connecte entre couches successives : c'est la
-  // definition d'un perceptron multicouche, et la seule topologie qu'un
-  // lecteur reconnaitra sans legende.
-  const edges: Edge[] = [];
-  for (let l = 0; l < layerNodes.length - 1; l++) {
-    for (const from of layerNodes[l]) {
-      for (const to of layerNodes[l + 1]) {
-        edges.push({
-          from: from.position,
-          to: to.position,
-          depth: l + 0.5,
-          // Des poids inegaux : un reseau dont toutes les connexions sont
-          // identiques ressemble a une grille, pas a un modele entraine.
-          weight: 0.35 + Math.random() * 0.65,
-        });
-      }
+/** La grille d'entree, lue dans le meme ordre que le vecteur de 100 pixels. */
+function gridPositions(): THREE.Vector3[] {
+  const positions: THREE.Vector3[] = [];
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      positions.push(
+        new THREE.Vector3(X_INPUT + (x - (GRID - 1) / 2) * CELL, ((GRID - 1) / 2 - y) * CELL, 0)
+      );
     }
   }
-
-  return { nodes, edges };
+  return positions;
 }
 
 /* ================================================================== */
@@ -120,109 +120,105 @@ function buildNetwork() {
 /* ================================================================== */
 
 interface Finish {
-  nodeIdle: THREE.Color;
-  nodeActive: THREE.Color;
-  edgeIdle: THREE.Color;
-  edgeActive: THREE.Color;
+  /** Structure eteinte (neurones). */
+  idle: THREE.Color;
+  /**
+   * Pixel eteint de la grille d'entree.
+   *
+   * Volontairement bien plus sombre que `idle` : c'est le fond du chiffre.
+   * Quand les deux partageaient la meme valeur, la grille se lisait comme
+   * un rectangle gris uniforme et le chiffre etait invisible — le defaut
+   * le plus grave du premier jet.
+   */
+  pixelOff: THREE.Color;
+  /** Liaisons eteintes. */
+  wireIdle: THREE.Color;
+  /** Signal : l'accent du site. */
+  signal: THREE.Color;
+  /** Signal sature, pour les valeurs les plus fortes. */
+  hot: THREE.Color;
   shadow: string;
   shadowOpacity: number;
-  envIntensity: number;
   exposure: number;
+  /** La couche additive ne se lit que sur fond sombre (voir ci-dessous). */
+  glow: boolean;
 }
 
 function makeFinish(dark: boolean): Finish {
   return dark
     ? {
-        nodeIdle: new THREE.Color('#5b6069'),
-        // L'accent du site sert d'etat actif. C'est la meme regle que dans
-        // l'interface : la couleur signale un etat, jamais un ornement.
-        nodeActive: new THREE.Color('#7ba1e8'),
-        edgeIdle: new THREE.Color('#3a3e46'),
-        edgeActive: new THREE.Color('#7ba1e8'),
+        idle: new THREE.Color('#3c4048'),
+        pixelOff: new THREE.Color('#15181d'),
+        wireIdle: new THREE.Color('#22252b'),
+        signal: new THREE.Color('#7ba1e8'),
+        hot: new THREE.Color('#cadcff'),
         shadow: '#000000',
-        shadowOpacity: 0.5,
-        envIntensity: 0.9,
+        shadowOpacity: 0.45,
         exposure: 1.05,
+        glow: true,
       }
     : {
-        nodeIdle: new THREE.Color('#a9adb5'),
-        nodeActive: new THREE.Color('#2c5bb8'),
-        edgeIdle: new THREE.Color('#b6b9bf'),
-        edgeActive: new THREE.Color('#2c5bb8'),
+        idle: new THREE.Color('#b4b8bf'),
+        pixelOff: new THREE.Color('#e6e8ea'),
+        wireIdle: new THREE.Color('#d3d6da'),
+        signal: new THREE.Color('#2c5bb8'),
+        hot: new THREE.Color('#14306b'),
         shadow: '#1b1c20',
-        shadowOpacity: 0.3,
-        envIntensity: 1,
+        shadowOpacity: 0.28,
         exposure: 1.2,
+        // En mode clair, une couche en fusion additive tire vers le blanc
+        // du fond : elle effacerait le signal au lieu de le montrer. La
+        // lecture repose alors entierement sur la couleur du materiau.
+        glow: false,
       };
 }
 
 /* ================================================================== */
-/* Le studio                                                           */
+/* Studio                                                             */
 /* ================================================================== */
 
 /**
- * L'environnement lumineux, construit sur place a partir de surfaces
- * emissives plutot que charge depuis un fichier HDRI.
- *
- * Un preset drei telecharge plusieurs megaoctets depuis un CDN : une
- * dependance reseau et un ecran vide au premier rendu. Rendu une seule
- * fois dans une cube map (`frames={1}`), cet environnement ne coute plus
- * rien apres la premiere image, et ses reflets ont la forme rectangulaire
- * franche des boites a lumiere d'un studio photo. C'est cette forme, plus
- * que toute autre chose, qui fait lire un rendu comme « produit » plutot
- * que comme « jeu ».
+ * Environnement lumineux construit sur place — pas de fichier HDRI a
+ * telecharger, donc pas de dependance reseau ni d'attente au premier
+ * rendu. Les reflets prennent la forme rectangulaire des boites a lumiere
+ * d'un studio, ce qui distingue un rendu produit d'un rendu de jeu.
  */
-function Studio({ finish }: { finish: Finish }) {
+function Studio() {
   return (
-    <Environment frames={1} resolution={512}>
-      {/* Un fond gris moyen, jamais noir : un environnement noir donne des
-          metaux ternes, sans rien a reflechir. */}
+    <Environment frames={1} resolution={256}>
       <mesh scale={40}>
         <sphereGeometry args={[1, 32, 32]} />
-        <meshBasicMaterial color="#4a5060" side={THREE.BackSide} />
+        <meshBasicMaterial color="#3a3d43" side={THREE.BackSide} />
       </mesh>
 
-      {/* Source principale : haute, a gauche, a 45°. Elle dessine la forme. */}
+      {/* Source principale, haute a gauche : elle dessine le volume. */}
       <Lightformer
         form="rect"
         intensity={4}
         color="#ffffff"
-        position={[-5, 5, 4]}
-        rotation={[-Math.PI / 5, Math.PI / 5, 0]}
+        position={[-5, 5, 5]}
+        rotation={[-Math.PI / 5, Math.PI / 6, 0]}
         scale={[9, 9, 1]}
       />
-
-      {/* Remplissage, a l'oppose et plus froid, deux fois moins intense.
-          Ce rapport 2:1 est ce qui conserve du relief tout en ouvrant les
-          ombres. */}
+      {/* Remplissage froid, deux fois moins intense : le rapport 2:1
+          conserve le relief tout en ouvrant les ombres. */}
       <Lightformer
         form="rect"
-        intensity={1.5 * finish.envIntensity}
-        color="#ccd8f0"
-        position={[6, 1, 3]}
+        intensity={1.6}
+        color="#ccd9f2"
+        position={[6, 0, 4]}
         rotation={[0, -Math.PI / 3, 0]}
         scale={[7, 7, 1]}
       />
-
-      {/* Bande rasante derriere le reseau : elle detache chaque noeud du
-          fond par un liseré, sans quoi les spheres sombres se confondent
+      {/* Bande rasante derriere la scene : elle detache chaque sphere du
+          fond par un lisere. Sans elle, les neurones eteints se confondent
           avec le decor en mode sombre. */}
       <Lightformer
         form="rect"
-        intensity={2.6}
+        intensity={2.4}
         color="#ffffff"
-        position={[0, 0, -6]}
-        scale={[10, 3, 1]}
-      />
-
-      {/* Rim light bleuté : contour lumineux qui sculpte la silhouette du
-          reseau et renforce la lecture des spheres contre le fond. */}
-      <Lightformer
-        form="rect"
-        intensity={3}
-        color="#a0c4ff"
-        position={[0, 3, -5]}
-        scale={[8, 4, 1]}
+        position={[0, 0, -7]}
+        scale={[12, 4, 1]}
       />
     </Environment>
   );
@@ -232,242 +228,350 @@ function Studio({ finish }: { finish: Finish }) {
 /* Le reseau                                                           */
 /* ================================================================== */
 
-/**
- * Noeuds, liaisons et particules voyageuses, en rendu instancie.
- *
- * Trois `InstancedMesh` :
- *   1. Les noeuds (spheres en metal poli avec clearcoat)
- *   2. Les liaisons (cylindres metalliques)
- *   3. Les particules (petites spheres emissives qui voyagent sur les aretes)
- *
- * Les materiaux `meshPhysicalMaterial` ajoutent clearcoat et reflectivite
- * pour un rendu « produit » nettement plus riche que `meshStandardMaterial`.
- */
-function Network({ finish, still }: { finish: Finish; still: boolean }) {
-  const nodesRef = useRef<THREE.InstancedMesh>(null!);
-  const edgesRef = useRef<THREE.InstancedMesh>(null!);
-  const particlesRef = useRef<THREE.InstancedMesh>(null!);
-  const clock = useRef(0);
+interface PlacedWire {
+  a: THREE.Vector3;
+  b: THREE.Vector3;
+  source: number;
+  stage: number;
+  strength: number;
+}
 
-  const { nodes, edges } = useMemo(buildNetwork, []);
+/** Tout ce qui ne doit etre calcule qu'une fois. */
+function useNetwork(wiresPerNeuron: number) {
+  return useMemo(() => {
+    const model = buildModel();
 
-  // Systeme de particules : petites spheres lumineuses qui voyagent
-  // sur les aretes actives, comme des influx nerveux.
-  const NUM_PARTICLES = 25;
-  const particleState = useRef(
-    Array.from({ length: NUM_PARTICLES }, (_, i) => ({
-      edgeIdx: i % edges.length,
-      t: Math.random(),
-      speed: 0.3 + Math.random() * 0.4,
-    }))
-  );
+    const input = gridPositions();
+    const h1 = columnPositions(X_H1, H1_SIZE, 0.26);
+    const h2 = columnPositions(X_H2, H2_SIZE, 0.3);
+    const out = columnPositions(X_OUT, OUTPUT_SIZE, 0.26);
 
-  // Les matrices de transformation des noeuds/aretes ne changent jamais :
-  // on les calcule une fois pour toutes. Seules les couleurs sont mises
-  // a jour par image.
+    // Les neurones des trois couches, dans un seul tampon instancie.
+    const nodes: Placed[] = [...h1, ...h2, ...out].map((position) => ({ position }));
+
+    // Les liaisons. La premiere couche est dense (10 x 100 = 1000) : on
+    // n'en dessine que les plus fortes, sinon c'est une pelote opaque. Les
+    // deux suivantes sont assez etroites pour etre tracees en entier.
+    const segments: { wires: Wire[]; from: THREE.Vector3[]; to: THREE.Vector3[]; stage: number }[] = [
+      { wires: strongestWires(model.W1, wiresPerNeuron), from: input, to: h1, stage: 0.5 },
+      { wires: allWires(model.W2), from: h1, to: h2, stage: 1.5 },
+      { wires: allWires(model.Wout), from: h2, to: out, stage: 2.5 },
+    ];
+
+    // Amplitude maximale par segment : elle ramene les poids sur une
+    // echelle comparable d'une couche a l'autre.
+    const wires: PlacedWire[] = segments.flatMap((segment) => {
+      const peak = Math.max(...segment.wires.map((w) => Math.abs(w.weight))) || 1;
+      return segment.wires.map((wire) => ({
+        a: segment.from[wire.from],
+        b: segment.to[wire.to],
+        source: wire.from,
+        stage: segment.stage,
+        strength: Math.abs(wire.weight) / peak,
+      }));
+    });
+
+    // Les dix passes avant, calculees d'avance : autant faire ces dix
+    // produits matrice-vecteur au montage plutot qu'a l'image ou le
+    // chiffre change.
+    const activations: Activation[] = DIGITS.map((digit) => model.forward(digit));
+
+    return { input, nodes, wires, activations };
+  }, [wiresPerNeuron]);
+}
+
+/** Duree d'un cycle complet, en secondes. */
+const CYCLE = 5.2;
+/** Duree du balayage a l'interieur du cycle. */
+const SWEEP = 2.6;
+
+function Network({
+  finish,
+  still,
+  wiresPerNeuron,
+}: {
+  finish: Finish;
+  still: boolean;
+  wiresPerNeuron: number;
+}) {
+  const { input, nodes, wires, activations } = useNetwork(wiresPerNeuron);
+
+  const tiles = useRef<THREE.InstancedMesh>(null!);
+  const tilesGlow = useRef<THREE.InstancedMesh>(null);
+  const neurons = useRef<THREE.InstancedMesh>(null!);
+  const neuronsGlow = useRef<THREE.InstancedMesh>(null);
+  const links = useRef<THREE.InstancedMesh>(null!);
+  const linksGlow = useRef<THREE.InstancedMesh>(null);
+
+  const elapsed = useRef(0);
+  const color = useMemo(() => new THREE.Color(), []);
+
+  /* --- Les matrices, posees une fois pour toutes ------------------ */
   useEffect(() => {
     const matrix = new THREE.Matrix4();
+    const identity = new THREE.Quaternion();
+
+    input.forEach((position, i) => {
+      matrix.makeTranslation(position.x, position.y, position.z);
+      tiles.current.setMatrixAt(i, matrix);
+      // La couche lumineuse est plus grande et legerement avancee : sans
+      // ce decalage, les deux surfaces coplanaires se disputeraient le
+      // tampon de profondeur (z-fighting).
+      matrix.makeTranslation(position.x, position.y, position.z + 0.03);
+      tilesGlow.current?.setMatrixAt(i, matrix);
+    });
+    tiles.current.instanceMatrix.needsUpdate = true;
+    if (tilesGlow.current) tilesGlow.current.instanceMatrix.needsUpdate = true;
 
     nodes.forEach((node, i) => {
       matrix.makeTranslation(node.position.x, node.position.y, node.position.z);
-      nodesRef.current.setMatrixAt(i, matrix);
+      neurons.current.setMatrixAt(i, matrix);
+      matrix.compose(node.position, identity, new THREE.Vector3(1.5, 1.5, 1.5));
+      neuronsGlow.current?.setMatrixAt(i, matrix);
     });
-    nodesRef.current.instanceMatrix.needsUpdate = true;
+    neurons.current.instanceMatrix.needsUpdate = true;
+    if (neuronsGlow.current) neuronsGlow.current.instanceMatrix.needsUpdate = true;
 
     // Chaque liaison est un cylindre unitaire (axe Y) qu'on oriente,
-    // etire et deplace pour joindre deux noeuds.
+    // etire et deplace pour joindre deux points.
     const up = new THREE.Vector3(0, 1, 0);
     const direction = new THREE.Vector3();
     const quaternion = new THREE.Quaternion();
-    const midpoint = new THREE.Vector3();
-    const scale = new THREE.Vector3();
+    const middle = new THREE.Vector3();
 
-    edges.forEach((edge, i) => {
-      direction.subVectors(edge.to, edge.from);
+    wires.forEach((wire, i) => {
+      direction.subVectors(wire.b, wire.a);
       const length = direction.length();
       quaternion.setFromUnitVectors(up, direction.clone().normalize());
-      midpoint.addVectors(edge.from, edge.to).multiplyScalar(0.5);
-      // Le poids module l'epaisseur : les connexions fortes se voient.
-      scale.set(edge.weight, length, edge.weight);
-      matrix.compose(midpoint, quaternion, scale);
-      edgesRef.current.setMatrixAt(i, matrix);
+      middle.addVectors(wire.a, wire.b).multiplyScalar(0.5);
+
+      // Le poids module l'epaisseur, mais jamais en dessous de 62 % : une
+      // liaison faible doit rester visible, sinon la topologie du reseau
+      // devient fausse a l'oeil — et sous ce seuil elle repasserait sous
+      // le pixel sur petit ecran.
+      const thickness = 0.62 + wire.strength * 0.38;
+      matrix.compose(middle, quaternion, new THREE.Vector3(thickness, length, thickness));
+      links.current.setMatrixAt(i, matrix);
+
+      matrix.compose(
+        middle,
+        quaternion,
+        new THREE.Vector3(thickness * 1.7, length, thickness * 1.7)
+      );
+      linksGlow.current?.setMatrixAt(i, matrix);
     });
-    edgesRef.current.instanceMatrix.needsUpdate = true;
+    links.current.instanceMatrix.needsUpdate = true;
+    if (linksGlow.current) linksGlow.current.instanceMatrix.needsUpdate = true;
+  }, [input, nodes, wires, finish.glow]);
 
-    // Initialiser les matrices particules a l'origine (invisible au depart).
-    for (let i = 0; i < NUM_PARTICLES; i++) {
-      matrix.makeScale(0, 0, 0);
-      particlesRef.current.setMatrixAt(i, matrix);
-    }
-    particlesRef.current.instanceMatrix.needsUpdate = true;
-  }, [nodes, edges]);
-
-  // La propagation avant.
-  //
-  // Une onde traverse le reseau de la couche d'entree vers la sortie, puis
-  // recommence apres une pause. Ce n'est pas un clignotement : l'activation
-  // d'un element est une gaussienne centree sur le front d'onde, donc tout
-  // s'allume et s'eteint progressivement.
-  const color = useMemo(() => new THREE.Color(), []);
-  const PERIOD = 9; // secondes pour un cycle complet, pause comprise
-  const WIDTH = 0.85; // largeur du front, en couches
-
-  // Objets reutilises pour les particules (evite les allocations par frame)
-  const pMatrix = useMemo(() => new THREE.Matrix4(), []);
-  const pPos = useMemo(() => new THREE.Vector3(), []);
-  const pColor = useMemo(() => new THREE.Color(), []);
-
+  /* --- L'animation ------------------------------------------------ */
   useFrame((_, delta) => {
-    if (!still) clock.current += delta;
+    if (!still) elapsed.current += delta;
 
-    // Le front part avant la premiere couche et sort apres la derniere :
-    // le reseau se vide completement entre deux passages.
-    const progress = (clock.current % PERIOD) / PERIOD;
-    const front = -1 + progress * (LAYERS.length + 1);
+    // Sur « animations reduites », on fige une image parlante : le reseau
+    // entierement propage sur un chiffre, decision prise.
+    const time = still ? CYCLE * 0.75 : elapsed.current;
+    const index = still ? 3 : Math.floor(time / CYCLE) % activations.length;
+    const local = still ? SWEEP : time % CYCLE;
+    const activation = activations[index];
 
-    const activation = (position: number) => {
-      const d = (position - front) / WIDTH;
-      return Math.exp(-d * d);
+    // Le front d'onde : il part avant l'entree et sort apres la sortie.
+    const front = -0.6 + Math.min(1, local / SWEEP) * 4.4;
+
+    // Extinction en fin de cycle : le reseau se vide avant que le chiffre
+    // suivant n'entre, sinon les deux passes se chevauchent.
+    const fade =
+      still || local < CYCLE - 0.75 ? 1 : Math.max(0, 1 - (local - (CYCLE - 0.75)) / 0.75);
+
+    /** Un etage ne s'eclaire qu'une fois le front passe dessus. */
+    const gate = (stage: number) => {
+      const t = Math.min(1, Math.max(0, (front - stage + 0.7) / 0.8));
+      return t * t * (3 - 2 * t) * fade; // lissage de Hermite
     };
 
-    // Mise a jour couleur + emissiveIntensity des noeuds via setColorAt.
-    // Le glow emissif est gere par le materiau (emissiveIntensity fixe),
-    // la couleur d'instance passe de idle a active selon l'activation.
-    nodes.forEach((node, i) => {
-      const act = activation(node.layer);
-      color.lerpColors(finish.nodeIdle, finish.nodeActive, act);
-      nodesRef.current.setColorAt(i, color);
-    });
-    if (nodesRef.current.instanceColor) nodesRef.current.instanceColor.needsUpdate = true;
+    /** Les valeurs brutes n'ont pas la meme echelle d'un etage a l'autre. */
+    const peakOf = (values: number[]) => Math.max(...values.map(Math.abs)) || 1;
+    const h1Peak = peakOf(activation.h1);
+    const h2Peak = peakOf(activation.h2);
 
-    edges.forEach((edge, i) => {
-      // Les liaisons faibles s'allument moins : la propagation suit les
-      // chemins de poids fort, comme dans un reseau reellement entraine.
-      color.lerpColors(finish.edgeIdle, finish.edgeActive, activation(edge.depth) * edge.weight);
-      edgesRef.current.setColorAt(i, color);
-    });
-    if (edgesRef.current.instanceColor) edgesRef.current.instanceColor.needsUpdate = true;
+    /** idle -> signal -> hot, selon l'intensite. */
+    const paint = (intensity: number, idle: THREE.Color) => {
+      const v = Math.min(1, Math.max(0, intensity));
+      color.copy(idle).lerp(finish.signal, Math.min(1, v * 1.25));
+      // Le passage au ton chaud ne commence qu'a 78 % : plus tot, presque
+      // tout partait en blanc et la scene se lisait comme une tache.
+      if (v > 0.78) color.lerp(finish.hot, (v - 0.78) / 0.22);
+      return color;
+    };
 
-    // Particules voyageuses : chaque particule se deplace de from vers to
-    // sur son arete assignee, a une vitesse propre. Quand elle arrive en
-    // bout d'arete, elle est reassignee aleatoirement.
-    particleState.current.forEach((p, i) => {
-      p.t += delta * p.speed;
-      if (p.t > 1) {
-        p.t = 0;
-        p.edgeIdx = Math.floor(Math.random() * edges.length);
-      }
-      const edge = edges[p.edgeIdx];
-      const act = activation(edge.depth) * edge.weight;
-      if (act < 0.1) {
-        // Arete inactive : masquer la particule
-        pMatrix.makeScale(0, 0, 0);
-      } else {
-        pPos.lerpVectors(edge.from, edge.to, p.t);
-        const s = 0.04 * act;
-        pMatrix.makeTranslation(pPos.x, pPos.y, pPos.z);
-        pMatrix.scale(new THREE.Vector3(s, s, s));
-      }
-      particlesRef.current.setMatrixAt(i, pMatrix);
-      // Couleur : edgeActive melange vers blanc pour un eclat lumineux
-      pColor.lerpColors(finish.edgeActive, new THREE.Color('#ffffff'), 0.4);
-      particlesRef.current.setColorAt(i, pColor);
-    });
-    particlesRef.current.instanceMatrix.needsUpdate = true;
-    if (particlesRef.current.instanceColor) particlesRef.current.instanceColor.needsUpdate = true;
+    /** Version additive : le noir est invisible, donc l'intensite pilote
+     *  directement la luminosite emise. */
+    const paintGlow = (intensity: number) => {
+      // Puissance 3 plutot que 2 : seules les valeurs vraiment fortes
+      // rayonnent, au lieu d'un halo general sur toute la scene.
+      const v = Math.min(1, Math.max(0, intensity));
+      color.copy(finish.signal).multiplyScalar(v * v * v);
+      if (v > 0.85) color.lerp(finish.hot, (v - 0.85) / 0.15);
+      return color;
+    };
+
+    // --- Entree ---
+    const inputGate = gate(0);
+    for (let i = 0; i < activation.input.length; i++) {
+      const v = activation.input[i] * inputGate;
+      tiles.current.setColorAt(i, paint(v, finish.pixelOff));
+      tilesGlow.current?.setColorAt(i, paintGlow(v * 0.7));
+    }
+
+    // --- Neurones : les trois couches se suivent dans le meme tampon ---
+    const values = [
+      ...activation.h1.map((v) => (Math.abs(v) / h1Peak) * gate(1)),
+      ...activation.h2.map((v) => (Math.abs(v) / h2Peak) * gate(2)),
+      // La sortie porte des probabilites : elles sont deja dans [0, 1], et
+      // c'est justement leur echelle absolue qui fait la decision — un
+      // seul neurone doit dominer.
+      ...activation.probabilities.map((p) => p * gate(3)),
+    ];
+
+    for (let i = 0; i < values.length; i++) {
+      neurons.current.setColorAt(i, paint(values[i], finish.idle));
+      neuronsGlow.current?.setColorAt(i, paintGlow(values[i]));
+    }
+
+    // --- Liaisons : l'intensite vient de la source, ponderee par le poids ---
+    const sourceValue = (stage: number, source: number) => {
+      if (stage === 0.5) return activation.input[source];
+      if (stage === 1.5) return Math.abs(activation.h1[source]) / h1Peak;
+      return Math.abs(activation.h2[source]) / h2Peak;
+    };
+
+    for (let i = 0; i < wires.length; i++) {
+      const wire = wires[i];
+      const v = sourceValue(wire.stage, wire.source) * wire.strength * gate(wire.stage);
+      links.current.setColorAt(i, paint(v * 0.7, finish.wireIdle));
+      linksGlow.current?.setColorAt(i, paintGlow(v * 0.5));
+    }
+
+    // three.js ne televerse les couleurs que si on le lui demande.
+    for (const mesh of [tiles, tilesGlow, neurons, neuronsGlow, links, linksGlow]) {
+      const instance = mesh.current;
+      if (instance?.instanceColor) instance.instanceColor.needsUpdate = true;
+    }
   });
+
+  /** Le materiau de structure : ni plastique, ni miroir.
+   *  A `metalness = 1`, la couleur de base ne teinte que la reflexion et
+   *  le signal devient illisible — c'etait le defaut de la version
+   *  precedente. A 0,3, la couleur se lit franchement tout en gardant un
+   *  reflet speculaire net. */
+  const solid = {
+    metalness: 0.3,
+    roughness: 0.25,
+    envMapIntensity: 1.15,
+    // Un vernis fin par-dessus le metal mixte : c'est ce qui donne aux
+    // spheres leur petit point de lumiere net (le "catchlight") plutot
+    // qu'un reflet diffus — la difference visuelle entre plastique et
+    // produit fini.
+    clearcoat: 0.5,
+    clearcoatRoughness: 0.2,
+  };
+
+  /** Le materiau lumineux : soustrait au tone mapping, sinon ACES
+   *  ecraserait justement les hautes lumieres qu'on cherche a produire. */
+  const additive = {
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    toneMapped: false,
+  } as const;
 
   return (
     <>
+      {/* --- La grille d'entree --- */}
       <instancedMesh
-        ref={nodesRef}
+        ref={tiles}
+        args={[undefined, undefined, input.length]}
+        castShadow
+        receiveShadow
+      >
+        <boxGeometry args={[TILE, TILE, 0.045]} />
+        <meshPhysicalMaterial {...solid} />
+      </instancedMesh>
+      {finish.glow && (
+        <instancedMesh ref={tilesGlow} args={[undefined, undefined, input.length]}>
+          <boxGeometry args={[TILE * 1.2, TILE * 1.2, 0.01]} />
+          <meshBasicMaterial {...additive} />
+        </instancedMesh>
+      )}
+
+      {/* --- Les liaisons --- */}
+      <instancedMesh ref={links} args={[undefined, undefined, wires.length]} castShadow>
+        <cylinderGeometry args={[WIRE_RADIUS, WIRE_RADIUS, 1, 8]} />
+        <meshPhysicalMaterial {...solid} roughness={0.35} />
+      </instancedMesh>
+      {finish.glow && (
+        <instancedMesh ref={linksGlow} args={[undefined, undefined, wires.length]}>
+          <cylinderGeometry args={[WIRE_RADIUS, WIRE_RADIUS, 1, 6]} />
+          <meshBasicMaterial {...additive} />
+        </instancedMesh>
+      )}
+
+      {/* --- Les neurones --- */}
+      <instancedMesh
+        ref={neurons}
         args={[undefined, undefined, nodes.length]}
         castShadow
         receiveShadow
       >
-        <sphereGeometry args={[NODE_RADIUS, 28, 28]} />
-        {/* meshPhysicalMaterial : clearcoat + metalness eleve pour un rendu
-            « sphere polie » tres franc. Le glow emissif s'active via la
-            couleur d'instance qui passe vers nodeActive. */}
-        <meshPhysicalMaterial
-          metalness={1}
-          roughness={0.08}
-          clearcoat={1}
-          clearcoatRoughness={0.05}
-          reflectivity={1}
-          envMapIntensity={2.5}
-          emissive={finish.nodeActive}
-          emissiveIntensity={0.15}
-        />
+        <sphereGeometry args={[NODE_RADIUS, 24, 24]} />
+        <meshPhysicalMaterial {...solid} />
       </instancedMesh>
-
-      <instancedMesh ref={edgesRef} args={[undefined, undefined, edges.length]} castShadow>
-        {/* 8 cotes : a cette epaisseur (7,5 mm a l'echelle de la scene),
-            personne ne verra jamais la facettisation, et on economise
-            les trois quarts des sommets. */}
-        <cylinderGeometry args={[EDGE_RADIUS, EDGE_RADIUS, 1, 8]} />
-        <meshPhysicalMaterial
-          metalness={0.95}
-          roughness={0.15}
-          envMapIntensity={1.8}
-        />
-      </instancedMesh>
-
-      {/* Particules : petites spheres entierement emissives, sans reflexion,
-          pour simuler des influx nerveux qui filent le long des synapses. */}
-      <instancedMesh ref={particlesRef} args={[undefined, undefined, NUM_PARTICLES]}>
-        <sphereGeometry args={[1, 8, 8]} />
-        <meshPhysicalMaterial
-          emissive={finish.edgeActive}
-          emissiveIntensity={3}
-          metalness={0}
-          roughness={0}
-        />
-      </instancedMesh>
+      {finish.glow && (
+        <instancedMesh ref={neuronsGlow} args={[undefined, undefined, nodes.length]}>
+          <sphereGeometry args={[NODE_RADIUS, 16, 16]} />
+          <meshBasicMaterial {...additive} />
+        </instancedMesh>
+      )}
     </>
   );
 }
 
+/* ================================================================== */
+/* Cadrage et parallaxe                                                */
+/* ================================================================== */
+
 /**
- * Le balancement et la parallaxe.
+ * Recentre, met a l'echelle pour tenir dans le cadre, et incline vers le
+ * curseur.
  *
- * Le reseau oscille lentement autour de la verticale (periode 35 s) et
- * s'incline vers le curseur, avec un amortissement fort. La camera ne
- * bouge jamais : c'est l'objet qui pivote. Deplacer la camera, comme le
- * faisait l'ancienne version, deforme la perspective et donne le mal de
- * mer.
+ * La mise a l'echelle n'est pas cosmetique : le reseau fait pres de cinq
+ * unites de large, et le canvas est presque carre sur grand ecran mais
+ * beaucoup plus etroit sur telephone. Sans ce calcul, la scene deborderait
+ * simplement du cadre sur mobile.
  */
-function Rig({
-  children,
-  strength,
-  still,
-}: {
-  children: React.ReactNode;
-  strength: number;
-  still: boolean;
-}) {
+function Rig({ children, strength }: { children: React.ReactNode; strength: number }) {
   const group = useRef<THREE.Group>(null!);
-  const { pointer } = useThree();
-  const time = useRef(0);
+  const { pointer, viewport } = useThree();
 
-  // Le reseau est presente de trois quarts : de face, c'est un schema plat
-  // sans profondeur ; trop de biais, et les couches se recouvrent.
-  const BASE_YAW = -0.34;
+  const WIDTH = 5.0;
 
-  useFrame((_, delta) => {
-    if (!still) time.current += delta;
+  useFrame(() => {
+    group.current.scale.setScalar(Math.min(1, (viewport.width * 0.94) / WIDTH));
 
-    // Oscillation plus lente et plus douce (0.18 rad/s, amplitude 0.08)
-    const sway = Math.sin(time.current * 0.18) * 0.08;
-    const targetYaw = BASE_YAW + sway + pointer.x * strength;
-    const targetPitch = -pointer.y * strength * 0.6;
-
-    // Amortissement legerement plus fort (0.04 au lieu de 0.05)
-    group.current.rotation.y += (targetYaw - group.current.rotation.y) * 0.04;
-    group.current.rotation.x += (targetPitch - group.current.rotation.x) * 0.04;
+    // Amortissement fort : le mouvement suit le curseur avec un retard, ce
+    // qui donne une masse a l'ensemble. Inclinaison faible, aussi — le
+    // reseau est un plan, trop de biais et les couches se recouvrent.
+    const targetY = pointer.x * strength;
+    const targetX = -pointer.y * strength * 0.7;
+    group.current.rotation.y += (targetY - group.current.rotation.y) * 0.05;
+    group.current.rotation.x += (targetX - group.current.rotation.x) * 0.05;
   });
 
-  return <group ref={group}>{children}</group>;
+  return (
+    <group ref={group}>
+      <group position={[CENTER_X, 0, 0]}>{children}</group>
+    </group>
+  );
 }
 
 /* ================================================================== */
@@ -481,68 +585,105 @@ export default function HeroObject() {
   // Reserve d'espace pendant l'hydratation : sans elle, la mise en page
   // saute au montage du canvas.
   if (!quality.ready) {
-    return <div className="h-[22rem] w-full sm:h-[26rem] lg:h-[32rem]" aria-hidden="true" />;
+    return <div className="h-[19rem] w-full sm:h-[22rem] lg:h-[26rem]" aria-hidden="true" />;
   }
 
   const still = quality.reducedMotion;
 
   return (
     <div
-      className="relative z-[9999] h-[22rem] w-full sm:h-[26rem] lg:h-[32rem]"
+      className="h-[19rem] w-full sm:h-[22rem] lg:h-[26rem]"
+      // Purement decoratif : la scene porte la meme information que le
+      // titre a cote. La masquer evite qu'un lecteur d'ecran annonce un
+      // canvas vide.
       aria-hidden="true"
     >
       <Canvas
         shadows
         dpr={quality.dpr}
-        camera={{ position: [0, 0.35, 6.6], fov: 34 }}
+        camera={{ position: [0, 0.05, 8.2], fov: 32 }}
         gl={{
           antialias: !quality.lowPower,
           alpha: true,
           powerPreference: 'high-performance',
-          // ACES compresse les hautes lumieres comme une pellicule : les
-          // reflets du metal restent des reflets au lieu de saturer.
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: finish.exposure,
         }}
       >
         <Suspense fallback={null}>
-          <Studio finish={finish} />
+          <Studio />
 
-          {/* Lumiere directe renforcee pour des ombres plus nettes
-              et une definition accrue sur les materiaux physiques. */}
+          {/* Une seule lumiere directe, la pour projeter l'ombre : tout
+              l'eclairage visible vient de l'environnement. */}
           <directionalLight
-            position={[-5, 6, 4]}
-            intensity={1.8}
+            position={[-5, 6, 5]}
+            intensity={1.1}
             castShadow
-            shadow-mapSize={[2048, 2048]}
+            shadow-mapSize={[1024, 1024]}
             shadow-camera-near={1}
-            shadow-camera-far={22}
-            shadow-camera-left={-5}
-            shadow-camera-right={5}
-            shadow-camera-top={5}
-            shadow-camera-bottom={-5}
+            shadow-camera-far={24}
+            shadow-camera-left={-4}
+            shadow-camera-right={4}
+            shadow-camera-top={4}
+            shadow-camera-bottom={-4}
             shadow-bias={-0.0005}
           />
 
-          <Rig strength={still ? 0 : 0.16} still={still}>
-            <Network finish={finish} still={still} />
+          <Rig strength={still ? 0 : 0.14}>
+            <Network
+              finish={finish}
+              still={still}
+              // Trois liaisons par neurone au lieu de quatre sur machine
+              // modeste : c'est le poste le plus lourd de la scene.
+              wiresPerNeuron={quality.lowPower ? 3 : 4}
+            />
           </Rig>
 
-          {/* L'ombre de contact ancre le reseau au sol. Sans elle, un objet
-              rendu flotte et sonne faux, quelle que soit la qualite des
+          {/* L'ombre de contact ancre l'ensemble. Sans elle, un rendu
+              flotte et sonne faux, quelle que soit la qualite des
               materiaux. */}
           <ContactShadows
-            position={[0, -1.75, 0]}
-            scale={11}
-            blur={2.6}
-            far={4}
+            position={[0, -1.5, 0]}
+            scale={9}
+            blur={2.4}
+            far={3}
             opacity={finish.shadowOpacity}
             color={finish.shadow}
-            // Le reseau ne se deplace pas verticalement : son ombre au sol
-            // n'a pas besoin d'etre recalculee a chaque image sur une
-            // machine modeste.
             frames={quality.lowPower ? 1 : Infinity}
           />
+
+          {/* Post-traitement de camera reelle, pas de decor : une legere
+              profondeur de champ separe le plan net (les deux couches
+              cachees, au centre) de l'entree et de la sortie, comme le
+              ferait un objectif a grande ouverture braque sur un objet
+              pose sur une table — c'est ce qui donne au rendu son aspect
+              « photographie de produit » plutot que « schema plat ». Le
+              vignettage, discret, recentre l'oeil sans jamais assombrir
+              les bords au point de devenir visible en soi. Le bloom, lui,
+              garde son seuil volontairement haut : a 0,82, seules les
+              activations additives le declenchent, jamais la structure —
+              c'est ce qui distingue un halo de signal d'un bloom
+              generalise, celui qui donnait a l'ancienne version son aspect
+              de jeu video. */}
+          {!quality.lowPower && (
+            <EffectComposer multisampling={0}>
+              <DepthOfField
+                focusDistance={0.019}
+                focalLength={0.045}
+                bokehScale={dark ? 3.2 : 2.2}
+              />
+              <Bloom
+                // Nul en mode clair : le fond blanc rendrait toute couche
+                // additive illisible (voir `makeFinish`), donc il n'y a
+                // simplement rien a faire rayonner.
+                intensity={dark ? 0.38 : 0}
+                luminanceThreshold={0.82}
+                luminanceSmoothing={0.25}
+                mipmapBlur
+              />
+              <Vignette eskil={false} offset={0.22} darkness={dark ? 0.55 : 0.32} />
+            </EffectComposer>
+          )}
         </Suspense>
       </Canvas>
     </div>

@@ -64,6 +64,80 @@ export interface CertificationDoc {
   updatedAt: string;
 }
 
+export type SkillDomain = 'ai' | 'security' | 'engineering';
+export type SkillCategory =
+  | 'machine_learning'
+  | 'cybersecurity'
+  | 'backend'
+  | 'frontend'
+  | 'mobile'
+  | 'tools'
+  | 'design';
+export type SkillTier = 'core' | 'working' | 'learning';
+
+export interface SkillDoc {
+  _id?: string;
+  slug: string;
+  name: string;
+  /** Cle d'icone (voir lib/skill-icons.tsx) — ex: "react", "python". */
+  icon: string;
+  color: string;
+  domain: SkillDomain;
+  category: SkillCategory;
+  tier: SkillTier;
+  published: boolean;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ParcoursDoc {
+  _id?: string;
+  slug: string;
+  type: 'education' | 'experience';
+  title: LocalizedText;
+  institution: LocalizedText;
+  location: LocalizedText;
+  description: LocalizedText;
+  /** Une ligne par element. */
+  achievements: LocalizedText;
+  /** Education uniquement. */
+  subjects: LocalizedText;
+  /** Experience uniquement (education utilise `subjects`). */
+  technologies: LocalizedText;
+  /** Annee de debut : determine l'ordre de la frise. */
+  start: number;
+  /** Annee de fin, ou null si l'etape est toujours en cours. */
+  end: number | null;
+  published: boolean;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AboutFact {
+  label: LocalizedText;
+  /** Peut contenir le jeton {age}, remplace cote client par l'age reel. */
+  value: LocalizedText;
+}
+
+export interface AboutDoc {
+  _id?: string;
+  name: string;
+  image: string;
+  captionLocation: string;
+  captionYear: string;
+  /**
+   * Paragraphes du recit, dans l'ordre. Le jeton {gremahtech} dans un
+   * paragraphe est remplace par un lien vers `gremahtechUrl`.
+   */
+  story: LocalizedText[];
+  gremahtechUrl: string;
+  resumeUrl: string;
+  facts: AboutFact[];
+  updatedAt: string;
+}
+
 /** Un evenement de visite (une page vue). */
 export interface VisitDoc {
   _id?: string;

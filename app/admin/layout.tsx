@@ -8,9 +8,11 @@ import { usePathname, useRouter } from 'next/navigation';
 
 const NAV = [
   { href: '/admin', label: 'Statistiques', icon: '📊' },
-  { href: '/admin/content', label: 'Contenu', icon: '✏️' },
+  { href: '/admin/skills', label: 'Compétences', icon: '🛠️' },
+  { href: '/admin/parcours', label: 'Parcours', icon: '🎓' },
+  { href: '/admin/about', label: 'À propos', icon: '👤' },
   { href: '/admin/projects', label: 'Projets', icon: '🗂️' },
-  { href: '/admin/certifications', label: 'Certifications', icon: '🎓' },
+  { href: '/admin/certifications', label: 'Certifications', icon: '🏅' },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
