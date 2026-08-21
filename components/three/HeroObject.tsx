@@ -39,7 +39,7 @@
 import { Suspense, useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { ContactShadows, Environment, Lightformer } from '@react-three/drei';
-import { Bloom, EffectComposer, DepthOfField, Vignette } from '@react-three/postprocessing';
+import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useSceneQuality } from './useSceneQuality';
@@ -652,26 +652,19 @@ export default function HeroObject() {
             frames={quality.lowPower ? 1 : Infinity}
           />
 
-          {/* Post-traitement de camera reelle, pas de decor : une legere
-              profondeur de champ separe le plan net (les deux couches
-              cachees, au centre) de l'entree et de la sortie, comme le
-              ferait un objectif a grande ouverture braque sur un objet
-              pose sur une table — c'est ce qui donne au rendu son aspect
-              « photographie de produit » plutot que « schema plat ». Le
-              vignettage, discret, recentre l'oeil sans jamais assombrir
-              les bords au point de devenir visible en soi. Le bloom, lui,
-              garde son seuil volontairement haut : a 0,82, seules les
-              activations additives le declenchent, jamais la structure —
-              c'est ce qui distingue un halo de signal d'un bloom
-              generalise, celui qui donnait a l'ancienne version son aspect
-              de jeu video. */}
+          {/* Post-traitement de camera reelle, pas de decor. Le reseau est
+              quasiment plat en profondeur (tous les etages sont a z = 0) :
+              une profondeur de champ y trouve trop peu de relief a exploiter
+              et finit par flouter l'ensemble de la scene au lieu d'un seul
+              plan — c'est ce qui rendait le rendu flou, retire. Le
+              vignettage, discret, recentre l'oeil sans jamais assombrir les
+              bords au point de devenir visible en soi. Le bloom garde son
+              seuil volontairement haut : a 0,82, seules les activations
+              additives le declenchent, jamais la structure — c'est ce qui
+              distingue un halo de signal d'un bloom generalise, celui qui
+              donnait a l'ancienne version son aspect de jeu video. */}
           {!quality.lowPower && (
             <EffectComposer multisampling={0}>
-              <DepthOfField
-                focusDistance={0.019}
-                focalLength={0.045}
-                bokehScale={dark ? 3.2 : 2.2}
-              />
               <Bloom
                 // Nul en mode clair : le fond blanc rendrait toute couche
                 // additive illisible (voir `makeFinish`), donc il n'y a
